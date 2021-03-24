@@ -8,8 +8,11 @@ spring:
 ##mybatis-plus相关配置
 mybatis-plus:
   mapper-locations: mapper/**/*.xml
+#主键自增
   global-config:
     db-config:
       id-type: auto
-  #主键自增
 
+#配置端口号
+server:
+  port: 7000
