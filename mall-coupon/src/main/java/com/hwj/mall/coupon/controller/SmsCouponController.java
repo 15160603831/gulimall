@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,13 +32,19 @@ public class SmsCouponController {
     @Autowired
     private SmsCouponService smsCouponService;
 
+    @RequestMapping("/member/list")
+    public R memberCoupon(){
+        SmsCouponEntity entity = new SmsCouponEntity();
+        entity.setCouponName("满100减100");
+        return R.ok().put("coupons",Arrays.asList(entity));
+    }
+
     /**
      * 列表
      */
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = smsCouponService.queryPage(params);
-
         return R.ok().put("page", page);
     }
 

@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.Map;
 
 
+import com.hwj.mall.member.feign.CouponFeignServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +32,18 @@ import com.hwj.common.utils.R;
 public class UmsMemberController {
     @Autowired
     private UmsMemberService umsMemberService;
+
+    @Autowired
+    private CouponFeignServer couponMFeignServer;
+
+
+    @RequestMapping("/coupon")
+    public R test(){
+        UmsMemberEntity entity=new UmsMemberEntity();
+        entity.setNickname("李四");
+        R r = couponMFeignServer.memberCoupon();
+        return R.ok().put("member",entity).put("coupon",r.get("coupons"));
+    }
 
     /**
      * 列表
