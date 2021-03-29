@@ -1,22 +1,19 @@
 package com.hwj.mall.member.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-
-import com.hwj.mall.member.feign.CouponFeignServer;
+import com.hwj.common.utils.PageUtils;
+import com.hwj.common.utils.R;
+import com.hwj.mall.member.entity.UmsMemberEntity;
+import com.hwj.mall.member.feign.MallCouponFeignServer;
+import com.hwj.mall.member.service.UmsMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hwj.mall.member.entity.UmsMemberEntity;
-import com.hwj.mall.member.service.UmsMemberService;
-import com.hwj.common.utils.PageUtils;
-import com.hwj.common.utils.R;
+import java.util.Arrays;
+import java.util.Map;
 
 
 
@@ -34,7 +31,7 @@ public class UmsMemberController {
     private UmsMemberService umsMemberService;
 
     @Autowired
-    private CouponFeignServer couponMFeignServer;
+    private MallCouponFeignServer couponMFeignServer;
 
 
     @RequestMapping("/coupon")

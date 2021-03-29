@@ -48,7 +48,6 @@ public class UmsMemberCollectSpuController {
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
 		UmsMemberCollectSpuEntity umsMemberCollectSpu = umsMemberCollectSpuService.getById(id);
-
         return R.ok().put("umsMemberCollectSpu", umsMemberCollectSpu);
     }
 
