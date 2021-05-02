@@ -18,6 +18,7 @@
         <module>mall-order</module>
         <module>mall-product</module>
         <module>mall-common</module>
+        <module>mall-gateway</module>
     </modules>
     <profiles>
         <profile>
