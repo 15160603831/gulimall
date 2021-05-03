@@ -45,7 +45,6 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
                 })
                 .sorted(Comparator.comparingInt(sort -> (sort.getSort() == null ? 0 : sort.getSort())))
                 .collect(Collectors.toList());
-        System.out.println(levelMenu);
         return levelMenu;
     }
 

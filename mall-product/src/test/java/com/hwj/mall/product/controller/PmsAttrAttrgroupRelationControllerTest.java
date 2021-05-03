@@ -3,25 +3,23 @@ package com.hwj.mall.product.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hwj.mall.product.entity.PmsBrandEntity;
 import com.hwj.mall.product.service.PmsBrandService;
-import org.junit.jupiter.api.Test;
+
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
+//@SpringBootTest
+//@RunWith(SpringRunner.class)
 class PmsAttrAttrgroupRelationControllerTest {
 
     @Autowired
     private PmsBrandService pmsBrandService;
 
-    @Test
+//    @Test
     void save() {
         PmsBrandEntity entity = new PmsBrandEntity();
         entity.setDescript("九牧哈哈哈");
@@ -31,7 +29,7 @@ class PmsAttrAttrgroupRelationControllerTest {
         boolean save = pmsBrandService.save(entity);
     }
 
-    @Test
+//    @Test
     void select() {
 
         QueryWrapper<PmsBrandEntity> wrapper=new QueryWrapper();

@@ -4,12 +4,13 @@ spring:
     username: root  #用户名
     password: 123456  #密码
     driver-class-name: com.mysql.cj.jdbc.Driver  #数据库链接驱动
+    #nacos服务名和地址
   cloud:
     nacos:
       discovery:
         server-addr: 47.107.108.206:8848
   application:
-    name: mall-member
+      name: mall-member
 
 
 ##mybatis-plus相关配置
@@ -24,4 +25,3 @@ mybatis-plus:
 #配置端口号
 server:
   port: 8000
-

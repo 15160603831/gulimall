@@ -6,11 +6,7 @@ import com.hwj.mall.member.entity.UmsMemberEntity;
 import com.hwj.mall.member.feign.MallCouponFeignServer;
 import com.hwj.mall.member.service.UmsMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -25,6 +21,7 @@ import java.util.Map;
  * @date 2021-03-23 17:44:26
  */
 @RestController
+@ResponseBody
 @RequestMapping("member/umsmember")
 public class UmsMemberController {
     @Autowired
