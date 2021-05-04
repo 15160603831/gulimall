@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import com.hwj.mall.coupon.entity.SmsCouponEntity;
@@ -21,6 +22,7 @@ import com.hwj.common.utils.R;
  * @email huangwenjun@mail.com
  * @date 2021-03-23 17:34:45
  */
+@RefreshScope
 @RestController
 @RequestMapping("coupon/smscoupon")
 public class SmsCouponController {

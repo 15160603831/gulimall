@@ -12,7 +12,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 //nacos注册发现
 @EnableDiscoveryClient
-@SpringBootApplication
+@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)//排除自动配置
 public class MallGatewayApplication {
 
     public static void main(String[] args) {
