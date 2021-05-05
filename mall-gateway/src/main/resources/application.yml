@@ -11,6 +11,14 @@ spring:
           predicates:
             - Query=url,qq
 
+        #将路径为Path=/api/**转发至后台管理
+        - id: admin_route
+          uri: lb://renren-fast
+          predicates:
+            - Path=/api/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment}
+
 
 server:
   port: 88

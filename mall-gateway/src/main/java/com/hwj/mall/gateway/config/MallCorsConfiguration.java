@@ -14,17 +14,17 @@ import org.springframework.web.cors.reactive.CorsWebFilter;
 @Configuration
 public class MallCorsConfiguration {
 
-//    @Bean
-//    public CorsWebFilter corsWebFilter() {
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        corsConfiguration.addAllowedHeader("*");
-//        corsConfiguration.addAllowedMethod("*");
-//        corsConfiguration.addAllowedOrigin("*");
-//        corsConfiguration.setAllowCredentials(true);
-//
-//        //注册入域的地址
-//        source.registerCorsConfiguration("/**", corsConfiguration);
-//        return new CorsWebFilter(source);
-//    }
+    @Bean
+    public CorsWebFilter corsWebFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.setAllowCredentials(true);
+
+        //注册入域的地址
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return new CorsWebFilter(source);
+    }
 }

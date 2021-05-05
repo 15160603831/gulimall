@@ -83,7 +83,7 @@
 
 <script>
 import UpdatePassword from "./main-navbar-update-password";
-import { clearLoginInfo } from "@/utils";
+import { clearLoginInfo } from '@/utils';
 export default {
   data() {
     return {
