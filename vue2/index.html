@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <!-- <input type="text" v-model="num">
+        <button v-on:click="num++">点赞</button>
+        <button v-on:click="canccle">取消</button>
+        <h1>{{name}},haoshuia{{num}}</h1> -->
+        {{msg}}{{1+1}}
+<br>
+        <span v-html="msg"> </span>
+
+    </div>
+
+    <script src="./node_modules/vue/dist/vue.js"></script>
+
+
+
+
+<script>
+    //申明式渲染
+    let vm=new Vue({
+        el:"#app",
+        data:{
+            name:"张三",
+            num:1,
+            msg:"小垃圾"
+        },
+        methods:{
+            canccle(){
+               this.num -- ;
+            }
+        }
+    });
+
+    //双向绑定模型变化，视图变化、
+    
+
+
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

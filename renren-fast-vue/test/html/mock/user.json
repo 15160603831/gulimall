@@ -1,0 +1,8 @@
+// {
+//     "id": 1,
+//     "name": "zhangsan",
+//     "password": "123456"
+// }
+
+var name = "jack"
+var age = 21
