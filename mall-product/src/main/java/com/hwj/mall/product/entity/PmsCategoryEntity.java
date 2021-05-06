@@ -1,7 +1,9 @@
 package com.hwj.mall.product.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -59,6 +61,11 @@ public class PmsCategoryEntity implements Serializable {
      * 商品数量
      */
     private Integer productCount;
+    /**
+     * 删除标记(0:正常;1:删除)
+     */
+    @TableLogic
+    private Boolean deleteFlag;
 
     @TableField(exist = false)
     private List<PmsCategoryEntity> children;

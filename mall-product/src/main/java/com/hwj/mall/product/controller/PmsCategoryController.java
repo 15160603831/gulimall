@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,11 +30,10 @@ public class PmsCategoryController {
     /**
      * 查出所有分类以及子分类，以树形结构组装
      */
+    @ApiOperation(value = " 查出所有分类以及子分类，以树形结构展示")
     @GetMapping("/list/tree")
     public R list() {
         List<PmsCategoryEntity> entityList = pmsCategoryService.listWithTree();
-
-
         return R.ok().put("data", entityList);
     }
 
@@ -70,9 +71,12 @@ public class PmsCategoryController {
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     public R delete(@RequestBody Long[] catIds) {
-        pmsCategoryService.removeByIds(Arrays.asList(catIds));
+//        pmsCategoryService.removeByIds(Arrays.asList(catIds));
+
+        pmsCategoryService.removeMenuByIds(Arrays.asList(catIds));
+
 
         return R.ok();
     }

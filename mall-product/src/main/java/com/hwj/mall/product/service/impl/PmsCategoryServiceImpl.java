@@ -49,6 +49,16 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
     }
 
     /**
+     * 删除商品分类
+     *
+     * @param catIds
+     */
+    @Override
+    public void removeMenuByIds(List<Long> catIds) {
+         baseMapper.deleteBatchIds(catIds);
+    }
+
+    /**
      * 递归查询所有菜单下的子菜单
      *
      * @param root 菜单

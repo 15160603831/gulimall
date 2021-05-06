@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.product.entity.PmsCategoryEntity;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -19,5 +20,12 @@ public interface PmsCategoryService extends IService<PmsCategoryEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     List<PmsCategoryEntity> listWithTree();
+
+    /**
+     * 删除商品分类
+     *
+     * @param catIds
+     */
+    void removeMenuByIds(List<Long> catIds);
 }
 
