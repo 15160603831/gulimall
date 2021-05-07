@@ -13,19 +13,35 @@ spring:
 
         #将路径为path=/api/**转发至 mall-product
         - id: product_route
-          uri: lb://mall-product
+#          uri: lb://mall-product:12000
+          uri: http://localhost:12000
           predicates:
             - Path=/api/product/**
           filters:
             - RewritePath=/api/(?<segment>/?.*), /$\{segment}
 
+
+        #将路径为path=/api/**转发至 mall-member
+        - id: member_route
+#                    uri: lb://mall-product
+          uri: http://localhost:8000
+          predicates:
+            - Path=/api/member/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*), /$\{segment}
+
+
         #将路径为Path=/api/**转发至后台管理
         - id: admin_route
-          uri: lb://renren-fast
+#          uri: lb://renren-fast:8080
+          uri: http://localhost:8080
           predicates:
             - Path=/api/**
           filters:
             - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment}
+
+
+
 
 
 
