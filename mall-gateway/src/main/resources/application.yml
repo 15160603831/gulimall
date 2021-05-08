@@ -22,7 +22,7 @@ spring:
 
         #将路径为path=/api/**转发至 mall-member
         - id: member_route
-          uri: lb://mall-product
+          uri: lb://mall-member
           predicates:
             - Path=/api/member/**
           filters:

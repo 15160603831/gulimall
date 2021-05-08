@@ -1,6 +1,9 @@
 <!--  -->
 <template>
   <div>
+    <el-button type="danger"
+               plain
+               @click="bacthDetele">批量删除</el-button>
     <el-tree :data="menus"
              show-checkbox
              node-key="catId"
@@ -8,7 +11,8 @@
              :expand-on-click-node="false"
              :default-expanded-keys="expandedkey"
              draggable
-             :allow-drop="allowDrop">
+             :allow-drop="allowDrop"
+             ref="treeMenu">
       <span class="custom-tree-node"
             slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
@@ -248,6 +252,41 @@ export default {
         //设置需要打开的菜单
         this.expandedkey = [this.category.parentCid];
       });
+    },
+    //批量删除
+    bacthDetele () {
+      let catIds = [];
+      let checkNodes = this.$refs.treeMenu.getCheckedNodes();
+      for (let i = 0; i < checkNodes.length; i++) {
+        catIds.push(checkNodes[i].catId);
+      }
+      console.log("节点", catIds);
+      this.$confirm(`是否批量删除${catIds}菜单, 是否继续?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        this.$http({
+          url: this.$http.adornUrl('/product/pmscategory/delete'),
+          method: 'post',
+          data: this.$http.adornData(catIds, false)
+        }).then(({ data }) => {
+          this.$message({
+            type: "success",
+            message: "批量删除成功!",
+          });
+          //刷新新的菜单
+          this.getMenus();
+          //设置默认打开菜单
+          // this.expandedkey = [node.parent.data.catId];
+        });
+      }).catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消删除",
+        });
+      });
+
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
