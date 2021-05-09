@@ -18,8 +18,9 @@
         <module>mall-order</module>
         <module>mall-product</module>
         <module>mall-common</module>
-        <module>renren-fast</module>
         <module>mall-gateway</module>
+        <module>renren-fast</module>
+<!--        <module>renren-generator</module>-->
     </modules>
 <!--    <profiles>-->
 <!--        <profile>-->
