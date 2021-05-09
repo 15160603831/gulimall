@@ -1,13 +1,14 @@
 package com.hwj.mall.order;
 
 
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MallOrderApplicationTests {
+public class MallOrderApplicationTests {
 
-//    @Test
-    void contextLoads() {
+    @Test
+    public void contextLoads() {
     }
 
 }
