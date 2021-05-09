@@ -34,9 +34,11 @@ spring:
           uri: lb://renren-fast
 #          uri: http://localhost:8080
           predicates:
-            - Path=/api/**+
+            - Path=/api/**
           filters:
             - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment}
+
+
 
 server:
   port: 88

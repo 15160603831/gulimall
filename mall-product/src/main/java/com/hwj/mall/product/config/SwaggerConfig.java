@@ -49,7 +49,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 //接口管理文档首页显示
-                .title("使用Swagger2 构建blog")
+                .title("商品中心")
                 //API的描述
                 .description("商城-商品接口")
                 //网站url等

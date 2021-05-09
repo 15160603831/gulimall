@@ -12,6 +12,7 @@
         <result property="showStatus" column="show_status"/>
         <result property="firstLetter" column="first_letter"/>
         <result property="sort" column="sort"/>
+        <result property="deleteFlag" column="deleteFlag"/>
     </resultMap>
 
 

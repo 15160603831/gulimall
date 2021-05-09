@@ -5,11 +5,7 @@ import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.hwj.mall.product.entity.PmsBrandEntity;
 import com.hwj.mall.product.service.PmsBrandService;
@@ -26,7 +22,7 @@ import com.hwj.common.utils.R;
  * @date 2021-03-23 17:29:10
  */
 @RestController
-@RequestMapping("product/pmsbrand")
+@RequestMapping("/product/pmsbrand")
 public class PmsBrandController {
     @Autowired
     private PmsBrandService pmsBrandService;
@@ -34,7 +30,7 @@ public class PmsBrandController {
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @PostMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = pmsBrandService.queryPage(params);
 
@@ -45,17 +41,17 @@ public class PmsBrandController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{brandId}")
+    @GetMapping("/info/{brandId}")
     public R info(@PathVariable("brandId") Long brandId){
 		PmsBrandEntity pmsBrand = pmsBrandService.getById(brandId);
 
-        return R.ok().put("pmsBrand", pmsBrand);
+        return R.ok().put("data", pmsBrand);
     }
 
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @PostMapping("/save")
     public R save(@RequestBody PmsBrandEntity pmsBrand){
 		pmsBrandService.save(pmsBrand);
 
@@ -65,7 +61,7 @@ public class PmsBrandController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
     public R update(@RequestBody PmsBrandEntity pmsBrand){
 		pmsBrandService.updateById(pmsBrand);
 
@@ -75,7 +71,7 @@ public class PmsBrandController {
     /**
      * 删除
      */
-    @RequestMapping("/delete")
+    @PostMapping("/delete")
     public R delete(@RequestBody Long[] brandIds){
 		pmsBrandService.removeByIds(Arrays.asList(brandIds));
 
