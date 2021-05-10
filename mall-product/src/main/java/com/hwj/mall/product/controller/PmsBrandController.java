@@ -5,6 +5,7 @@ import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.hwj.mall.product.entity.PmsBrandEntity;
@@ -12,6 +13,7 @@ import com.hwj.mall.product.service.PmsBrandService;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.R;
 
+import javax.validation.Valid;
 
 
 /**
@@ -52,7 +54,7 @@ public class PmsBrandController {
      * 保存
      */
     @PostMapping("/save")
-    public R save(@RequestBody PmsBrandEntity pmsBrand){
+    public R save(@Valid @RequestBody PmsBrandEntity pmsBrand){
 		pmsBrandService.save(pmsBrand);
 
         return R.ok();

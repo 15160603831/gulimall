@@ -12,6 +12,9 @@ import java.util.List;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+
 /**
  * 商品三级分类
  *
@@ -27,6 +30,8 @@ public class PmsCategoryEntity implements Serializable {
     /**
      * 分类id
      */
+    @NotNull(message = "修改必须指定品牌id")
+    @Null(message = "新增不能指定id")
     @TableId
     private Long catId;
     /**

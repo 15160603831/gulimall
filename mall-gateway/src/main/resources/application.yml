@@ -28,6 +28,14 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>/?.*), /$\{segment}
 
+        #将路径为path=/api/**转发至 第三方服务
+        - id: thirdParty
+          uri: lb://mall-third-party
+          predicates:
+            - Path=/api/thirdparty/**
+          filters:
+            - RewritePath=/api/thirdparty/(?<segment>/?.*), /$\{segment}
+
 
         #将路径为Path=/api/**转发至后台管理
         - id: admin_route

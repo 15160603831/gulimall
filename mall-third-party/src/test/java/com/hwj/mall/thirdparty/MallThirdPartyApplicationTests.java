@@ -35,9 +35,9 @@ public class MallThirdPartyApplicationTests {
 //        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
         // 填写本地文件的完整路径。如果未指定本地路径，则默认从示例程序所属项目对应本地路径中上传文件流。
-        InputStream inputStream = new FileInputStream("C:\\Users\\hwj\\Pictures\\Saved Pictures\\1812.img.jpg");
+        InputStream inputStream = new FileInputStream("C:\\Users\\hwj\\Pictures\\Saved Pictures\\3bffcdaac1bcea1028992e95b7717cd4_t.gif");
         // 填写Bucket名称和Object完整路径。Object完整路径中不能包含Bucket名称。
-        ossClient.putObject("hwj-mall", "哈哈哈.jpg", inputStream);
+        ossClient.putObject("hwj-mall", "3bffcdaac1.gif", inputStream);
 
         // 关闭OSSClient。
         ossClient.shutdown();

@@ -10,9 +10,9 @@ spring:
     nacos:
       discovery:
         server-addr: 47.107.108.206:8848
-        namespace: 8a7c16aa-4d40-4199-86fd-e78564b53f76
+        namespace: 891fcd4f-f79a-4738-90c0-b9a98e3d01ca
       config:
-        namespace: 8a7c16aa-4d40-4199-86fd-e78564b53f76
+        namespace: 891fcd4f-f79a-4738-90c0-b9a98e3d01ca
         server-addr: 47.107.108.206:8848
 
 
