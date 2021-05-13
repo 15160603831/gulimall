@@ -1,6 +1,6 @@
 package com.hwj.common.exception;
 
-import lombok.Data;
+
 
 /**
  * 错误码列表

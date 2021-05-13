@@ -1,6 +1,7 @@
 package com.hwj.mall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.math.BigDecimal;
@@ -41,5 +42,9 @@ public class SmsCategoryBoundsEntity implements Serializable {
 	 * 优惠生效情况[1111（四个状态位，从右到左）;0 - 无优惠，成长积分是否赠送;1 - 无优惠，购物积分是否赠送;2 - 有优惠，成长积分是否赠送;3 - 有优惠，购物积分是否赠送【状态位0：不赠送，1：赠送】]
 	 */
 	private Integer work;
-
+	/**
+	 * 删除标记(0:正常;1:删除)
+	 */
+	@TableLogic
+	private Boolean deleteFlag;
 }

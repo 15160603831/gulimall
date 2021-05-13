@@ -21,6 +21,7 @@
         <result property="content" column="content"/>
         <result property="memberIcon" column="member_icon"/>
         <result property="commentType" column="comment_type"/>
+        <result property="deleteFlag" column="deleteFlag"/>
     </resultMap>
 
 

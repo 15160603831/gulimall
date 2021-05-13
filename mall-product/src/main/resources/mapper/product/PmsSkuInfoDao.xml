@@ -16,6 +16,7 @@
         <result property="skuSubtitle" column="sku_subtitle"/>
         <result property="price" column="price"/>
         <result property="saleCount" column="sale_count"/>
+        <result property="deleteFlag" column="deleteFlag"/>
     </resultMap>
 
 

@@ -1,6 +1,7 @@
 package com.hwj.mall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.math.BigDecimal;
@@ -65,5 +66,10 @@ public class PmsSkuInfoEntity implements Serializable {
 	 * 销量
 	 */
 	private Long saleCount;
+	/**
+	 * 删除标记(0:正常;1:删除)
+	 */
+	@TableLogic
+	private Boolean deleteFlag;
 
 }

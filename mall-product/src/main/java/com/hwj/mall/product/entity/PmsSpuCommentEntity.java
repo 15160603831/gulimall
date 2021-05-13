@@ -1,6 +1,7 @@
 package com.hwj.mall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -84,5 +85,9 @@ public class PmsSpuCommentEntity implements Serializable {
 	 * 评论类型[0 - 对商品的直接评论，1 - 对评论的回复]
 	 */
 	private Integer commentType;
-
+	/**
+	 * 删除标记(0:正常;1:删除)
+	 */
+	@TableLogic
+	private Boolean deleteFlag;
 }

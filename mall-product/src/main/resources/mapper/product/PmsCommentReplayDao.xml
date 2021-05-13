@@ -8,6 +8,7 @@
         <result property="id" column="id"/>
         <result property="commentId" column="comment_id"/>
         <result property="replyId" column="reply_id"/>
+        <result property="deleteFlag" column="deleteFlag"/>
     </resultMap>
 
 

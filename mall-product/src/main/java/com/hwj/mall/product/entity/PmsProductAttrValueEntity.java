@@ -1,6 +1,7 @@
 package com.hwj.mall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -48,5 +49,10 @@ public class PmsProductAttrValueEntity implements Serializable {
 	 * 快速展示【是否展示在介绍上；0-否 1-是】
 	 */
 	private Integer quickShow;
+	/**
+	 * 删除标记(0:正常;1:删除)
+	 */
+	@TableLogic
+	private Boolean deleteFlag;
 
 }

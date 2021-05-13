@@ -10,6 +10,7 @@
         <result property="growBounds" column="grow_bounds"/>
         <result property="buyBounds" column="buy_bounds"/>
         <result property="work" column="work"/>
+        <result property="deleteFlag" column="deleteFlag"/>
     </resultMap>
 
 

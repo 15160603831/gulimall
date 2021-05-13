@@ -1,6 +1,7 @@
 package com.hwj.mall.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -44,5 +45,10 @@ public class PmsSkuSaleAttrValueEntity implements Serializable {
 	 * 顺序
 	 */
 	private Integer attrSort;
+	/**
+	 * 删除标记(0:正常;1:删除)
+	 */
+	@TableLogic
+	private Boolean deleteFlag;
 
 }

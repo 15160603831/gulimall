@@ -11,6 +11,7 @@
         <result property="attrName" column="attr_name"/>
         <result property="attrValue" column="attr_value"/>
         <result property="attrSort" column="attr_sort"/>
+        <result property="deleteFlag" column="deleteFlag"/>
     </resultMap>
 
 
