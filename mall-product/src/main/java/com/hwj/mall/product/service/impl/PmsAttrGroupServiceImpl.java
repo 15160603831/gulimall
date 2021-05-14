@@ -1,7 +1,11 @@
 package com.hwj.mall.product.service.impl;
 
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -24,6 +28,26 @@ public class PmsAttrGroupServiceImpl extends ServiceImpl<PmsAttrGroupDao, PmsAtt
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public PageUtils queryPage(Map<String, Object> params, Long cateLogId) {
+        if (cateLogId == 0) {
+            IPage<PmsAttrGroupEntity> page = this.page(new Query<PmsAttrGroupEntity>().getPage(params), new QueryWrapper<PmsAttrGroupEntity>());
+            return new PageUtils(page);
+        } else {
+            String key = (String) params.get("key");
+            QueryWrapper<PmsAttrGroupEntity> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("catelog_id", cateLogId);
+            if (!StringUtils.isEmpty(key)){
+                queryWrapper.and(obj->{
+                    obj.eq("attr_group_id",key).or().like("attr_group_name",key);
+                });
+            }
+            IPage<PmsAttrGroupEntity> page = this.page(new Query<PmsAttrGroupEntity>().getPage(params),queryWrapper);
+            return new PageUtils(page);
+        }
+
     }
 
 }

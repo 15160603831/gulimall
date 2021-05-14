@@ -16,5 +16,7 @@ import java.util.Map;
 public interface PmsAttrGroupService extends IService<PmsAttrGroupEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    PageUtils queryPage(Map<String, Object> params, Long cateLogId);
 }
 

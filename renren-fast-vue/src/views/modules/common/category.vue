@@ -3,7 +3,10 @@
   <el-tree :data="menus"
            node-key="catId"
            :props="defaultProps"
-           ref="treeMenu">
+           ref="treeMenu"
+           @node-click="nodeclick"
+           :filter-node-method="filterNode"
+           :highlight-current="true">
   </el-tree>
 </template>
 
@@ -17,6 +20,7 @@ export default {
   data () {
     //这里存放数据
     return {
+      filterText: "",
       menus: [],
       expandedkey: [],
       defaultProps: {
@@ -40,6 +44,16 @@ export default {
         this.menus = data.data;
       });
     },
+    //树节点过滤
+    filterNode (value, data) {
+      if (!value) return true;
+      return data.name.indexOf(value) !== -1;
+    },
+    nodeclick (data, node, component) {
+      console.log("子组件category的节点被点击", data, node, component);
+      //向父组件发送事件；
+      this.$emit("tree-node-click", data, node, component);
+    }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created () {

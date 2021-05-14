@@ -36,6 +36,7 @@
         <swagger.version>2.9.2</swagger.version>
         <knife4j.verison>2.0.2</knife4j.verison>
         <spring-cloud.version>Greenwich.SR3</spring-cloud.version>
+        <commons.lang.version>2.6</commons.lang.version>
     </properties>
     <modelVersion>4.0.0</modelVersion>
 
@@ -165,6 +166,11 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.72</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${commons.lang.version}</version>
         </dependency>
 
     </dependencies>

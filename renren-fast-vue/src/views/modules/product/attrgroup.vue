@@ -2,7 +2,7 @@
 <template>
   <el-row :gutter="20">
     <el-col :span="6">
-      <category></category>
+      <category @tree-node-click="treenodeclick"></category>
     </el-col>
     <el-col :span="18">
       <div class="mod-config">
@@ -65,11 +65,11 @@
                            align="center"
                            label="所属分类id">
           </el-table-column>
-          <el-table-column prop="deleteFlag"
+          <!-- <el-table-column prop="deleteFlag"
                            header-align="center"
                            align="center"
                            label="删除标记(0:正常;1:删除)">
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column fixed="right"
                            header-align="center"
                            align="center"
@@ -114,6 +114,7 @@ export default {
   data () {
     //这里存放数据
     return {
+      catId: 0,
       dataForm: {
         key: ''
       },
@@ -130,11 +131,19 @@ export default {
     this.getDataList()
   },
   methods: {
+    treenodeclick (data, node, component) {
+      // console.log("category节点", data, node, component);
+      // console.log("刚刚点击的节点", data.catId);
+      if (node.level == 3) {
+        this.catId = data.catId;
+        this.getDataList(); //重新查询
+      }
+    },
     // 获取数据列表
     getDataList () {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/product/pmsattrgroup/list'),
+        url: this.$http.adornUrl(`/product/pmsattrgroup/list/${this.catId}`),
         method: 'get',
         params: this.$http.adornParams({
           'page': this.pageIndex,
@@ -185,7 +194,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/product/attrgroup/delete'),
+          url: this.$http.adornUrl('/product/pmsattrgroup/delete'),
           method: 'post',
           data: this.$http.adornData(ids, false)
         }).then(({ data }) => {
