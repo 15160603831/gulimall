@@ -1,9 +1,15 @@
 package com.hwj.mall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
+import com.hwj.mall.product.service.PmsAttrAttrgroupRelationService;
+import com.hwj.mall.product.service.PmsAttrGroupService;
+import com.hwj.mall.product.service.PmsCategoryService;
+import com.hwj.mall.product.vo.AttrGroupRelationVo;
+import com.hwj.mall.product.vo.AttrGroupWithAttrsVo;
 import com.hwj.mall.product.vo.AttrResVO;
 import com.hwj.mall.product.vo.AttrVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +39,6 @@ import com.hwj.common.utils.R;
 public class PmsAttrController {
     @Autowired
     private PmsAttrService pmsAttrService;
-
 
     /**
      * 列表

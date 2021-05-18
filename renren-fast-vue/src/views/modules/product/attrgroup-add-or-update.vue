@@ -103,7 +103,7 @@ export default {
         if (this.dataForm.attrGroupId) {
           this.$http({
             url: this.$http.adornUrl(
-              `/product/attrgroup/info/${this.dataForm.attrGroupId}`
+              `/product/pmsattrgroup/info/${this.dataForm.attrGroupId}`
             ),
             method: "get",
             params: this.$http.adornParams()

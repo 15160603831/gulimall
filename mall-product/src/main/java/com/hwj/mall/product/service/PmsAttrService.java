@@ -3,9 +3,11 @@ package com.hwj.mall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.product.entity.PmsAttrEntity;
+import com.hwj.mall.product.vo.AttrGroupRelationVo;
 import com.hwj.mall.product.vo.AttrResVO;
 import com.hwj.mall.product.vo.AttrVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,5 +28,12 @@ public interface PmsAttrService extends IService<PmsAttrEntity> {
     AttrResVO getAttrInfo(Long attrId);
 
     void updateByAttr(AttrVO attrVO);
+
+    List<PmsAttrEntity> getRelationAttr(Long attrgroupId);
+
+    PageUtils getNoRelationAttr(Map<String, Object> params, Long attrgroupId);
+
+    void deleteRelation(AttrGroupRelationVo[] vos);
+
 }
 
