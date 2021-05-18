@@ -6,7 +6,7 @@
              :rules="dataRule"
              ref="dataForm"
              @keyup.enter.native="dataFormSubmit()"
-             label-width="150px">
+             label-width="140px">
       <el-form-item label="品牌名"
                     prop="name">
         <el-input v-model="dataForm.name"
@@ -28,8 +28,7 @@
                    active-color="#13ce66"
                    inactive-color="#ff4949"
                    :active-value="1"
-                   :inactive-value="0">
-        </el-switch>
+                   :inactive-value="0"></el-switch>
       </el-form-item>
       <el-form-item label="检索首字母"
                     prop="firstLetter">
@@ -60,113 +59,121 @@ export default {
       visible: false,
       dataForm: {
         brandId: 0,
-        name: '',
-        logo: '',
-        descript: '',
+        name: "",
+        logo: "",
+        descript: "",
         showStatus: 1,
-        firstLetter: '',
-        sort: '0'
+        firstLetter: "",
+        sort: 0
       },
       dataRule: {
-        name: [
-          { required: true, message: '品牌名不能为空', trigger: 'blur' }
-        ],
+        name: [{ required: true, message: "品牌名不能为空", trigger: "blur" }],
         logo: [
-          { required: true, message: '品牌logo地址不能为空', trigger: 'blur' }
+          { required: true, message: "品牌logo地址不能为空", trigger: "blur" }
         ],
         descript: [
-          { required: true, message: '介绍不能为空', trigger: 'blur' }
+          { required: true, message: "介绍不能为空", trigger: "blur" }
         ],
         showStatus: [
-          { required: true, message: '显示状态[0-不显示；1-显示]不能为空', trigger: 'blur' }
+          {
+            required: true,
+            message: "显示状态[0-不显示；1-显示]不能为空",
+            trigger: "blur"
+          }
         ],
         firstLetter: [
           {
             validator: (rule, value, callback) => {
-              if (value == '') {
-                callback(new Error('首字母必须填写'))
+              if (value == "") {
+                callback(new Error("首字母必须填写"));
               } else if (!/^[a-zA-Z]$/.test(value)) {
-                callback(new Error('首字母必须是a-z或者A-Z之间'))
+                callback(new Error("首字母必须a-z或者A-Z之间"));
               } else {
-                callback;
+                callback();
               }
-            }, trigger: 'blur'
+            },
+            trigger: "blur"
           }
         ],
         sort: [
           {
             validator: (rule, value, callback) => {
-              if (value == '') {
-                callback(new Error('必须填写排序字段'))
+              if (value == "") {
+                callback(new Error("排序字段必须填写"));
               } else if (!Number.isInteger(value) || value < 0) {
-                callback(new Error('排序字段必须是一个整数'))
+                callback(new Error("排序必须是一个大于等于0的整数"));
               } else {
-                callback;
+                callback();
               }
-            }, trigger: 'blur'
+            },
+            trigger: "blur"
           }
         ]
       }
-    }
+    };
   },
   methods: {
     init (id) {
-      this.dataForm.brandId = id || 0
-      this.visible = true
+      this.dataForm.brandId = id || 0;
+      this.visible = true;
       this.$nextTick(() => {
-        this.$refs['dataForm'].resetFields()
+        this.$refs["dataForm"].resetFields();
         if (this.dataForm.brandId) {
           this.$http({
-            url: this.$http.adornUrl(`/product/pmsbrand/info/${this.dataForm.brandId}`),
-            method: 'get',
+            url: this.$http.adornUrl(
+              `/product/pmsbrand/info/${this.dataForm.brandId}`
+            ),
+            method: "get",
             params: this.$http.adornParams()
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.dataForm.name = data.data.name
-              this.dataForm.logo = data.data.logo
-              this.dataForm.descript = data.data.descript
-              this.dataForm.showStatus = data.data.showStatus
-              this.dataForm.firstLetter = data.data.firstLetter
-              this.dataForm.sort = data.data.sort
+              this.dataForm.name = data.brand.name;
+              this.dataForm.logo = data.brand.logo;
+              this.dataForm.descript = data.brand.descript;
+              this.dataForm.showStatus = data.brand.showStatus;
+              this.dataForm.firstLetter = data.brand.firstLetter;
+              this.dataForm.sort = data.brand.sort;
             }
-          })
+          });
         }
-      })
+      });
     },
     // 表单提交
     dataFormSubmit () {
-      this.$refs['dataForm'].validate((valid) => {
+      this.$refs["dataForm"].validate(valid => {
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl(`/product/pmsbrand/${!this.dataForm.brandId ? 'save' : 'update'}`),
-            method: 'post',
+            url: this.$http.adornUrl(
+              `/product/pmsbrand/${!this.dataForm.brandId ? "save" : "update"}`
+            ),
+            method: "post",
             data: this.$http.adornData({
-              'brandId': this.dataForm.brandId || undefined,
-              'name': this.dataForm.name,
-              'logo': this.dataForm.logo,
-              'descript': this.dataForm.descript,
-              'showStatus': this.dataForm.showStatus,
-              'firstLetter': this.dataForm.firstLetter,
-              'sort': this.dataForm.sort
+              brandId: this.dataForm.brandId || undefined,
+              name: this.dataForm.name,
+              logo: this.dataForm.logo,
+              descript: this.dataForm.descript,
+              showStatus: this.dataForm.showStatus,
+              firstLetter: this.dataForm.firstLetter,
+              sort: this.dataForm.sort
             })
           }).then(({ data }) => {
             if (data && data.code === 0) {
               this.$message({
-                message: '操作成功',
-                type: 'success',
+                message: "操作成功",
+                type: "success",
                 duration: 1500,
                 onClose: () => {
-                  this.visible = false
-                  this.$emit('refreshDataList')
+                  this.visible = false;
+                  this.$emit("refreshDataList");
                 }
-              })
+              });
             } else {
-              this.$message.error(data.msg)
+              this.$message.error(data.msg);
             }
-          })
+          });
         }
-      })
+      });
     }
   }
-}
+};
 </script>

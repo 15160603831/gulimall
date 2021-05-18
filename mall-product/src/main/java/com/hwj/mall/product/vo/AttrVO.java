@@ -1,13 +1,11 @@
-package com.hwj.mall.product.entity;
+package com.hwj.mall.product.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
-import lombok.Data;
 
 /**
  * 商品属性
@@ -18,13 +16,11 @@ import lombok.Data;
  */
 @Data
 @TableName("pms_attr")
-public class PmsAttrEntity implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class AttrVO implements Serializable {
 
 	/**
 	 * 属性id
 	 */
-	@TableId
 	private Long attrId;
 	/**
 	 * 属性名
@@ -58,13 +54,8 @@ public class PmsAttrEntity implements Serializable {
 	 * 快速展示【是否展示在介绍上；0-否 1-是】，在sku中仍然可以调整
 	 */
 	private Integer showDesc;
-	/**
-	 * 删除标记(0:正常;1:删除)
-	 */
-	@TableLogic
-	private Boolean deleteFlag;
 
-//	@TableField
-//	private Long attrGroupId;
+
+	private Long attrGroupId;
 
 }

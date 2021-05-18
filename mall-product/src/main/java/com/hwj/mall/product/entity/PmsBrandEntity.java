@@ -56,7 +56,7 @@ public class PmsBrandEntity implements Serializable {
 	 * 检索首字母
 	 */
 	@NotEmpty
-	@Pattern(regexp = "/^[a-zA-Z]$/",message = "首字母必须是a-z或者A-Z之间")
+//	@Pattern(regexp = "!/^[a-zA-Z]$/",message = "首字母必须是a-z或者A-Z之间")
 	private String firstLetter;
 	/**
 	 * 排序

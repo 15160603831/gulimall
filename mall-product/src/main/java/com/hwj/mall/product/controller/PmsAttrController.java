@@ -4,8 +4,12 @@ import java.util.Arrays;
 import java.util.Map;
 
 
+import com.hwj.mall.product.vo.AttrResVO;
+import com.hwj.mall.product.vo.AttrVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,7 +21,6 @@ import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.R;
 
 
-
 /**
  * 商品属性
  *
@@ -26,16 +29,29 @@ import com.hwj.common.utils.R;
  * @date 2021-03-23 17:29:10
  */
 @RestController
-@RequestMapping("product/pmsattr")
+@RequestMapping("/product/pmsattr")
 public class PmsAttrController {
     @Autowired
     private PmsAttrService pmsAttrService;
+
+
+    /**
+     * 列表
+     */
+    @RequestMapping("/base/list/{catelogId}")
+    public R baseAttrList(@RequestParam Map<String, Object> params,
+                          @PathVariable("catelogId") Long catelogId
+//                          @PathVariable("attrType") String type
+    ) {
+        PageUtils page = pmsAttrService.queryBaseAttrPage(params, catelogId, null);
+        return R.ok().put("page", page);
+    }
 
     /**
      * 列表
      */
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = pmsAttrService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -46,18 +62,18 @@ public class PmsAttrController {
      * 信息
      */
     @RequestMapping("/info/{attrId}")
-    public R info(@PathVariable("attrId") Long attrId){
-		PmsAttrEntity pmsAttr = pmsAttrService.getById(attrId);
-
-        return R.ok().put("pmsAttr", pmsAttr);
+    public R info(@PathVariable("attrId") Long attrId) {
+//        PmsAttrEntity pmsAttr = pmsAttrService.getById(attrId);
+        AttrResVO attrResVO = pmsAttrService.getAttrInfo(attrId);
+        return R.ok().put("attr", attrResVO);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody PmsAttrEntity pmsAttr){
-		pmsAttrService.save(pmsAttr);
+    public R save(@RequestBody AttrVO pmsAttr) {
+        pmsAttrService.saveAttr(pmsAttr);
 
         return R.ok();
     }
@@ -66,8 +82,8 @@ public class PmsAttrController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody PmsAttrEntity pmsAttr){
-		pmsAttrService.updateById(pmsAttr);
+    public R update(@RequestBody AttrVO attrVO) {
+        pmsAttrService.updateByAttr(attrVO);
 
         return R.ok();
     }
@@ -76,8 +92,8 @@ public class PmsAttrController {
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] attrIds){
-		pmsAttrService.removeByIds(Arrays.asList(attrIds));
+    public R delete(@RequestBody Long[] attrIds) {
+        pmsAttrService.removeByIds(Arrays.asList(attrIds));
 
         return R.ok();
     }

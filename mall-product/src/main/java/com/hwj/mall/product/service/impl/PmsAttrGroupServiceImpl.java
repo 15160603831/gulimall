@@ -32,18 +32,20 @@ public class PmsAttrGroupServiceImpl extends ServiceImpl<PmsAttrGroupDao, PmsAtt
 
     @Override
     public PageUtils queryPage(Map<String, Object> params, Long cateLogId) {
+        String key = (String) params.get("key");
+        QueryWrapper<PmsAttrGroupEntity> queryWrapper = new QueryWrapper<>();
+
+        if (!StringUtils.isEmpty(key)){
+            queryWrapper.and(obj->{
+                obj.eq("attr_group_id",key).or().like("attr_group_name",key);
+            });
+        }
+
         if (cateLogId == 0) {
-            IPage<PmsAttrGroupEntity> page = this.page(new Query<PmsAttrGroupEntity>().getPage(params), new QueryWrapper<PmsAttrGroupEntity>());
+            IPage<PmsAttrGroupEntity> page = this.page(new Query<PmsAttrGroupEntity>().getPage(params), queryWrapper);
             return new PageUtils(page);
         } else {
-            String key = (String) params.get("key");
-            QueryWrapper<PmsAttrGroupEntity> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("catelog_id", cateLogId);
-            if (!StringUtils.isEmpty(key)){
-                queryWrapper.and(obj->{
-                    obj.eq("attr_group_id",key).or().like("attr_group_name",key);
-                });
-            }
             IPage<PmsAttrGroupEntity> page = this.page(new Query<PmsAttrGroupEntity>().getPage(params),queryWrapper);
             return new PageUtils(page);
         }

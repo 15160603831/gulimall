@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -72,6 +73,7 @@ public class PmsCategoryEntity implements Serializable {
     @TableLogic
     private Boolean deleteFlag;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @TableField(exist = false)
     private List<PmsCategoryEntity> children;
 

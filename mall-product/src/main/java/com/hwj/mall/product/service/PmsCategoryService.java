@@ -27,5 +27,13 @@ public interface PmsCategoryService extends IService<PmsCategoryEntity> {
      * @param catIds
      */
     void removeMenuByIds(List<Long> catIds);
+
+    /**
+     * 找到catelogId的完整路径；
+     * [父/子/孙]
+     * @param catelogId
+     * @return
+     */
+    Long[] findCatelogPath(Long catelogId);
 }
 

@@ -2,6 +2,8 @@ package com.hwj.mall.product.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +40,9 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
         //组装成树形结构
         //2.1找到所有一级分类
         List<PmsCategoryEntity> levelMenu = pmsCategoryEntities.stream()
-                .filter(t -> t.getParentCid()==0)
+                .filter(t -> t.getParentCid() == 0)
                 .map((menu) -> {
-                    menu.setChildren(getChildren(menu,pmsCategoryEntities));
+                    menu.setChildren(getChildren(menu, pmsCategoryEntities));
                     return menu;
                 })
                 .sorted(Comparator.comparingInt(sort -> (sort.getSort() == null ? 0 : sort.getSort())))
@@ -55,7 +57,7 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
      */
     @Override
     public void removeMenuByIds(List<Long> catIds) {
-         baseMapper.deleteBatchIds(catIds);
+        baseMapper.deleteBatchIds(catIds);
     }
 
     /**
@@ -77,6 +79,30 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
                 .sorted(Comparator.comparingInt(sort -> (sort.getSort() == null ? 0 : sort.getSort())))
                 .collect(Collectors.toList());
         return pmsCategoryEntities;
+    }
+
+    //[2,25,225]
+    @Override
+    public Long[] findCatelogPath(Long catelogId) {
+        List<Long> paths = new ArrayList<>();
+        List<Long> parentPath = findParentPath(catelogId, paths);
+
+        Collections.reverse(parentPath);
+
+
+        return parentPath.toArray(new Long[parentPath.size()]);
+    }
+
+    //225,25,2
+    private List<Long> findParentPath(Long catelogId,List<Long> paths){
+        //1、收集当前节点id
+        paths.add(catelogId);
+        PmsCategoryEntity byId = this.getById(catelogId);
+        if(byId.getParentCid()!=0){
+            findParentPath(byId.getParentCid(),paths);
+        }
+        return paths;
+
     }
 
 
