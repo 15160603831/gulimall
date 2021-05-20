@@ -46,6 +46,8 @@ public class PmsAttrGroupController {
 
     @Autowired
     private PmsAttrService pmsAttrService;
+    @Autowired
+    private PmsCategoryService categoryService;
 
     @PostMapping("/attr/relation/delete")
     public R deleteRelation(@RequestBody  AttrGroupRelationVo[] vos){
@@ -105,8 +107,11 @@ public class PmsAttrGroupController {
     @RequestMapping("/info/{attrGroupId}")
     public R info(@PathVariable("attrGroupId") Long attrGroupId) {
         PmsAttrGroupEntity pmsAttrGroup = pmsAttrGroupService.getById(attrGroupId);
+        Long catelogId = pmsAttrGroup.getCatelogId();
+        Long[] path = categoryService.findCatelogPath(catelogId);
 
-        return R.ok().put("pmsAttrGroup", pmsAttrGroup);
+        pmsAttrGroup.setCatelogPath(path);
+        return R.ok().put("attrGroup", pmsAttrGroup);
     }
 
     /**

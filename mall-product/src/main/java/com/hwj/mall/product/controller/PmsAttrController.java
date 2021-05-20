@@ -43,12 +43,12 @@ public class PmsAttrController {
     /**
      * 列表
      */
-    @RequestMapping("/base/list/{catelogId}")
+    @RequestMapping("/{attrType}/list/{catelogId}")
     public R baseAttrList(@RequestParam Map<String, Object> params,
-                          @PathVariable("catelogId") Long catelogId
-//                          @PathVariable("attrType") String type
+                          @PathVariable("catelogId") Long catelogId,
+                          @PathVariable("attrType") String type
     ) {
-        PageUtils page = pmsAttrService.queryBaseAttrPage(params, catelogId, null);
+        PageUtils page = pmsAttrService.queryBaseAttrPage(params, catelogId, type);
         return R.ok().put("page", page);
     }
 

@@ -1,14 +1,21 @@
 package com.hwj.mall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.extension.service.additional.update.impl.UpdateChainWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hwj.common.constant.ProductConstant;
+import com.hwj.common.utils.PageUtils;
+import com.hwj.common.utils.Query;
 import com.hwj.mall.product.dao.PmsAttrAttrgroupRelationDao;
+import com.hwj.mall.product.dao.PmsAttrDao;
 import com.hwj.mall.product.dao.PmsAttrGroupDao;
 import com.hwj.mall.product.dao.PmsCategoryDao;
 import com.hwj.mall.product.entity.PmsAttrAttrgroupRelationEntity;
+import com.hwj.mall.product.entity.PmsAttrEntity;
 import com.hwj.mall.product.entity.PmsAttrGroupEntity;
 import com.hwj.mall.product.entity.PmsCategoryEntity;
+import com.hwj.mall.product.service.PmsAttrService;
 import com.hwj.mall.product.service.PmsCategoryService;
 import com.hwj.mall.product.vo.AttrGroupRelationVo;
 import com.hwj.mall.product.vo.AttrResVO;
@@ -17,23 +24,13 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hwj.common.utils.PageUtils;
-import com.hwj.common.utils.Query;
-
-import com.hwj.mall.product.dao.PmsAttrDao;
-import com.hwj.mall.product.entity.PmsAttrEntity;
-import com.hwj.mall.product.service.PmsAttrService;
-import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Service("pmsAttrService")
@@ -47,6 +44,7 @@ public class PmsAttrServiceImpl extends ServiceImpl<PmsAttrDao, PmsAttrEntity> i
     private PmsCategoryDao categoryDao;
     @Autowired
     private PmsCategoryService pmsCategoryService;
+
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -74,9 +72,11 @@ public class PmsAttrServiceImpl extends ServiceImpl<PmsAttrDao, PmsAttrEntity> i
 
     @Override
     public PageUtils queryBaseAttrPage(Map<String, Object> params, Long catelogId, String type) {
-        QueryWrapper<PmsAttrEntity> wrapper = new QueryWrapper<>();
+        QueryWrapper<PmsAttrEntity> wrapper = new QueryWrapper<PmsAttrEntity>()
+                .eq("attr_type", "base".equalsIgnoreCase(type) ? ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() : ProductConstant.AttrEnum.ATTR_TYPE_SALE.getCode());
+
         if (catelogId != 0) {
-            wrapper.eq("catelof_id", catelogId);
+            wrapper.eq("catelog_id", catelogId);
         }
         String key = (String) params.get("key");
         if (!StringUtils.isEmpty(key)) {
@@ -118,16 +118,16 @@ public class PmsAttrServiceImpl extends ServiceImpl<PmsAttrDao, PmsAttrEntity> i
         AttrResVO attrResVO = new AttrResVO();
         PmsAttrEntity attrEntity = this.getById(attrId);
         BeanUtils.copyProperties(attrEntity, attrResVO);
-//        if(attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()){
-        //1、设置分组信息
-        PmsAttrAttrgroupRelationEntity attr_id = relationDao.selectOne(new QueryWrapper<PmsAttrAttrgroupRelationEntity>().eq("attr_id", attrId));
-        if (attr_id != null) {
-            attrResVO.setAttrGroupId(attr_id.getAttrGroupId());
-            PmsAttrGroupEntity pmsAttrGroupEntity = attrGroupDao.selectById(attr_id.getAttrGroupId());
-            if (pmsAttrGroupEntity != null) {
-                attrResVO.setGroupName(pmsAttrGroupEntity.getAttrGroupName());
+        if (attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()) {
+            //1、设置分组信息
+            PmsAttrAttrgroupRelationEntity attr_id = relationDao.selectOne(new QueryWrapper<PmsAttrAttrgroupRelationEntity>().eq("attr_id", attrId));
+            if (attr_id != null) {
+                attrResVO.setAttrGroupId(attr_id.getAttrGroupId());
+                PmsAttrGroupEntity pmsAttrGroupEntity = attrGroupDao.selectById(attr_id.getAttrGroupId());
+                if (pmsAttrGroupEntity != null) {
+                    attrResVO.setGroupName(pmsAttrGroupEntity.getAttrGroupName());
+                }
             }
-//            }
         }
 
         //2、设置分类信息
@@ -220,13 +220,17 @@ public class PmsAttrServiceImpl extends ServiceImpl<PmsAttrDao, PmsAttrEntity> i
     @Override
     public void deleteRelation(AttrGroupRelationVo[] vos) {
         //relationDao.delete(new QueryWrapper<>().eq("attr_id",1L).eq("attr_group_id",1L));
-        //
         List<PmsAttrAttrgroupRelationEntity> entities = Arrays.asList(vos).stream().map((item) -> {
             PmsAttrAttrgroupRelationEntity relationEntity = new PmsAttrAttrgroupRelationEntity();
             BeanUtils.copyProperties(item, relationEntity);
             return relationEntity;
         }).collect(Collectors.toList());
         relationDao.deleteBatchRelation(entities);
+    }
+
+    @Override
+    public List<PmsAttrEntity> getAttrs(List<Long> attrs) {
+        return baseMapper.selectBatchIds(attrs);
     }
 
 }

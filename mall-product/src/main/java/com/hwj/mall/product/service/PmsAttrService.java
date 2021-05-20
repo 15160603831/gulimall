@@ -35,5 +35,7 @@ public interface PmsAttrService extends IService<PmsAttrEntity> {
 
     void deleteRelation(AttrGroupRelationVo[] vos);
 
+    List<PmsAttrEntity> getAttrs(List<Long> attrs);
+
 }
 

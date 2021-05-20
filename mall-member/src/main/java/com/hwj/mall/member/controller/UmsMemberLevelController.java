@@ -26,7 +26,7 @@ import com.hwj.common.utils.R;
  * @date 2021-03-23 17:44:25
  */
 @RestController
-@RequestMapping("member/umsmemberlevel")
+@RequestMapping("member/memberlevel")
 public class UmsMemberLevelController {
     @Autowired
     private UmsMemberLevelService umsMemberLevelService;
@@ -49,7 +49,7 @@ public class UmsMemberLevelController {
     public R info(@PathVariable("id") Long id){
 		UmsMemberLevelEntity umsMemberLevel = umsMemberLevelService.getById(id);
 
-        return R.ok().put("umsMemberLevel", umsMemberLevel);
+        return R.ok().put("memberLevel", umsMemberLevel);
     }
 
     /**

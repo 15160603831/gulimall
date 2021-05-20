@@ -85,5 +85,11 @@ public class PmsAttrGroupServiceImpl extends ServiceImpl<PmsAttrGroupDao, PmsAtt
 
     }
 
+    @Override
+    public PmsAttrGroupEntity getById(Long attrGroupId) {
+        PmsAttrGroupEntity pmsAttrGroupEntity = baseMapper.selectById(attrGroupId);
+        return pmsAttrGroupEntity;
+    }
+
 
 }

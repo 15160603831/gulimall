@@ -1,5 +1,6 @@
 package com.hwj.mall.product.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -50,5 +51,8 @@ public class PmsAttrGroupEntity implements Serializable {
 	 */
 	@TableLogic
 	private Boolean deleteFlag;
+
+	@TableField(exist = false)
+	private Long[] catelogPath;
 
 }

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 
+import com.hwj.mall.product.vo.SpuSaveVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,8 +57,10 @@ public class PmsSpuInfoController {
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody PmsSpuInfoEntity pmsSpuInfo){
-		pmsSpuInfoService.save(pmsSpuInfo);
+    public R save(@RequestBody SpuSaveVO spuSaveVO){
+//		pmsSpuInfoService.save(pmsSpuInfo);
+
+        pmsSpuInfoService.saveInfo(spuSaveVO);
 
         return R.ok();
     }

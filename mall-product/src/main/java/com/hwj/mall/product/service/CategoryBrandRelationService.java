@@ -3,7 +3,9 @@ package com.hwj.mall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.product.entity.CategoryBrandRelationEntity;
+import com.hwj.mall.product.entity.PmsBrandEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,5 +20,7 @@ public interface CategoryBrandRelationService extends IService<CategoryBrandRela
     PageUtils queryPage(Map<String, Object> params);
 
     void saveDetail(CategoryBrandRelationEntity categoryBrandRelation);
+
+    List<PmsBrandEntity> getBrandsByCatId(Long catId);
 }
 

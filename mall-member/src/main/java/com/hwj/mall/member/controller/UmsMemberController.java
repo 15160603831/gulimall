@@ -22,7 +22,7 @@ import java.util.Map;
  */
 @RestController
 @ResponseBody
-@RequestMapping("member/umsmember")
+@RequestMapping("member/member")
 public class UmsMemberController {
     @Autowired
     private UmsMemberService umsMemberService;
