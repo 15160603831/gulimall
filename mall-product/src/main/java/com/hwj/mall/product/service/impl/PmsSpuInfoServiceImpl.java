@@ -5,6 +5,7 @@ import com.hwj.mall.product.entity.PmsProductAttrValueEntity;
 import com.hwj.mall.product.entity.PmsSpuImagesEntity;
 import com.hwj.mall.product.entity.PmsSpuInfoDescEntity;
 import com.hwj.mall.product.service.PmsAttrService;
+import com.hwj.mall.product.service.PmsProductAttrValueService;
 import com.hwj.mall.product.service.PmsSpuImagesService;
 import com.hwj.mall.product.service.PmsSpuInfoDescService;
 import com.hwj.mall.product.vo.BaseAttrs;
@@ -41,6 +42,8 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
     PmsSpuImagesService pmsSpuImagesService;
     @Autowired
     PmsAttrService pmsAttrService;
+    @Autowired
+    PmsProductAttrValueService attrValueService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -92,9 +95,12 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
                 }
             });
         });
-//        pmsAttrService.
+        attrValueService.saveProductAttr(collect);
 
         //保存sku积分信息 `mall-coupon`.`sms_spu_bounds`
+
+
+
         //5.保存spu对应的sku信息
         //5.1、sku基本信息： pms_sku_info
         //5.2、sku图片信息：pms_sku_images
