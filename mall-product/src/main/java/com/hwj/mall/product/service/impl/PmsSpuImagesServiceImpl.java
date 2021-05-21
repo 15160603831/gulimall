@@ -16,9 +16,10 @@ import com.hwj.common.utils.Query;
 import com.hwj.mall.product.dao.PmsSpuImagesDao;
 import com.hwj.mall.product.entity.PmsSpuImagesEntity;
 import com.hwj.mall.product.service.PmsSpuImagesService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-
+@Transactional(rollbackFor = Exception.class)
 @Service("pmsSpuImagesService")
 public class PmsSpuImagesServiceImpl extends ServiceImpl<PmsSpuImagesDao, PmsSpuImagesEntity> implements PmsSpuImagesService {
 

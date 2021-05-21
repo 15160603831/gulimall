@@ -13,8 +13,9 @@ import com.hwj.common.utils.Query;
 import com.hwj.mall.product.dao.PmsSpuInfoDescDao;
 import com.hwj.mall.product.entity.PmsSpuInfoDescEntity;
 import com.hwj.mall.product.service.PmsSpuInfoDescService;
+import org.springframework.transaction.annotation.Transactional;
 
-
+@Transactional(rollbackFor = Exception.class)
 @Service("pmsSpuInfoDescService")
 public class PmsSpuInfoDescServiceImpl extends ServiceImpl<PmsSpuInfoDescDao, PmsSpuInfoDescEntity> implements PmsSpuInfoDescService {
 

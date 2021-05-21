@@ -1,9 +1,11 @@
-package com.hwj.mall.coupon.controller;
+package com.hwj.mall.member.controller;
 
-import java.util.Arrays;
-import java.util.Map;
+import com.hwj.common.utils.PageUtils;
+import com.hwj.common.utils.R;
 
 
+import com.hwj.mall.member.entity.UmsIntegrationChangeHistoryEntity;
+import com.hwj.mall.member.service.UmsIntegrationChangeHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,11 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hwj.mall.coupon.entity.UmsIntegrationChangeHistoryEntity;
-import com.hwj.mall.coupon.service.UmsIntegrationChangeHistoryService;
-import com.hwj.common.utils.PageUtils;
-import com.hwj.common.utils.R;
-
+import java.util.Arrays;
+import java.util.Map;
 
 
 /**

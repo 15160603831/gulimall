@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableDiscoveryClient
 @SpringBootApplication
-@EnableFeignClients
+@EnableFeignClients(basePackages = "com.hwj.mall.coupon.feign")
 @MapperScan("com.hwj.mall.coupon.dao")
 public class MallCouponApplication {
 

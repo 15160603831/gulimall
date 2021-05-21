@@ -13,8 +13,9 @@ import com.hwj.common.utils.Query;
 import com.hwj.mall.product.dao.PmsProductAttrValueDao;
 import com.hwj.mall.product.entity.PmsProductAttrValueEntity;
 import com.hwj.mall.product.service.PmsProductAttrValueService;
+import org.springframework.transaction.annotation.Transactional;
 
-
+@Transactional(rollbackFor = Exception.class)
 @Service("pmsProductAttrValueService")
 public class PmsProductAttrValueServiceImpl extends ServiceImpl<PmsProductAttrValueDao, PmsProductAttrValueEntity> implements PmsProductAttrValueService {
 

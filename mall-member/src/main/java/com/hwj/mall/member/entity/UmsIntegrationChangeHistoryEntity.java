@@ -1,4 +1,4 @@
-package com.hwj.mall.coupon.entity;
+package com.hwj.mall.member.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -8,15 +8,15 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 成长值变化历史记录
+ * 积分变化历史记录
  * 
  * @author hwj
  * @email huangwenjun@mail.com
- * @date 2021-03-23 17:34:44
+ * @date 2021-03-23 17:34:43
  */
 @Data
-@TableName("ums_growth_change_history")
-public class UmsGrowthChangeHistoryEntity implements Serializable {
+@TableName("ums_integration_change_history")
+public class UmsIntegrationChangeHistoryEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -33,7 +33,7 @@ public class UmsGrowthChangeHistoryEntity implements Serializable {
 	 */
 	private Date createTime;
 	/**
-	 * 改变的值（正负计数）
+	 * 变化的值
 	 */
 	private Integer changeCount;
 	/**
@@ -41,8 +41,8 @@ public class UmsGrowthChangeHistoryEntity implements Serializable {
 	 */
 	private String note;
 	/**
-	 * 积分来源[0-购物，1-管理员修改]
+	 * 来源[0->购物；1->管理员修改;2->活动]
 	 */
-	private Integer sourceType;
+	private Integer sourceTyoe;
 
 }

@@ -40,12 +40,13 @@
             <version>4.12</version>
         </dependency>
 
-<!--        原生阿里云oss存储依赖-->
-<!--        <dependency>-->
-<!--            <groupId>com.aliyun.oss</groupId>-->
-<!--            <artifactId>aliyun-sdk-oss</artifactId>-->
-<!--            <version>3.10.2</version>-->
-<!--        </dependency>-->
+        <!--      商城-优惠券  -->
+        <dependency>
+            <groupId>com.hwj.mall</groupId>
+            <artifactId>mall-coupon</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
 
     </dependencies>
     <dependencyManagement>
@@ -59,7 +60,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 
 
     <build>

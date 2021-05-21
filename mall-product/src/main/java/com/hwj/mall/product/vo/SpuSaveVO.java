@@ -18,8 +18,8 @@ import java.util.List;
 @Data
 public class SpuSaveVO {
 
-    private Date spuName;
-    private Date spuDescription;
+    private String spuName;
+    private String spuDescription;
     private Long catalogId;
     private Long brandId;
     private BigDecimal weight;

@@ -1,8 +1,8 @@
-package com.hwj.mall.coupon.service;
+package com.hwj.mall.member.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hwj.common.utils.PageUtils;
-import com.hwj.mall.coupon.entity.UmsGrowthChangeHistoryEntity;
+import com.hwj.mall.member.entity.UmsGrowthChangeHistoryEntity;
 
 import java.util.Map;
 

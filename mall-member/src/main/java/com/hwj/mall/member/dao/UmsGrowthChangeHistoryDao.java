@@ -1,7 +1,8 @@
-package com.hwj.mall.coupon.dao;
+package com.hwj.mall.member.dao;
 
-import com.hwj.mall.coupon.entity.UmsGrowthChangeHistoryEntity;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hwj.mall.member.entity.UmsGrowthChangeHistoryEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

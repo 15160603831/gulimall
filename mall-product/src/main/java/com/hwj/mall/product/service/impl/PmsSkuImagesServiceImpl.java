@@ -11,8 +11,9 @@ import com.hwj.common.utils.Query;
 import com.hwj.mall.product.dao.PmsSkuImagesDao;
 import com.hwj.mall.product.entity.PmsSkuImagesEntity;
 import com.hwj.mall.product.service.PmsSkuImagesService;
+import org.springframework.transaction.annotation.Transactional;
 
-
+@Transactional(rollbackFor = Exception.class)
 @Service("pmsSkuImagesService")
 public class PmsSkuImagesServiceImpl extends ServiceImpl<PmsSkuImagesDao, PmsSkuImagesEntity> implements PmsSkuImagesService {
 

@@ -1,16 +1,17 @@
-package com.hwj.mall.coupon.service.impl;
+package com.hwj.mall.member.service.impl;
 
-import org.springframework.stereotype.Service;
-import java.util.Map;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.Query;
+import com.hwj.mall.member.dao.UmsGrowthChangeHistoryDao;
+import com.hwj.mall.member.entity.UmsGrowthChangeHistoryEntity;
+import com.hwj.mall.member.service.UmsGrowthChangeHistoryService;
+import org.springframework.stereotype.Service;
 
-import com.hwj.mall.coupon.dao.UmsGrowthChangeHistoryDao;
-import com.hwj.mall.coupon.entity.UmsGrowthChangeHistoryEntity;
-import com.hwj.mall.coupon.service.UmsGrowthChangeHistoryService;
+import java.util.Map;
 
 
 @Service("umsGrowthChangeHistoryService")

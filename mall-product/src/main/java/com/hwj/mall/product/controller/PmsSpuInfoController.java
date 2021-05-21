@@ -7,6 +7,7 @@ import java.util.Map;
 import com.hwj.mall.product.vo.SpuSaveVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,10 +58,8 @@ public class PmsSpuInfoController {
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody SpuSaveVO spuSaveVO){
-//		pmsSpuInfoService.save(pmsSpuInfo);
-
-        pmsSpuInfoService.saveInfo(spuSaveVO);
+    public R save(@RequestBody SpuSaveVO vo){
+        pmsSpuInfoService.saveInfo(vo);
 
         return R.ok();
     }
