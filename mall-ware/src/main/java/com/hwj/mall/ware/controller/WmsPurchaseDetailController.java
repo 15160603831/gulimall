@@ -26,7 +26,7 @@ import com.hwj.common.utils.R;
  * @date 2021-03-23 17:50:33
  */
 @RestController
-@RequestMapping("ware/wmspurchasedetail")
+@RequestMapping("ware/purchasedetail")
 public class WmsPurchaseDetailController {
     @Autowired
     private WmsPurchaseDetailService wmsPurchaseDetailService;

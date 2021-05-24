@@ -1,11 +1,15 @@
 package com.hwj.mall.ware.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
 
+import com.hwj.mall.ware.vo.MergeVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,7 +21,6 @@ import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.R;
 
 
-
 /**
  * 采购信息
  *
@@ -26,7 +29,7 @@ import com.hwj.common.utils.R;
  * @date 2021-03-23 17:50:33
  */
 @RestController
-@RequestMapping("ware/wmspurchase")
+@RequestMapping("ware/purchase")
 public class WmsPurchaseController {
     @Autowired
     private WmsPurchaseService wmsPurchaseService;
@@ -35,7 +38,7 @@ public class WmsPurchaseController {
      * 列表
      */
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = wmsPurchaseService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -46,8 +49,8 @@ public class WmsPurchaseController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
-		WmsPurchaseEntity wmsPurchase = wmsPurchaseService.getById(id);
+    public R info(@PathVariable("id") Long id) {
+        WmsPurchaseEntity wmsPurchase = wmsPurchaseService.getById(id);
 
         return R.ok().put("wmsPurchase", wmsPurchase);
     }
@@ -56,8 +59,10 @@ public class WmsPurchaseController {
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody WmsPurchaseEntity wmsPurchase){
-		wmsPurchaseService.save(wmsPurchase);
+    public R save(@RequestBody WmsPurchaseEntity wmsPurchase) {
+        wmsPurchase.setCreateTime(new Date());
+        wmsPurchase.setUpdateTime(new Date());
+        wmsPurchaseService.save(wmsPurchase);
 
         return R.ok();
     }
@@ -66,8 +71,8 @@ public class WmsPurchaseController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody WmsPurchaseEntity wmsPurchase){
-		wmsPurchaseService.updateById(wmsPurchase);
+    public R update(@RequestBody WmsPurchaseEntity wmsPurchase) {
+        wmsPurchaseService.updateById(wmsPurchase);
 
         return R.ok();
     }
@@ -76,10 +81,33 @@ public class WmsPurchaseController {
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
-		wmsPurchaseService.removeByIds(Arrays.asList(ids));
+    public R delete(@RequestBody Long[] ids) {
+        wmsPurchaseService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }
 
+    /**
+     * 查询未领取的采购单
+     *
+     * @return
+     */
+    @GetMapping("/unreceive/list")
+    public R unreceivedList(@RequestParam Map<String, Object> params) {
+        PageUtils page = wmsPurchaseService.queryPageUnreceived(params);
+
+        return R.ok().put("page", page);
+    }
+
+    /**
+     * 合并采购单
+     *
+     * @return
+     */
+    @PostMapping("/merge")
+    public R merge(@RequestBody MergeVO mergeVO) {
+         wmsPurchaseService.mergePurchase(mergeVO);
+
+        return R.ok();
+    }
 }

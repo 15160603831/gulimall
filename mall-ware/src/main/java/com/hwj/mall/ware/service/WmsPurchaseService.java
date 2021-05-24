@@ -3,6 +3,7 @@ package com.hwj.mall.ware.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.ware.entity.WmsPurchaseEntity;
+import com.hwj.mall.ware.vo.MergeVO;
 
 import java.util.Map;
 
@@ -16,5 +17,9 @@ import java.util.Map;
 public interface WmsPurchaseService extends IService<WmsPurchaseEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    PageUtils queryPageUnreceived(Map<String, Object> params);
+
+    void mergePurchase(MergeVO mergeVO);
 }
 

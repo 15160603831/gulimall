@@ -11,6 +11,9 @@ spring:
   profiles:
     active: nacos
 
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+
 
 ##mybatis-plus相关配置
 mybatis-plus:
@@ -20,6 +23,11 @@ mybatis-plus:
     db-config:
       id-type: auto
 
+
 #配置端口号
 server:
   port: 11000
+
+logging:
+  level:
+    com.hwj.mall: debug

@@ -26,7 +26,7 @@ import com.hwj.common.utils.R;
  * @date 2021-03-23 17:50:33
  */
 @RestController
-@RequestMapping("ware/wmswareinfo")
+@RequestMapping("ware/wareinfo")
 public class WmsWareInfoController {
     @Autowired
     private WmsWareInfoService wmsWareInfoService;
