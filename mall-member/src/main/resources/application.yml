@@ -4,23 +4,15 @@ spring:
     username: root  #用户名
     password: 123456  #密码
     driver-class-name: com.mysql.cj.jdbc.Driver  #数据库链接驱动
-    #nacos服务名和地址
-  #nacos服务名和地址
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 47.107.108.206:8848
-        namespace: 891fcd4f-f79a-4738-90c0-b9a98e3d01ca
-      config:
-        namespace: 891fcd4f-f79a-4738-90c0-b9a98e3d01ca
-        server-addr: 47.107.108.206:8848
-
 
   application:
-      name: mall-member
-      logic-delete-field: delete_flag
-      logic-delete-value: 1 #逻辑已删除的值
-      logic-not-delete-value: 0 #逻辑为删除的值
+    name: mall-member
+    logic-delete-field: delete_flag
+    logic-delete-value: 1 #逻辑已删除的值
+    logic-not-delete-value: 0 #逻辑为删除的值
+
+  profiles:
+    active: nacos
 
 
 ##mybatis-plus相关配置

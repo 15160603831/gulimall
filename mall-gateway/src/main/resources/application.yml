@@ -54,12 +54,18 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment}
 
+  profiles:
+    active: nacos
 
+  application:
+    name: mall-gateway
 
 server:
   port: 88
 
- #nacos服务名和地址
+
+
+
 
 
 
