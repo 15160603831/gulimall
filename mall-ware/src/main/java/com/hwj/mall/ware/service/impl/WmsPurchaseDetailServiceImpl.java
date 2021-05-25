@@ -11,6 +11,7 @@ import com.hwj.mall.ware.service.WmsPurchaseDetailService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -41,6 +42,13 @@ public class WmsPurchaseDetailServiceImpl extends ServiceImpl<WmsPurchaseDetailD
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public List<WmsPurchaseDetailEntity> listDetailByPurchaseId(Long id) {
+        List<WmsPurchaseDetailEntity> purchaseId = this.list(new QueryWrapper<WmsPurchaseDetailEntity>().eq("purchase_id", id));
+
+        return purchaseId;
     }
 
 }

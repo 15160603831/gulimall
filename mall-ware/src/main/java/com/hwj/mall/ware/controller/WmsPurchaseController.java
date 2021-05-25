@@ -1,10 +1,9 @@
 package com.hwj.mall.ware.controller;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
-
-
+import com.hwj.common.utils.PageUtils;
+import com.hwj.common.utils.R;
+import com.hwj.mall.ware.entity.WmsPurchaseEntity;
+import com.hwj.mall.ware.service.WmsPurchaseService;
 import com.hwj.mall.ware.vo.MergeVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hwj.mall.ware.entity.WmsPurchaseEntity;
-import com.hwj.mall.ware.service.WmsPurchaseService;
-import com.hwj.common.utils.PageUtils;
-import com.hwj.common.utils.R;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -33,6 +32,18 @@ import com.hwj.common.utils.R;
 public class WmsPurchaseController {
     @Autowired
     private WmsPurchaseService wmsPurchaseService;
+
+
+    /**
+     * 领取采购单
+     */
+    @RequestMapping("/received")
+    public R received(@RequestBody List<Long> ids) {
+        wmsPurchaseService.received(ids);
+
+        return R.ok();
+    }
+
 
     /**
      * 列表
@@ -106,7 +117,7 @@ public class WmsPurchaseController {
      */
     @PostMapping("/merge")
     public R merge(@RequestBody MergeVO mergeVO) {
-         wmsPurchaseService.mergePurchase(mergeVO);
+        wmsPurchaseService.mergePurchase(mergeVO);
 
         return R.ok();
     }

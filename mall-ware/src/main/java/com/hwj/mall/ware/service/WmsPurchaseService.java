@@ -5,6 +5,7 @@ import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.ware.entity.WmsPurchaseEntity;
 import com.hwj.mall.ware.vo.MergeVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,5 +22,7 @@ public interface WmsPurchaseService extends IService<WmsPurchaseEntity> {
     PageUtils queryPageUnreceived(Map<String, Object> params);
 
     void mergePurchase(MergeVO mergeVO);
+
+    void received(List<Long> ids);
 }
 

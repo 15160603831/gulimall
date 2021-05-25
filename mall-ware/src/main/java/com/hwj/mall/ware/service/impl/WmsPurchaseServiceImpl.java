@@ -23,12 +23,14 @@ import com.hwj.mall.ware.entity.WmsPurchaseEntity;
 import com.hwj.mall.ware.service.WmsPurchaseService;
 import org.springframework.transaction.annotation.Transactional;
 
-
+@Transactional(rollbackFor = Exception.class)
 @Service("wmsPurchaseService")
 public class WmsPurchaseServiceImpl extends ServiceImpl<WmsPurchaseDao, WmsPurchaseEntity> implements WmsPurchaseService {
 
     @Autowired
     WmsPurchaseDetailService purchaseDetailService;
+    @Autowired
+    private WmsPurchaseDetailService detailService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -72,6 +74,41 @@ public class WmsPurchaseServiceImpl extends ServiceImpl<WmsPurchaseDao, WmsPurch
             return entity;
         }).collect(Collectors.toList());
         purchaseDetailService.updateBatchById(collect);
+    }
+
+    @Override
+    public void received(List<Long> ids) {
+        //确认当前采购单是已分配状态
+        List<WmsPurchaseEntity> collect = ids.stream().map(t -> {
+            WmsPurchaseEntity byId = this.getById(t);
+            return byId;
+        }).filter(item -> {
+            if (item.getStatus() == WareConstant.PurchaseStatusEnum.CREATED.getCode() ||
+                    item.getStatus() == WareConstant.PurchaseStatusEnum.ASSIGNED.getCode()) {
+                return true;
+            }
+            return false;
+        }).map(item->{
+          item.setStatus(WareConstant.PurchaseStatusEnum.RECEIVE.getCode());
+          return item;
+        }).collect(Collectors.toList());
+
+        //修改采购单
+        this.updateBatchById(collect);
+
+        //改变采购项的状态
+        collect.stream().forEach(item->{
+            List<WmsPurchaseDetailEntity> entities = detailService.listDetailByPurchaseId(item.getId());
+            List<WmsPurchaseDetailEntity> detailEntities = entities.stream().map(entity -> {
+                WmsPurchaseDetailEntity entity1 = new WmsPurchaseDetailEntity();
+                entity1.setId(entity.getId());
+                entity1.setStatus(WareConstant.PurchaseDetailStatusEnum.BUYING.getCode());
+                return entity1;
+            }).collect(Collectors.toList());
+            detailService.updateBatchById(detailEntities);
+        });
+
+
     }
 
 }
