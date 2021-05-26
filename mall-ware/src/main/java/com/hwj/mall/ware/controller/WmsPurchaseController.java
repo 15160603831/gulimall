@@ -5,6 +5,7 @@ import com.hwj.common.utils.R;
 import com.hwj.mall.ware.entity.WmsPurchaseEntity;
 import com.hwj.mall.ware.service.WmsPurchaseService;
 import com.hwj.mall.ware.vo.MergeVO;
+import com.hwj.mall.ware.vo.PurchaseDoneVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,16 @@ public class WmsPurchaseController {
 
         return R.ok();
     }
+    /**
+     * 完成采购单
+     */
+    @RequestMapping("/done")
+    public R done(@RequestBody PurchaseDoneVo vo) {
+        wmsPurchaseService.done(vo);
+
+        return R.ok();
+    }
+
 
 
     /**

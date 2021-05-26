@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.ware.entity.WmsPurchaseEntity;
 import com.hwj.mall.ware.vo.MergeVO;
+import com.hwj.mall.ware.vo.PurchaseDoneVo;
 
 import java.util.List;
 import java.util.Map;
@@ -24,5 +25,7 @@ public interface WmsPurchaseService extends IService<WmsPurchaseEntity> {
     void mergePurchase(MergeVO mergeVO);
 
     void received(List<Long> ids);
+
+    void done(PurchaseDoneVo vo);
 }
 

@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 
+import com.hwj.mall.product.entity.PmsProductAttrValueEntity;
 import com.hwj.mall.product.service.PmsAttrAttrgroupRelationService;
 import com.hwj.mall.product.service.PmsAttrGroupService;
 import com.hwj.mall.product.service.PmsCategoryService;
+import com.hwj.mall.product.service.PmsProductAttrValueService;
 import com.hwj.mall.product.vo.AttrGroupRelationVo;
 import com.hwj.mall.product.vo.AttrGroupWithAttrsVo;
 import com.hwj.mall.product.vo.AttrResVO;
@@ -39,6 +41,20 @@ import com.hwj.common.utils.R;
 public class PmsAttrController {
     @Autowired
     private PmsAttrService pmsAttrService;
+    @Autowired
+    private PmsProductAttrValueService productAttrValueService;
+
+
+    /**
+     * 列表
+     */
+    @RequestMapping("/base/listforspu/{spuId}")
+    public R baselistforspu(@PathVariable("spuId") Long spuId) {
+
+        List<PmsProductAttrValueEntity> productAttrValueEntityList = productAttrValueService.baseAttrlistForspu(spuId);
+
+        return R.ok().put("data", productAttrValueEntityList);
+    }
 
     /**
      * 列表
@@ -102,5 +118,17 @@ public class PmsAttrController {
 
         return R.ok();
     }
+
+    /**
+     * 修改
+     */
+    @PostMapping("/update/{spuId}")
+    public R updateSpuAttr(@PathVariable("spuId") Long spuId,
+                           @RequestBody List<PmsProductAttrValueEntity> entities) {
+        productAttrValueService.updateSpuAttr(spuId,entities);
+
+        return R.ok();
+    }
+
 
 }
