@@ -233,4 +233,16 @@ public class PmsAttrServiceImpl extends ServiceImpl<PmsAttrDao, PmsAttrEntity> i
         return baseMapper.selectBatchIds(attrs);
     }
 
+    /**
+     * 在所有属性中挑出检索属性
+     *
+     * @param attrIds
+     * @return
+     */
+    @Override
+    public List<Long> selectSearchAttrIds(List<Long> attrIds) {
+
+        return  baseMapper.selectSearchAttrIds(attrIds);
+    }
+
 }

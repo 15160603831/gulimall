@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * @author hwj
  */
-@FeignClient("mall-coupon")
+@FeignClient(value = "mall-coupon")
 public interface CouponFeignServer {
 
-    @RequestMapping("/coupon/smsspubounds/save")
+    @PostMapping("/coupon/smsspubounds/save")
     R saveSpuBounds(@RequestBody SpuBoundTo spuBoundTo);
 
     @PostMapping("/coupon/smsskufullreduction/saveinfo")

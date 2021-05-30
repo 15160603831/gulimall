@@ -19,7 +19,6 @@ import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.R;
 
 
-
 /**
  * spu信息
  *
@@ -37,7 +36,7 @@ public class PmsSpuInfoController {
      * 列表
      */
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = pmsSpuInfoService.queryPageByCondition(params);
 
         return R.ok().put("page", page);
@@ -48,8 +47,8 @@ public class PmsSpuInfoController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
-		PmsSpuInfoEntity pmsSpuInfo = pmsSpuInfoService.getById(id);
+    public R info(@PathVariable("id") Long id) {
+        PmsSpuInfoEntity pmsSpuInfo = pmsSpuInfoService.getById(id);
 
         return R.ok().put("pmsSpuInfo", pmsSpuInfo);
     }
@@ -58,7 +57,7 @@ public class PmsSpuInfoController {
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody SpuSaveVO vo){
+    public R save(@RequestBody SpuSaveVO vo) {
         pmsSpuInfoService.saveInfo(vo);
 
         return R.ok();
@@ -68,8 +67,8 @@ public class PmsSpuInfoController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody PmsSpuInfoEntity pmsSpuInfo){
-		pmsSpuInfoService.updateById(pmsSpuInfo);
+    public R update(@RequestBody PmsSpuInfoEntity pmsSpuInfo) {
+        pmsSpuInfoService.updateById(pmsSpuInfo);
 
         return R.ok();
     }
@@ -78,9 +77,20 @@ public class PmsSpuInfoController {
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
-		pmsSpuInfoService.removeByIds(Arrays.asList(ids));
+    public R delete(@RequestBody Long[] ids) {
+        pmsSpuInfoService.removeByIds(Arrays.asList(ids));
 
+        return R.ok();
+    }
+
+
+    /**
+     * 商品上架
+     */
+    @PostMapping("/{spuId}/up")
+    public R spuUp(@PathVariable("spuId") Long spuId) {
+
+        pmsSpuInfoService.up(spuId);
         return R.ok();
     }
 

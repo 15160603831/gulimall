@@ -4,6 +4,7 @@ import com.hwj.mall.product.entity.PmsSpuInfoDescEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -75,5 +76,18 @@ public class PmsSkuInfoServiceImpl extends ServiceImpl<PmsSkuInfoDao, PmsSkuInfo
         );
 
         return new PageUtils(page);
+    }
+
+    /**
+     * 查询所有spuid对应的sku信息
+     *
+     * @param spuId
+     * @return
+     */
+    @Override
+    public List<PmsSkuInfoEntity> getSkuBySpuId(Long spuId) {
+        QueryWrapper wrapper=new QueryWrapper<PmsSkuInfoEntity>().eq("spu_id",spuId);
+        List list = baseMapper.selectList(wrapper);
+        return list;
     }
 }

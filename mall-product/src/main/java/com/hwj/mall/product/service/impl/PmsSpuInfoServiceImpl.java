@@ -1,22 +1,13 @@
 package com.hwj.mall.product.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.hwj.common.to.SkuReductionTo;
 import com.hwj.common.to.SpuBoundTo;
+import com.hwj.common.to.es.SkuEsModel;
 import com.hwj.common.utils.R;
-import com.hwj.mall.product.entity.PmsAttrEntity;
-import com.hwj.mall.product.entity.PmsProductAttrValueEntity;
-import com.hwj.mall.product.entity.PmsSkuImagesEntity;
-import com.hwj.mall.product.entity.PmsSkuInfoEntity;
-import com.hwj.mall.product.entity.PmsSkuSaleAttrValueEntity;
-import com.hwj.mall.product.entity.PmsSpuInfoDescEntity;
+import com.hwj.mall.product.entity.*;
 import com.hwj.mall.product.feign.CouponFeignServer;
-import com.hwj.mall.product.service.PmsAttrService;
-import com.hwj.mall.product.service.PmsProductAttrValueService;
-import com.hwj.mall.product.service.PmsSkuImagesService;
-import com.hwj.mall.product.service.PmsSkuInfoService;
-import com.hwj.mall.product.service.PmsSkuSaleAttrValueService;
-import com.hwj.mall.product.service.PmsSpuImagesService;
-import com.hwj.mall.product.service.PmsSpuInfoDescService;
+import com.hwj.mall.product.service.*;
 import com.hwj.mall.product.vo.Attr;
 import com.hwj.mall.product.vo.BaseAttrs;
 import com.hwj.mall.product.vo.Bounds;
@@ -28,9 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -40,8 +29,6 @@ import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.Query;
 
 import com.hwj.mall.product.dao.PmsSpuInfoDao;
-import com.hwj.mall.product.entity.PmsSpuInfoEntity;
-import com.hwj.mall.product.service.PmsSpuInfoService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -66,6 +53,10 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
     PmsSkuSaleAttrValueService pmsSkuSaleAttrValueService;
     @Autowired
     CouponFeignServer couponFeignService;
+    @Autowired
+    PmsBrandService brandService;
+    @Autowired
+    PmsCategoryService categoryService;
 
 
     @Override
@@ -178,6 +169,7 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
                 SkuReductionTo skuReductionTo = new SkuReductionTo();
                 BeanUtils.copyProperties(item, skuReductionTo);
                 skuReductionTo.setSkuId(skuId);
+                System.out.println("优惠信息====" + JSON.toJSONString(skuReductionTo));
                 if (skuReductionTo.getFullCount() > 0 || skuReductionTo.getFullPrice().compareTo(new BigDecimal("0")) == 1) {
                     R r1 = couponFeignService.saveSkuReduction(skuReductionTo);
                     if (r1.getCode() != 0) {
@@ -200,21 +192,21 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
         QueryWrapper<PmsSpuInfoEntity> queryWrapper = new QueryWrapper<>();
         String key = (String) params.get("key");
         if (!StringUtils.isEmpty(key)) {
-            queryWrapper.and(w->{
-                w.eq("id",key).or().like("spu_name",key);
+            queryWrapper.and(w -> {
+                w.eq("id", key).or().like("spu_name", key);
             });
         }
         String status = (String) params.get("status");
         if (!StringUtils.isEmpty(status)) {
-            queryWrapper.eq("publish_status",status);
+            queryWrapper.eq("publish_status", status);
         }
         String brandId = (String) params.get("brandId");
         if (!StringUtils.isEmpty(brandId) && !"0".equalsIgnoreCase(brandId)) {
-            queryWrapper.eq("brand_id",brandId);
+            queryWrapper.eq("brand_id", brandId);
         }
         String catalogId = (String) params.get("catelogId");
         if (!StringUtils.isEmpty(catalogId) && !"0".equalsIgnoreCase(catalogId)) {
-            queryWrapper.eq("catalog_id",catalogId);
+            queryWrapper.eq("catalog_id", catalogId);
         }
 
 
@@ -224,6 +216,54 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
         );
 
         return new PageUtils(page);
+    }
+
+    /**
+     * 商品上架
+     *
+     * @param spuId
+     */
+    @Override
+    public void up(Long spuId) {
+
+
+        //查询所有spuid对应的sku信息
+        List<PmsSkuInfoEntity> skus = pmsSkuInfoService.getSkuBySpuId(spuId);
+        //组装skues数据
+        List<SkuEsModel> skuProduct = skus.stream().map(skuItem -> {
+            SkuEsModel skuEsModel = new SkuEsModel();
+            BeanUtils.copyProperties(skus, skuEsModel);
+
+            skuEsModel.setSkuPrice(skuItem.getPrice());
+            skuEsModel.setSkuImg(skuItem.getSkuDefaultImg());
+            //TODO 2、热度评分。0
+            skuEsModel.setHotScore(0L);
+            //TODO 3、查询品牌和分类的名字信息
+            PmsBrandEntity brandEntity = brandService.getById(skuItem.getBrandId());
+            skuEsModel.setBrandName(brandEntity.getName());
+            skuEsModel.setBrandImg(brandEntity.getLogo());
+            PmsCategoryEntity categoryEntity = categoryService.getById(skuItem.getCatalogId());
+            skuEsModel.setCatalogName(categoryEntity.getName());
+
+
+            //发送feign请求是否还有库存 hasStock
+
+
+            return skuEsModel;
+        }).collect(Collectors.toList());
+
+        //查询当前sku商品的可以被检索的规格属性
+
+        List<PmsProductAttrValueEntity> baseAttrs = attrValueService.baseAttrlistForspu(spuId);
+        List<Long> attrIds = baseAttrs.stream().map(PmsProductAttrValueEntity::getAttrId).collect(Collectors.toList());
+        List<Long> searchIds=pmsAttrService.selectSearchAttrIds(attrIds);
+        Set<Long> ids = new HashSet<>(searchIds);
+
+
+
+        //将数据发送给es
+
+
     }
 
 

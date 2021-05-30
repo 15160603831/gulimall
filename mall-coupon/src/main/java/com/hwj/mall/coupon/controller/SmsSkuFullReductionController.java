@@ -32,7 +32,7 @@ public class SmsSkuFullReductionController {
     @Autowired
     private SmsSkuFullReductionService smsSkuFullReductionService;
 
-    @PostMapping("saveInfo")
+    @PostMapping("/saveInfo")
     public R saveInfo(@RequestBody SkuReductionTo skuReductionTo) {
         smsSkuFullReductionService.saveSkuReduction(skuReductionTo);
         return R.ok();
