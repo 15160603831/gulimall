@@ -5,6 +5,7 @@ import java.util.Map;
 
 
 import com.hwj.mall.product.vo.SpuSaveVO;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -88,6 +89,7 @@ public class PmsSpuInfoController {
      * 商品上架
      */
     @PostMapping("/{spuId}/up")
+    @ApiOperation(value = "商品上架")
     public R spuUp(@PathVariable("spuId") Long spuId) {
 
         pmsSpuInfoService.up(spuId);

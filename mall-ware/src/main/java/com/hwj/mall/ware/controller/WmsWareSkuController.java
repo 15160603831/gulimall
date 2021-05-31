@@ -1,11 +1,15 @@
 package com.hwj.mall.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
+import com.hwj.mall.ware.vo.SkuHasStockVO;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,7 +21,6 @@ import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.R;
 
 
-
 /**
  * 商品库存
  *
@@ -26,7 +29,7 @@ import com.hwj.common.utils.R;
  * @date 2021-03-23 17:50:33
  */
 @RestController
-@RequestMapping("ware/waresku")
+@RequestMapping("/ware/waresku")
 public class WmsWareSkuController {
     @Autowired
     private WmsWareSkuService wmsWareSkuService;
@@ -35,7 +38,7 @@ public class WmsWareSkuController {
      * 列表
      */
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = wmsWareSkuService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -46,8 +49,8 @@ public class WmsWareSkuController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
-		WmsWareSkuEntity wmsWareSku = wmsWareSkuService.getById(id);
+    public R info(@PathVariable("id") Long id) {
+        WmsWareSkuEntity wmsWareSku = wmsWareSkuService.getById(id);
 
         return R.ok().put("wmsWareSku", wmsWareSku);
     }
@@ -56,8 +59,8 @@ public class WmsWareSkuController {
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody WmsWareSkuEntity wmsWareSku){
-		wmsWareSkuService.save(wmsWareSku);
+    public R save(@RequestBody WmsWareSkuEntity wmsWareSku) {
+        wmsWareSkuService.save(wmsWareSku);
 
         return R.ok();
     }
@@ -66,8 +69,8 @@ public class WmsWareSkuController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody WmsWareSkuEntity wmsWareSku){
-		wmsWareSkuService.updateById(wmsWareSku);
+    public R update(@RequestBody WmsWareSkuEntity wmsWareSku) {
+        wmsWareSkuService.updateById(wmsWareSku);
 
         return R.ok();
     }
@@ -76,10 +79,22 @@ public class WmsWareSkuController {
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
-		wmsWareSkuService.removeByIds(Arrays.asList(ids));
+    public R delete(@RequestBody Long[] ids) {
+        wmsWareSkuService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
+    }
+
+    /**
+     * 查询sku是否有库存
+     */
+    @PostMapping("/has-stock")
+    @ApiOperation(value = "查询sku是否有库存")
+    public R<List<SkuHasStockVO>> getSkuHasStock(@RequestBody List<Long> skuIds) {
+        List<SkuHasStockVO> vos = wmsWareSkuService.getSkuHasStock(skuIds);
+        R<List<SkuHasStockVO>> ok = R.ok();
+        ok.setData(vos);
+        return ok;
     }
 
 }

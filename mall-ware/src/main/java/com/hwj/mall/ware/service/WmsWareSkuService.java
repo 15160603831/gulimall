@@ -3,7 +3,9 @@ package com.hwj.mall.ware.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.ware.entity.WmsWareSkuEntity;
+import com.hwj.mall.ware.vo.SkuHasStockVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,5 +20,10 @@ public interface WmsWareSkuService extends IService<WmsWareSkuEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     void addStock(Long skuId, Long wareId, Integer skuNum);
+
+    /**
+     * 查询sku是否有库存
+     */
+    List<SkuHasStockVO> getSkuHasStock(List<Long> skuIds);
 }
 

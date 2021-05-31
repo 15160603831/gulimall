@@ -1,12 +1,14 @@
 package com.hwj.mall.product.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.hwj.common.to.SkuHasStockVO;
 import com.hwj.common.to.SkuReductionTo;
 import com.hwj.common.to.SpuBoundTo;
 import com.hwj.common.to.es.SkuEsModel;
 import com.hwj.common.utils.R;
 import com.hwj.mall.product.entity.*;
 import com.hwj.mall.product.feign.CouponFeignServer;
+import com.hwj.mall.product.feign.WareFeignServer;
 import com.hwj.mall.product.service.*;
 import com.hwj.mall.product.vo.Attr;
 import com.hwj.mall.product.vo.BaseAttrs;
@@ -57,6 +59,8 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
     PmsBrandService brandService;
     @Autowired
     PmsCategoryService categoryService;
+    @Autowired
+    WareFeignServer wareFeignServer;
 
 
     @Override
@@ -225,15 +229,39 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
      */
     @Override
     public void up(Long spuId) {
-
-
-        //查询所有spuid对应的sku信息
         List<PmsSkuInfoEntity> skus = pmsSkuInfoService.getSkuBySpuId(spuId);
+        List<Long> skuIdList = skus.stream().map(PmsSkuInfoEntity::getSkuId).collect(Collectors.toList());
+
+
+        //查询当前sku商品的可以被检索的规格属性
+        List<PmsProductAttrValueEntity> baseAttrs = attrValueService.baseAttrlistForspu(spuId);
+        List<Long> attrIds = baseAttrs.stream().map(PmsProductAttrValueEntity::getAttrId).collect(Collectors.toList());
+        List<Long> searchIds = pmsAttrService.selectSearchAttrIds(attrIds);
+        Set<Long> ids = new HashSet<>(searchIds);
+        List<SkuEsModel.Attr> searchAttrs = baseAttrs.stream().filter(entity -> {
+            return ids.contains(entity.getAttrId());
+        }).map(entity -> {
+            SkuEsModel.Attr attr = new SkuEsModel.Attr();
+            BeanUtils.copyProperties(entity, attr);
+            return attr;
+        }).collect(Collectors.toList());
+
+
+        Map<Long, Boolean> stockMap = null;
+        try {
+            //发送feign请求是否还有库存 hasStock
+            R<List<SkuHasStockVO>> skuHasStock = wareFeignServer.getSkuHasStock(skuIdList);
+            stockMap = skuHasStock.getData().stream().collect(Collectors.toMap(SkuHasStockVO::getSkuId, item -> item.getHasStock()));
+        } catch (Exception e) {
+            log.error("库存服务查询异常：原因{}", e);
+        }
+
+
         //组装skues数据
+        Map<Long, Boolean> finalStockMap = stockMap;
         List<SkuEsModel> skuProduct = skus.stream().map(skuItem -> {
             SkuEsModel skuEsModel = new SkuEsModel();
             BeanUtils.copyProperties(skus, skuEsModel);
-
             skuEsModel.setSkuPrice(skuItem.getPrice());
             skuEsModel.setSkuImg(skuItem.getSkuDefaultImg());
             //TODO 2、热度评分。0
@@ -244,21 +272,15 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
             skuEsModel.setBrandImg(brandEntity.getLogo());
             PmsCategoryEntity categoryEntity = categoryService.getById(skuItem.getCatalogId());
             skuEsModel.setCatalogName(categoryEntity.getName());
+            //设置库存信息
+            if (finalStockMap == null) {
+                skuEsModel.setHasStock(true);
+            } else {
+                skuEsModel.setHasStock(finalStockMap.get(skuItem.getSkuId()));
 
-
-            //发送feign请求是否还有库存 hasStock
-
-
+            }
             return skuEsModel;
         }).collect(Collectors.toList());
-
-        //查询当前sku商品的可以被检索的规格属性
-
-        List<PmsProductAttrValueEntity> baseAttrs = attrValueService.baseAttrlistForspu(spuId);
-        List<Long> attrIds = baseAttrs.stream().map(PmsProductAttrValueEntity::getAttrId).collect(Collectors.toList());
-        List<Long> searchIds=pmsAttrService.selectSearchAttrIds(attrIds);
-        Set<Long> ids = new HashSet<>(searchIds);
-
 
 
         //将数据发送给es

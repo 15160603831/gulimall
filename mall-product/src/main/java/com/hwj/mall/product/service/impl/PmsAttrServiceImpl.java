@@ -241,8 +241,13 @@ public class PmsAttrServiceImpl extends ServiceImpl<PmsAttrDao, PmsAttrEntity> i
      */
     @Override
     public List<Long> selectSearchAttrIds(List<Long> attrIds) {
-
-        return  baseMapper.selectSearchAttrIds(attrIds);
+        QueryWrapper<PmsAttrEntity> wrapper = new QueryWrapper<PmsAttrEntity>().in("attr_id", attrIds);
+        wrapper.and(w -> {
+            w.eq("search_type", 1);
+        });
+        List<PmsAttrEntity> pmsAttrEntities = baseMapper.selectList(wrapper);
+//        return  baseMapper.selectSearchAttrIds(attrIds);
+        return pmsAttrEntities.stream().map(PmsAttrEntity::getAttrId).collect(Collectors.toList());
     }
 
 }
