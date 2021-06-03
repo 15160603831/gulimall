@@ -90,11 +90,8 @@ public class WmsWareSkuController {
      */
     @PostMapping("/has-stock")
     @ApiOperation(value = "查询sku是否有库存")
-    public R<List<SkuHasStockVO>> getSkuHasStock(@RequestBody List<Long> skuIds) {
-        List<SkuHasStockVO> vos = wmsWareSkuService.getSkuHasStock(skuIds);
-        R<List<SkuHasStockVO>> ok = R.ok();
-        ok.setData(vos);
-        return ok;
+    public List<SkuHasStockVO> getSkuHasStock(@RequestBody List<Long> skuIdList) {
+        List<SkuHasStockVO> vos = wmsWareSkuService.getSkuHasStock(skuIdList);
+        return vos;
     }
-
 }

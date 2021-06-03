@@ -5,4 +5,6 @@ spring:
   profiles:
     active: nacos
 
-
+#配置端口号
+server:
+  port: 13000

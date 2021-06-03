@@ -1,6 +1,7 @@
 package com.hwj.mall.product.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.hwj.common.constant.ProductConstant;
 import com.hwj.common.to.SkuHasStockVO;
 import com.hwj.common.to.SkuReductionTo;
 import com.hwj.common.to.SpuBoundTo;
@@ -8,6 +9,7 @@ import com.hwj.common.to.es.SkuEsModel;
 import com.hwj.common.utils.R;
 import com.hwj.mall.product.entity.*;
 import com.hwj.mall.product.feign.CouponFeignServer;
+import com.hwj.mall.product.feign.SearchFeignServer;
 import com.hwj.mall.product.feign.WareFeignServer;
 import com.hwj.mall.product.service.*;
 import com.hwj.mall.product.vo.Attr;
@@ -32,6 +34,7 @@ import com.hwj.common.utils.Query;
 
 import com.hwj.mall.product.dao.PmsSpuInfoDao;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 
@@ -61,6 +64,8 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
     PmsCategoryService categoryService;
     @Autowired
     WareFeignServer wareFeignServer;
+    @Autowired
+    private SearchFeignServer searchFeignServer;
 
 
     @Override
@@ -246,22 +251,20 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
             return attr;
         }).collect(Collectors.toList());
 
-
         Map<Long, Boolean> stockMap = null;
         try {
             //发送feign请求是否还有库存 hasStock
-            R<List<SkuHasStockVO>> skuHasStock = wareFeignServer.getSkuHasStock(skuIdList);
-            stockMap = skuHasStock.getData().stream().collect(Collectors.toMap(SkuHasStockVO::getSkuId, item -> item.getHasStock()));
+            List<SkuHasStockVO> skuHasStock = wareFeignServer.getSkuHasStock(skuIdList);
+            stockMap = skuHasStock.stream().collect(Collectors.toMap(SkuHasStockVO::getSkuId, item -> item.getHasStock()));
         } catch (Exception e) {
             log.error("库存服务查询异常：原因{}", e);
         }
-
 
         //组装skues数据
         Map<Long, Boolean> finalStockMap = stockMap;
         List<SkuEsModel> skuProduct = skus.stream().map(skuItem -> {
             SkuEsModel skuEsModel = new SkuEsModel();
-            BeanUtils.copyProperties(skus, skuEsModel);
+            BeanUtils.copyProperties(skuItem, skuEsModel);
             skuEsModel.setSkuPrice(skuItem.getPrice());
             skuEsModel.setSkuImg(skuItem.getSkuDefaultImg());
             //TODO 2、热度评分。0
@@ -272,6 +275,7 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
             skuEsModel.setBrandImg(brandEntity.getLogo());
             PmsCategoryEntity categoryEntity = categoryService.getById(skuItem.getCatalogId());
             skuEsModel.setCatalogName(categoryEntity.getName());
+            skuEsModel.setAttrs(searchAttrs);
             //设置库存信息
             if (finalStockMap == null) {
                 skuEsModel.setHasStock(true);
@@ -281,9 +285,17 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
             }
             return skuEsModel;
         }).collect(Collectors.toList());
-
-
         //将数据发送给es
+        R r = searchFeignServer.productStatusUp(skuProduct);
+        if (r.getCode() == 0) {
+            //成功
+            //修改当前sku上下架状态
+            baseMapper.updateSpuStatus(spuId, ProductConstant.StatusEnum.SPU_UP.getCode());
+        } else {
+            //失败
+            //
+            log.error("商品远程es保存失败");
+        }
 
 
     }

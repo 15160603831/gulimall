@@ -3,7 +3,7 @@
 
 <mapper namespace="com.hwj.mall.product.dao.PmsSpuInfoDao">
 
-	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.hwj.mall.product.entity.PmsSpuInfoEntity" id="pmsSpuInfoMap">
         <result property="id" column="id"/>
         <result property="spuName" column="spu_name"/>
@@ -17,5 +17,11 @@
         <result property="deleteFlag" column="deleteFlag"/>
     </resultMap>
 
+    <update id="updateSpuStatus">
+        UPDATE pms_spu_info
+        SET publish_status =#{code},
+            update_time=NOW()
+        where id = #{spuId}
+    </update>
 
 </mapper>

@@ -20,7 +20,7 @@
           AND ware_id = #{wareId}
     </update>
 
-    <select id="getSkuStock">
+    <select id="getSkuStock" resultType="java.lang.Long">
         SELECT sum(stock - stock_locked)
         FROM wms_ware_sku
         where sku_id=#{skuId}

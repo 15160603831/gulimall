@@ -86,16 +86,14 @@ public class WmsWareSkuServiceImpl extends ServiceImpl<WmsWareSkuDao, WmsWareSku
      */
     @Override
     public List<SkuHasStockVO> getSkuHasStock(List<Long> skuIds) {
-        skuIds.stream().map(sku -> {
+        List<SkuHasStockVO> collect = skuIds.stream().map(sku -> {
             SkuHasStockVO vo = new SkuHasStockVO();
             Long count = baseMapper.getSkuStock(sku);
-            vo.setHasStock(count>0);
+            vo.setHasStock(count == null ? false : count > 0);
             vo.setSkuId(sku);
             return vo;
         }).collect(Collectors.toList());
-
-
-        return null;
+        return collect;
     }
 
 }

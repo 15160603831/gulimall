@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -20,5 +21,5 @@ public interface WareFeignServer {
      */
     @PostMapping("/ware/waresku/has-stock")
     @ApiOperation(value = "查询sku是否有库存")
-    R<List<SkuHasStockVO>> getSkuHasStock(@RequestBody List<Long> skuIds);
+    List<SkuHasStockVO> getSkuHasStock(@RequestBody List<Long> skuIdList);
 }

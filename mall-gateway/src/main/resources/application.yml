@@ -11,6 +11,14 @@ spring:
           predicates:
             - Query=url,qq
 
+        #将路径为path=/api/**转发至 mall-search
+        - id: search_route
+          uri: lb://mall-search
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*), /$\{segment}
+
         #将路径为path=/api/**转发至 mall-product
         - id: product_route
           uri: lb://mall-product
