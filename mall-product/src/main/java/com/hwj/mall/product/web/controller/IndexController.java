@@ -8,12 +8,15 @@ package com.hwj.mall.product.web.controller;
 import com.hwj.mall.product.entity.PmsCategoryEntity;
 import com.hwj.mall.product.service.PmsCategoryService;
 
+import com.hwj.mall.product.vo.Catalog2Vo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class IndexController {
@@ -29,4 +32,10 @@ public class IndexController {
         return "index";
     }
 
+    @ResponseBody
+    @GetMapping("/index/json/catalog.json")
+    private Map<String, List<Catalog2Vo>> getCategorylogJson(){
+        Map<String, List<Catalog2Vo>> map = categoryService.getCatalogJson();
+        return map;
+    }
 }
