@@ -46,6 +46,18 @@
             <artifactId>mall-coupon</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <!--        热部署依赖devtools使页面实时生效-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!--        thymeleaf依赖、-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
 
 
     </dependencies>

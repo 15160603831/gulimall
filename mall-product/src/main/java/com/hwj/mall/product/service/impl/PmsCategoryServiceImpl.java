@@ -93,6 +93,8 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
         return parentPath.toArray(new Long[parentPath.size()]);
     }
 
+
+
     //225,25,2
     private List<Long> findParentPath(Long catelogId,List<Long> paths){
         //1、收集当前节点id
@@ -103,6 +105,13 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
         }
         return paths;
 
+    }
+
+    @Override
+    public List<PmsCategoryEntity> getLevel1Catagories() {
+
+        List<PmsCategoryEntity> parent_cid = baseMapper.selectList(new QueryWrapper<PmsCategoryEntity>().eq("parent_cid", 0));
+        return parent_cid;
     }
 
 

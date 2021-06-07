@@ -14,6 +14,13 @@ spring:
   profiles:
     active: nacos
 
+  thymeleaf:
+    cache: false
+    suffix: .html
+    prefix: classpath:/templates/
+
+
+
 ##mybatis-plus相关配置
 mybatis-plus:
   mapper-locations: mapper/**/*.xml
@@ -27,6 +34,7 @@ mybatis-plus:
 logging:
   level:
     com.hwj.mall: debug
+
 
 #配置端口号
 server:

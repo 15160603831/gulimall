@@ -35,5 +35,7 @@ public interface PmsCategoryService extends IService<PmsCategoryEntity> {
      * @return
      */
     Long[] findCatelogPath(Long catelogId);
+
+    List<PmsCategoryEntity> getLevel1Catagories();
 }
 
