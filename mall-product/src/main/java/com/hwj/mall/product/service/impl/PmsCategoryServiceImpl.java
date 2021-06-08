@@ -121,20 +121,24 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
 
     @Override
     public Map<String, List<Catalog2Vo>> getCatalogJson() {
-        List<PmsCategoryEntity> level1Catagories = this.getLevel1Catagories();
+
+        //优化业务逻辑，仅查询一次数据库
+
+        List<PmsCategoryEntity> entityList = baseMapper.selectList(null);
+
+        List<PmsCategoryEntity> level1Catagories = this.getParent_cid(entityList, 0L);
 
         Map<String, List<Catalog2Vo>> collect = level1Catagories.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
             //// 拿到每一个一级分类 然后查询他们的二级分类
-            List<PmsCategoryEntity> entities = baseMapper.selectList(new QueryWrapper<PmsCategoryEntity>().eq("parent_cid", v.getCatId()));
+            List<PmsCategoryEntity> entities = getParent_cid(entityList, v.getCatId());
             List<Catalog2Vo> catalog2Vos = null;
             if (entities != null) {
                 catalog2Vos = entities.stream().map(l2 -> {
                     Catalog2Vo catalog2Vo = new Catalog2Vo(v.getCatId().toString(), l2.getCatId().toString(), l2.getName(), null);
                     // 找当前二级分类的三级分类
-                    List<PmsCategoryEntity> entities1 = baseMapper.selectList(new QueryWrapper<PmsCategoryEntity>().eq("parent_cid", l2.getCatId()));
+                    List<PmsCategoryEntity> entities1 = getParent_cid(entityList, l2.getCatId());
                     // 三级分类有数据的情况下
                     if (entities1 != null) {
-//                            Catalog2Vo.Catalog3Vo catalog3Vo = new Catalog2Vo.Catalog3Vo(l2.getCatId().toString(), l3.getCatId().toString(), l3.getName());
                         List<Catalog2Vo.Catalog3Vo> catalog3Vo = entities1.stream().map(l3 -> new Catalog2Vo.Catalog3Vo(l3.getCatId().toString(), l2.getCatId().toString(), l3.getName())).collect(Collectors.toList());
                         catalog2Vo.setCatalog3List(catalog3Vo);
                     }
@@ -143,6 +147,11 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
             }
             return catalog2Vos;
         }));
+        return collect;
+    }
+
+    private List<PmsCategoryEntity> getParent_cid(List<PmsCategoryEntity> entityList, Long parentCid) {
+        List<PmsCategoryEntity> collect = entityList.stream().filter(item -> parentCid.equals(item.getParentCid())).collect(Collectors.toList());
         return collect;
     }
 
