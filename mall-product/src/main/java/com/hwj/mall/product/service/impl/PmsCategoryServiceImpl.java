@@ -1,6 +1,10 @@
 package com.hwj.mall.product.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.hwj.mall.product.vo.Catalog2Vo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,10 +23,15 @@ import com.hwj.common.utils.Query;
 import com.hwj.mall.product.dao.PmsCategoryDao;
 import com.hwj.mall.product.entity.PmsCategoryEntity;
 import com.hwj.mall.product.service.PmsCategoryService;
+import org.springframework.util.StringUtils;
 
 
 @Service("pmsCategoryService")
 public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCategoryEntity> implements PmsCategoryService {
+
+
+    @Autowired
+    StringRedisTemplate redisTemplate;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -121,13 +130,29 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
 
     @Override
     public Map<String, List<Catalog2Vo>> getCatalogJson() {
+        //加入缓存
+        String catalogJson = redisTemplate.opsForValue().get("catalogJson");
+        if (StringUtils.isEmpty(catalogJson)){
+            //缓存中没有
+            Map<String, List<Catalog2Vo>> catalogJsonFromDb = getCatalogJsonFromDb();
+            String jsonString = JSON.toJSONString(catalogJsonFromDb);
+            //查到的数据放入缓存
+            redisTemplate.opsForValue().set("catalogJson",jsonString);
+        }
+        Map<String, List<Catalog2Vo>> stringListMap = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catalog2Vo>>>() {
+        });
+        return stringListMap;
+    }
 
+    /**
+     * 查询三级分类
+     *
+     * @return
+     */
+    public Map<String, List<Catalog2Vo>> getCatalogJsonFromDb() {
         //优化业务逻辑，仅查询一次数据库
-
         List<PmsCategoryEntity> entityList = baseMapper.selectList(null);
-
         List<PmsCategoryEntity> level1Catagories = this.getParent_cid(entityList, 0L);
-
         Map<String, List<Catalog2Vo>> collect = level1Catagories.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
             //// 拿到每一个一级分类 然后查询他们的二级分类
             List<PmsCategoryEntity> entities = getParent_cid(entityList, v.getCatId());

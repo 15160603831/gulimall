@@ -22,6 +22,10 @@ spring:
     suffix: .html
     prefix: classpath:/templates/
 
+  redis:
+    host: 47.107.108.206
+    port: 6379
+
 
 
 ##mybatis-plus相关配置
