@@ -5,13 +5,12 @@ import com.alibaba.fastjson.TypeReference;
 import com.hwj.mall.product.vo.Catalog2Vo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -132,12 +131,12 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
     public Map<String, List<Catalog2Vo>> getCatalogJson() {
         //加入缓存
         String catalogJson = redisTemplate.opsForValue().get("catalogJson");
-        if (StringUtils.isEmpty(catalogJson)){
+        if (StringUtils.isEmpty(catalogJson)) {
             //缓存中没有
             Map<String, List<Catalog2Vo>> catalogJsonFromDb = getCatalogJsonFromDb();
             String jsonString = JSON.toJSONString(catalogJsonFromDb);
             //查到的数据放入缓存
-            redisTemplate.opsForValue().set("catalogJson",jsonString);
+            redisTemplate.opsForValue().set("catalogJson", jsonString);
         }
         Map<String, List<Catalog2Vo>> stringListMap = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catalog2Vo>>>() {
         });
@@ -145,11 +144,59 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
     }
 
     /**
+     * 通过redis占坑来试下分布式锁
+     *
+     * @return
+     */
+    public Map<String, List<Catalog2Vo>> getCatalogJsonDbWithRedisLock() {
+
+        //分布式加锁主要两点，加锁和删锁保证原子性
+        String uuid = UUID.randomUUID().toString();
+        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+        //占分布式锁，去redis站位
+        Boolean lock = ops.setIfAbsent("lock", uuid, 5, TimeUnit.DAYS);
+
+
+        if (lock) {
+
+            Map<String, List<Catalog2Vo>> catalogJsonFromDb = getCatalogJsonFromDb();
+
+            // 获取值对比 原子操作能删除锁
+            String lockValue = ops.get("lock");
+//            if (lockValue.equals(uuid)){
+//                //自己的锁才能删
+//                redisTemplate.delete("lock");
+//            }
+            //lua脚本进行删除
+            String script = "if redis.call(\"get\",KEYS[1]) == ARGV[1] then\n" +
+                    "    return redis.call(\"del\",KEYS[1])\n" +
+                    "else\n" +
+                    "    return 0\n" +
+                    "end";
+            redisTemplate.execute(new DefaultRedisScript<Long>(script, Long.class), Arrays.asList("lock"), lockValue);
+
+                //枷锁成功。。。执行业务
+                return catalogJsonFromDb;
+        } else {
+            //加锁失败  重试 synchronized
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return getCatalogJsonDbWithRedisLock();
+        }
+    }
+
+
+    /**
      * 查询三级分类
      *
      * @return
      */
     public Map<String, List<Catalog2Vo>> getCatalogJsonFromDb() {
+        System.out.println("查询了数据库");
         //优化业务逻辑，仅查询一次数据库
         List<PmsCategoryEntity> entityList = baseMapper.selectList(null);
         List<PmsCategoryEntity> level1Catagories = this.getParent_cid(entityList, 0L);

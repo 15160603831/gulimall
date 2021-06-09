@@ -10,9 +10,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @SpringBootTest
@@ -22,26 +24,35 @@ public class PmsAttrAttrgroupRelationControllerTest {
     @Autowired
     private PmsBrandService pmsBrandService;
 
+    @Autowired
+    StringRedisTemplate redisTemplate;
 
 
     @Test
     public void save() {
-        PmsBrandEntity entity = new PmsBrandEntity();
-        entity.setDescript("九牧哈哈哈");
-        entity.setLogo("https://jm-retail.obs.cn-south-1.myhuaweicloud.com/mall/20210315/pic/1615797007332_2021年春季成教报名简章.jpg");
-        entity.setName("2021年春季成教报名简章");
-        entity.setShowStatus(1);
-        boolean save = pmsBrandService.save(entity);
+//        PmsBrandEntity entity = new PmsBrandEntity();
+//        entity.setDescript("九牧哈哈哈");
+//        entity.setLogo("https://jm-retail.obs.cn-south-1.myhuaweicloud.com/mall/20210315/pic/1615797007332_2021年春季成教报名简章.jpg");
+//        entity.setName("2021年春季成教报名简章");
+//        entity.setShowStatus(1);
+//        boolean save = pmsBrandService.save(entity);
+
+        redisTemplate.opsForValue().set("hello", "dd" + UUID.randomUUID().toString());
+
+        String hello = redisTemplate.opsForValue().get("hello");
+        System.out.println("保存的数据：" + hello);
+
+
     }
 
     @Test
     public void select() {
 
-        QueryWrapper<PmsBrandEntity> wrapper=new QueryWrapper();
-        wrapper.eq("brand_id","2");
+        QueryWrapper<PmsBrandEntity> wrapper = new QueryWrapper();
+        wrapper.eq("brand_id", "2");
 
         List<PmsBrandEntity> list = pmsBrandService.list(wrapper);
-        list.forEach(t->{
+        list.forEach(t -> {
             System.out.println(t);
         });
     }
