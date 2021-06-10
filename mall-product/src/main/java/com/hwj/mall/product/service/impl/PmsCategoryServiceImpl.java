@@ -3,6 +3,8 @@ package com.hwj.mall.product.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.hwj.mall.product.vo.Catalog2Vo;
+import org.redisson.Redisson;
+import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -31,6 +33,9 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
 
     @Autowired
     StringRedisTemplate redisTemplate;
+
+    @Autowired
+    Redisson redisson;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -175,8 +180,8 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
                     "end";
             redisTemplate.execute(new DefaultRedisScript<Long>(script, Long.class), Arrays.asList("lock"), lockValue);
 
-                //枷锁成功。。。执行业务
-                return catalogJsonFromDb;
+            //枷锁成功。。。执行业务
+            return catalogJsonFromDb;
         } else {
             //加锁失败  重试 synchronized
 
@@ -187,6 +192,25 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
             }
             return getCatalogJsonDbWithRedisLock();
         }
+    }
+
+    /**
+     * 通过redisson
+     *
+     * @return
+     */
+    public Map<String, List<Catalog2Vo>> getCatalogJsonDbWithRedissonLock() {
+
+
+        RLock rlock = redisson.getLock("catalogJSON_lock");
+        rlock.lock();
+        Map<String, List<Catalog2Vo>> catalogJsonFromDb;
+        try {
+            catalogJsonFromDb = getCatalogJsonFromDb();
+        } finally {
+            rlock.unlock();
+        }
+        return catalogJsonFromDb;
     }
 
 
