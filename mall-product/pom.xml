@@ -59,7 +59,7 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-<!--        redis-->
+        <!--        redis-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -67,11 +67,18 @@
                 <exclusion>
                     <groupId>io.lettuce</groupId>
                     <artifactId>lettuce-core</artifactId>
-                </exclusion></exclusions>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
+        </dependency>
+        <!--        分布式锁Redisson-->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.12.0</version>
         </dependency>
 
 
