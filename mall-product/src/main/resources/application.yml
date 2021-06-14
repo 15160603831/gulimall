@@ -18,9 +18,9 @@ spring:
     active: nacos
 
   thymeleaf:
-    cache: true
-    suffix: .html
-    prefix: classpath:/templates/
+    cache: false
+#    suffix: .html
+#    prefix: classpath:/templates/
 
   redis:
     host: 47.107.108.206

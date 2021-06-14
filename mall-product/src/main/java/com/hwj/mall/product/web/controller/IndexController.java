@@ -36,8 +36,7 @@ public class IndexController {
 
     @Autowired
     StringRedisTemplate redisTemplate;
-    @Autowired
-    Redisson redisson;
+
 
 
     @GetMapping({"/", "index.html"})
@@ -68,7 +67,6 @@ public class IndexController {
             System.out.println("加锁成功，执行业务" + Thread.currentThread().getId());
             Thread.sleep(30000);
         } catch (Exception e) {
-
         } finally {
             //解锁
             System.out.println("解锁---" + Thread.currentThread().getId());
@@ -82,7 +80,7 @@ public class IndexController {
     private String writeValue() {
 
 
-        RReadWriteLock lock = redisson.getReadWriteLock("rw_lock");
+        RReadWriteLock lock = redissonClient.getReadWriteLock("rw_lock");
         RLock rLock = lock.writeLock();
         String s = "";
         try {
@@ -102,7 +100,7 @@ public class IndexController {
     @ResponseBody
     @GetMapping("/read")
     private String readVale() {
-        RReadWriteLock lock = redisson.getReadWriteLock("rw_lock");
+        RReadWriteLock lock = redissonClient.getReadWriteLock("rw_lock");
         //加读锁
         RLock rLock = lock.readLock();
         rLock.lock();

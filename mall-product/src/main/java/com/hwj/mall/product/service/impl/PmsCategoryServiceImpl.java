@@ -5,7 +5,9 @@ import com.alibaba.fastjson.TypeReference;
 import com.hwj.mall.product.vo.Catalog2Vo;
 import org.redisson.Redisson;
 import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -35,7 +37,7 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
     StringRedisTemplate redisTemplate;
 
     @Autowired
-    Redisson redisson;
+    RedissonClient redissonClient;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -125,9 +127,11 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
      *
      * @return
      */
+    //每一个需要缓存的数据需要我们来指定名字【缓存分区（按业务类型划分】
+    @Cacheable(value = {"category"},key = "#root.method.name") //代表当前方法的结果需要缓存，如果方法有，就不调用
     @Override
     public List<PmsCategoryEntity> getLevel1Catagories() {
-
+        System.out.println("方法调用");
         List<PmsCategoryEntity> parent_cid = baseMapper.selectList(new QueryWrapper<PmsCategoryEntity>().eq("parent_cid", 0));
         return parent_cid;
     }
@@ -202,7 +206,7 @@ public class PmsCategoryServiceImpl extends ServiceImpl<PmsCategoryDao, PmsCateg
     public Map<String, List<Catalog2Vo>> getCatalogJsonDbWithRedissonLock() {
 
 
-        RLock rlock = redisson.getLock("catalogJSON_lock");
+        RLock rlock = redissonClient.getLock("catalogJSON_lock");
         rlock.lock();
         Map<String, List<Catalog2Vo>> catalogJsonFromDb;
         try {

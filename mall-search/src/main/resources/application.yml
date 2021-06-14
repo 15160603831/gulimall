@@ -5,6 +5,11 @@ spring:
   profiles:
     active: nacos
 
+  thymeleaf:
+    cache: false
+#    suffix: .html
+#    prefix: classpath:/templates/
+
 #配置端口号
 server:
   port: 13000

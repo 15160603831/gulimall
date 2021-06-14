@@ -24,7 +24,7 @@ public class MallElasticSearchConfig {
 
         RestClientBuilder builder = null;
         // 可以指定多个es
-        builder = RestClient.builder(new HttpHost("47.107.108.206", 9200, "http"));
+        builder = RestClient.builder(new HttpHost("192.168.243.130", 9200, "http"));
 
         RestHighLevelClient client = new RestHighLevelClient(builder);
         return client;
