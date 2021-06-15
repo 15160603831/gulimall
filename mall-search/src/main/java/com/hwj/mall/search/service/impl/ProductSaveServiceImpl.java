@@ -5,7 +5,6 @@ import com.hwj.common.to.es.SkuEsModel;
 import com.hwj.mall.search.config.MallElasticSearchConfig;
 import com.hwj.mall.search.constant.EsConstant;
 import com.hwj.mall.search.service.ProductSaveService;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -14,7 +13,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import springfox.documentation.spring.web.json.Json;
 
 import java.io.IOException;
 import java.util.Arrays;
