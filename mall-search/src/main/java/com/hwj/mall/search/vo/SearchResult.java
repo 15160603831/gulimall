@@ -73,6 +73,10 @@ public class SearchResult {
         private Long catalogId;
 
         private String catalogName;
+
+        public CatalogVo() {
+
+        }
     }
 
 
