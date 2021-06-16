@@ -12,4 +12,9 @@ public interface EsConstant {
      * sku数据在es中的索引
      */
     String PRODUCT_INDEX = "product";
+
+    /**
+     * 页数
+     */
+    Integer PRODUCT_PAGESIZE = 2;
 }
