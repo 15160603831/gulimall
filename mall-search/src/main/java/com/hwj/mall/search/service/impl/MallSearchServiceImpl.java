@@ -25,6 +25,7 @@ import org.elasticsearch.search.aggregations.bucket.nested.ParsedNested;
 import org.elasticsearch.search.aggregations.bucket.terms.*;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ import java.util.stream.Collectors;
 public class MallSearchServiceImpl implements MallSearchService {
 
     @Autowired
-    RestHighLevelClient client;
+    private RestHighLevelClient client;
 
     /**
      * @param searchParamVO 检索的条件
@@ -112,21 +113,24 @@ public class MallSearchServiceImpl implements MallSearchService {
             }
         }
         //1.2、bool - filter 按照是指定属性进行查询
+        List<String> attrs = param.getAttrs();
+        BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
         if (param.getAttrs() != null && param.getAttrs().size() > 0) {
-            for (String attr : param.getAttrs()) {
-                BoolQueryBuilder nestedBoolQuery = QueryBuilders.boolQuery();
+            for (String attr : attrs) {
                 String[] s = attr.split("_");
                 String attrId = s[0];
                 String[] attrValue = s[1].split(":");
-                nestedBoolQuery.must(QueryBuilders.termQuery("attrs.attrId", attrId));
-                nestedBoolQuery.must(QueryBuilders.termsQuery("attrs.attrValue", attrValue));
-                //每一个都需要生成 nested
-                NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery("attrs", nestedBoolQuery, ScoreMode.None);
-                boolQueryBuilder.filter(nestedQuery);
+                queryBuilder.must(QueryBuilders.termQuery("attrs.attrId", attrId));
+                queryBuilder.must(QueryBuilders.termsQuery("attrs.attrValue", attrValue));
             }
         }
+        //每一个都需要生成 nested
+        NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery("attrs", queryBuilder, ScoreMode.None);
+        boolQueryBuilder.filter(nestedQuery);
         //所有条件都拿来封装
         builder.query(boolQueryBuilder);
+
+
         //2  排序 、分页、高亮
         //2.1 order 排序
         if (!StringUtils.isEmpty(param.getSort())) {
@@ -163,12 +167,12 @@ public class MallSearchServiceImpl implements MallSearchService {
         builder.aggregation(catalogAgg);
 
         //1.3 attrs聚合
-        NestedAggregationBuilder nestedAggregationBuilder = AggregationBuilders.nested("attrs", "attrs");
+        NestedAggregationBuilder nestedAggregationBuilder = new NestedAggregationBuilder("attrsAgg", "attrs");
         //按照attrId聚合
         TermsAggregationBuilder attrIdAgg = AggregationBuilders.terms("attrIdAgg").field("attrs.attrId");
         //按照attrId聚合之后再按照attrName和attrValue聚合
-        TermsAggregationBuilder attrNameAgg = AggregationBuilders.terms("attrNameAgg").field("attrs.attrName");
-        TermsAggregationBuilder attrValueAgg = AggregationBuilders.terms("attrValueAgg").field("attrs.attrValue");
+        TermsAggregationBuilder attrNameAgg = AggregationBuilders.terms("attrNameAgg").field("attrs.attrName.keyword");
+        TermsAggregationBuilder attrValueAgg = AggregationBuilders.terms("attrValueAgg").field("attrs.attrValue.keyword");
         attrIdAgg.subAggregation(attrNameAgg);
         attrIdAgg.subAggregation(attrValueAgg);
 
@@ -176,7 +180,7 @@ public class MallSearchServiceImpl implements MallSearchService {
         builder.aggregation(nestedAggregationBuilder);
 
         System.out.println("构建的DSL：" + builder.toString());
-        SearchRequest searchRequest = new SearchRequest(new String[]{EsConstant.PRODUCT_INDEX},builder);
+        SearchRequest searchRequest = new SearchRequest(new String[]{EsConstant.PRODUCT_INDEX}, builder);
         return searchRequest;
     }
 
@@ -209,6 +213,12 @@ public class MallSearchServiceImpl implements MallSearchService {
             for (SearchHit hit : hits.getHits()) {
                 String sourceAsString = hit.getSourceAsString();
                 SkuEsModel esModel = JSON.parseObject(sourceAsString, SkuEsModel.class);
+                if (!StringUtils.isEmpty(param.getKeyword())) {
+                    HighlightField skuTitle = hit.getHighlightFields().get("skuTitle");
+                    String string = skuTitle.getFragments()[0].toString();
+                    esModel.setSkuTitle(string);
+                }
+
                 esModels.add(esModel);
             }
             result.setProducts(esModels);
@@ -248,23 +258,23 @@ public class MallSearchServiceImpl implements MallSearchService {
         }
         result.setCatalogs(catalogVos);
 //5 查询涉及到的所有属性
-//        ParsedNested attrsAgg = searchResponse.getAggregations().get("attrsAgg");
-//        List<SearchResult.AttrVo> attrVos = new ArrayList<>();
-//        ParsedLongTerms attrIdAgg = attrsAgg.getAggregations().get("attrIdAgg");
-//        for (Terms.Bucket bucket : attrIdAgg.getBuckets()) {
-//            //属性id
-//            long attrId = bucket.getKeyAsNumber().longValue();
-//            //属性名字
-//            String attrName = ((ParsedStringTerms) bucket.getAggregations().get("attrNameAgg")).getBuckets().get(0).getKeyAsString();
-//            //属性所有值
-//            List<String> attrValue = ((ParsedStringTerms) bucket.getAggregations().get("attrValueAgg")).getBuckets().stream().map(item -> {
-//                String keyAsString = ((Terms.Bucket) item).getKeyAsString();
-//                return keyAsString;
-//            }).collect(Collectors.toList());
-//            SearchResult.AttrVo attrVo = new SearchResult.AttrVo(attrId, attrName, attrValue);
-//            attrVos.add(attrVo);
-//        }
-//        result.setAttrs(attrVos);
+        ParsedNested attrsAgg = searchResponse.getAggregations().get("attrsAgg");
+        List<SearchResult.AttrVo> attrVos = new ArrayList<>();
+        ParsedLongTerms attrIdAgg = attrsAgg.getAggregations().get("attrIdAgg");
+        for (Terms.Bucket bucket : attrIdAgg.getBuckets()) {
+            //属性id
+            long attrId = bucket.getKeyAsNumber().longValue();
+            //属性名字
+            String attrName = ((ParsedStringTerms) bucket.getAggregations().get("attrNameAgg")).getBuckets().get(0).getKeyAsString();
+            //属性所有值
+            List<String> attrValue = ((ParsedStringTerms) bucket.getAggregations().get("attrValueAgg")).getBuckets().stream().map(item -> {
+                String keyAsString = ((Terms.Bucket) item).getKeyAsString();
+                return keyAsString;
+            }).collect(Collectors.toList());
+            SearchResult.AttrVo attrVo = new SearchResult.AttrVo(attrId, attrName, attrValue);
+            attrVos.add(attrVo);
+        }
+        result.setAttrs(attrVos);
 
 
         return result;
