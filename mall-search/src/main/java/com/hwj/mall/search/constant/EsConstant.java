@@ -16,5 +16,5 @@ public interface EsConstant {
     /**
      * 页数
      */
-    Integer PRODUCT_PAGESIZE = 2;
+    Integer PRODUCT_PAGESIZE = 16;
 }

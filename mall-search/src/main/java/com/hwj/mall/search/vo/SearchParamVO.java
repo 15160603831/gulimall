@@ -27,7 +27,7 @@ public class SearchParamVO {
     /**
      * 是否有货 （0-无库存 1-有库存）
      */
-    private Integer hasStock = 1;
+    private Integer hasStock;
     /**
      * 价格区间 1_500 || 4_700
      */
