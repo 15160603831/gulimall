@@ -403,7 +403,7 @@
     </div>
     <div class="header_form">
         <input type="text" placeholder="手机"/>
-        <a href="/static/search/#">搜索</a>
+        <a href="javascript:searchByKeyword">搜索</a>
     </div>
     <div class="header_ico">
         <div class="header_gw">
@@ -789,7 +789,7 @@
                             <ul>
                                 <li th:each="brand:${result.getBrands()}">
                                     <a href="/static/search/#"
-                                       th:href="${'javascript:searchProduct(&quot;brand&quot;,'+brand.brandId+')'}">
+                                       th:href="${'javascript:searchProduct(&quot;brandId&quot;,'+brand.brandId+')'}">
                                         <img th:src="${brand.getBrandImg()}" alt="">
                                         <div th:text="${brand.getBrandName()}">华为(HUAWEI)</div>
                                     </a>
@@ -818,7 +818,7 @@
                     <div class="sl_value">
                         <ul>
                             <li><a href="/static/search/#"
-                                   th:href="${'javascript:searchProduct(&quot;catalog3&quot;,'+catalog.getCatalogId()+')'}"
+                                   th:href="${'javascript:searchProduct(&quot;catalog3Id&quot;,'+catalog.getCatalogId()+')'}"
                                    th:text="${catalog.getCatalogName()}">0-安卓（Android）</a></li>
                         </ul>
                     </div>
@@ -844,6 +844,7 @@
                         <ul>
                             <li th:each="val:${attr.getAttrValue()}">
                                 <a href="/static/search/#"
+                                   th:href="${'javascript:searchProduct(&quot;attrs&quot;,&quot;'+attr.getAttrId()+'_'+val+'&quot;)'}"
                                    th:text="${val}"></a>
                             </li>
                         </ul>
@@ -1982,14 +1983,16 @@
 
 
     function searchProduct(name, value) {
-
-        var href = location.href +"";
-        if (href.indexOf("?")!=-1) {
+        var href = location.href + "";
+        if (href.indexOf("?") != -1) {
             location.href = location.href + "&" + name + "=" + value;
-        }else {
+        } else {
             location.href = location.href + "?" + name + "=" + value;
         }
+    }
 
+    function searchByKeyword() {
+        searchProduct("keyword", $("#keyword_input").val())
     }
 </script>
 </body>
