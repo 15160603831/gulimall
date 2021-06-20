@@ -96,7 +96,7 @@ public class MallSearchServiceImpl implements MallSearchService {
             boolQueryBuilder.filter(QueryBuilders.termsQuery("brandId", param.getBrandId()));
         }
         //1.2、bool - filter 库存校验（0-无库存 1-有库存）
-        if (param.getHasStock()!=null){
+        if (param.getHasStock() != null) {
             boolQueryBuilder.filter(QueryBuilders.termQuery("hasStock", param.getHasStock() == 1));
         }
         //1.2、bool - filter 价格区间检索 1_500 || 4_700
@@ -113,6 +113,7 @@ public class MallSearchServiceImpl implements MallSearchService {
                     rangeQuery.gte(s[0]);
                 }
             }
+            boolQueryBuilder.filter(rangeQuery);
         }
         //1.2、bool - filter 按照是指定属性进行查询
         List<String> attrs = param.getAttrs();
@@ -139,8 +140,7 @@ public class MallSearchServiceImpl implements MallSearchService {
             String sort = param.getSort();
             //排序条件 sort=price/salecount/hotscore_desc/asc
             String[] s = sort.split("_");
-            SortOrder ase = s[1].equalsIgnoreCase("ase") ? SortOrder.ASC : SortOrder.DESC;
-            builder.sort(s[0], ase);
+            builder.sort(s[0], s[1].equalsIgnoreCase("asc") ? SortOrder.ASC : SortOrder.DESC);
         }
         //2.2 分页
         builder.from((param.getPageNum() - 1) * EsConstant.PRODUCT_PAGESIZE);
@@ -169,7 +169,7 @@ public class MallSearchServiceImpl implements MallSearchService {
         builder.aggregation(catalogAgg);
 
         //1.3 attrs聚合
-        NestedAggregationBuilder nestedAggregationBuilder = new NestedAggregationBuilder("attrsAgg", "attrs");
+        NestedAggregationBuilder nestedAggregationBuilder = new NestedAggregationBuilder("attrs", "attrs");
         //按照attrId聚合
         TermsAggregationBuilder attrIdAgg = AggregationBuilders.terms("attrIdAgg").field("attrs.attrId");
         //按照attrId聚合之后再按照attrName和attrValue聚合
@@ -259,8 +259,8 @@ public class MallSearchServiceImpl implements MallSearchService {
             catalogVos.add(catalogVo);
         }
         result.setCatalogs(catalogVos);
-//5 查询涉及到的所有属性
-        ParsedNested attrsAgg = searchResponse.getAggregations().get("attrsAgg");
+        //5 查询涉及到的所有属性
+        ParsedNested attrsAgg = searchResponse.getAggregations().get("attrs");
         List<SearchResult.AttrVo> attrVos = new ArrayList<>();
         ParsedLongTerms attrIdAgg = attrsAgg.getAggregations().get("attrIdAgg");
         for (Terms.Bucket bucket : attrIdAgg.getBuckets()) {
@@ -278,6 +278,20 @@ public class MallSearchServiceImpl implements MallSearchService {
         }
         result.setAttrs(attrVos);
 
+        // 6. 构建面包屑导航
+
+        param.getAttrs().stream().map(attr -> {
+            //分析每一个传过来的attr值
+            SearchResult.NavVo navVo = new SearchResult.NavVo();
+
+
+            String[] split = attr.split("_");
+            navVo.setNavValue(split[1]);
+
+            //name
+
+            return navVo;
+        }).collect(Collectors.toList());
 
         return result;
     }
