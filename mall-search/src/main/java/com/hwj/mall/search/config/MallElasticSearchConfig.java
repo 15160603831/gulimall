@@ -20,7 +20,7 @@ public class MallElasticSearchConfig {
     }
 
     @Bean
-    public RestHighLevelClient esRestClient() {
+    public RestHighLevelClient restHighLevelClient() {
 
         RestClientBuilder builder = null;
         // 可以指定多个es

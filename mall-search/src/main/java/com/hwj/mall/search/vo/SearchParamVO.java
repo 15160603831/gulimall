@@ -44,5 +44,9 @@ public class SearchParamVO {
      * 页码
      */
     private Integer pageNum = 1;
+    /**
+     * 原生的所有查询条件
+     */
+    private String _queryString;
 
 }

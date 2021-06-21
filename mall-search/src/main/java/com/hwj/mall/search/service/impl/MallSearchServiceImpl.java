@@ -1,12 +1,17 @@
 package com.hwj.mall.search.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.hwj.common.to.es.SkuEsModel;
+import com.hwj.common.utils.R;
 import com.hwj.mall.search.config.MallElasticSearchConfig;
 import com.hwj.mall.search.constant.EsConstant;
+import com.hwj.mall.search.feign.ProductFeignService;
 import com.hwj.mall.search.service.MallSearchService;
+import com.hwj.mall.search.vo.AttrResponseVo;
 import com.hwj.mall.search.vo.SearchParamVO;
 import com.hwj.mall.search.vo.SearchResult;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -32,6 +37,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,10 +47,13 @@ import java.util.stream.Collectors;
  * @author hwj
  */
 @Service
+@Slf4j
 public class MallSearchServiceImpl implements MallSearchService {
 
     @Autowired
-    private RestHighLevelClient client;
+    private RestHighLevelClient restHighLevelClient;
+    @Autowired
+    private ProductFeignService productFeignService;
 
     /**
      * @param searchParamVO 检索的条件
@@ -61,7 +71,7 @@ public class MallSearchServiceImpl implements MallSearchService {
 
         try {
             //执行检索请求
-            SearchResponse search = client.search(searchRequest, MallElasticSearchConfig.COMMON_OPTIONS);
+            SearchResponse search = restHighLevelClient.search(searchRequest, MallElasticSearchConfig.COMMON_OPTIONS);
             //分析响应数据封装需要格式
             result = buildSearchResult(search, searchParamVO);
         } catch (IOException e) {
@@ -116,21 +126,38 @@ public class MallSearchServiceImpl implements MallSearchService {
             boolQueryBuilder.filter(rangeQuery);
         }
         //1.2、bool - filter 按照是指定属性进行查询
+//        List<String> attrs = param.getAttrs();
+//        BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
+//        if (param.getAttrs() != null && param.getAttrs().size() > 0) {
+//            for (String attr : attrs) {
+//                String[] s = attr.split("_");
+//                String attrId = s[0];
+//                String[] attrValue = s[1].split(":");
+//                queryBuilder.must(QueryBuilders.termQuery("attrs.attrId", attrId));
+//                queryBuilder.must(QueryBuilders.termsQuery("attrs.attrValue", attrValue));
+//            }
+//        }
+//        //每一个都需要生成 nested
+//        NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery("attrs", queryBuilder, ScoreMode.None);
+//        boolQueryBuilder.filter(nestedQuery);
+//        //所有条件都拿来封装
+//        builder.query(boolQueryBuilder);
+
+        //1.2.5 attrs-nested
+        //attrs=1_5寸:8寸&2_16G:8G
         List<String> attrs = param.getAttrs();
         BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
-        if (param.getAttrs() != null && param.getAttrs().size() > 0) {
-            for (String attr : attrs) {
-                String[] s = attr.split("_");
-                String attrId = s[0];
-                String[] attrValue = s[1].split(":");
-                queryBuilder.must(QueryBuilders.termQuery("attrs.attrId", attrId));
-                queryBuilder.must(QueryBuilders.termsQuery("attrs.attrValue", attrValue));
-            }
+        if (attrs != null && attrs.size() > 0) {
+            attrs.forEach(attr -> {
+                String[] attrSplit = attr.split("_");
+                queryBuilder.must(QueryBuilders.termQuery("attrs.attrId", attrSplit[0]));
+                String[] attrValues = attrSplit[1].split(":");
+                queryBuilder.must(QueryBuilders.termsQuery("attrs.attrValue", attrValues));
+            });
         }
-        //每一个都需要生成 nested
-        NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery("attrs", queryBuilder, ScoreMode.None);
-        boolQueryBuilder.filter(nestedQuery);
-        //所有条件都拿来封装
+        NestedQueryBuilder nestedQueryBuilder = QueryBuilders.nestedQuery("attrs", queryBuilder, ScoreMode.None);
+        boolQueryBuilder.filter(nestedQueryBuilder);
+        //1. bool query构建完成
         builder.query(boolQueryBuilder);
 
 
@@ -278,21 +305,49 @@ public class MallSearchServiceImpl implements MallSearchService {
         }
         result.setAttrs(attrVos);
 
+        List<Integer> pageNavs = new ArrayList<>();
+        for (int i = 1; i <= totalPage; i++) {
+            pageNavs.add(i);
+        }
+        result.setPageNavs(pageNavs);
+
         // 6. 构建面包屑导航
-
-        param.getAttrs().stream().map(attr -> {
-            //分析每一个传过来的attr值
-            SearchResult.NavVo navVo = new SearchResult.NavVo();
-
-
-            String[] split = attr.split("_");
-            navVo.setNavValue(split[1]);
-
-            //name
-
-            return navVo;
-        }).collect(Collectors.toList());
-
+        List<String> attrs = param.getAttrs();
+        if (attrs != null && attrs.size() > 0) {
+            List<SearchResult.NavVo> navVos = param.getAttrs().stream().map(attr -> {
+                //分析每一个传过来的attr值
+                SearchResult.NavVo navVo = new SearchResult.NavVo();
+                String[] split = attr.split("_");
+                //6.1 设置属性值
+                navVo.setNavValue(split[1]);
+                //6.2 查询并设置属性名
+                try {
+                    R r = productFeignService.attrInfo(Long.parseLong(split[0]));
+                    if (r.getCode() == 0) {
+                        AttrResponseVo data = JSON.parseObject(JSON.toJSONString(r.get("attr")), new TypeReference<AttrResponseVo>() {
+                        });
+                        navVo.setNavName(data.getAttrName());
+                    } else {
+                        navVo.setNavName(split[0]);
+                    }
+                } catch (Exception e) {
+                    log.error("远程调用商品服务查询属性失败", e);
+                }
+                //6.3 设置面包屑跳转链接
+                String encode = null;
+                try {
+                    encode = URLEncoder.encode("attr", "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                String queryString = param.get_queryString();
+                String replace = queryString.replace("&attrs=" + encode, "")
+                        .replace("attrs=" + attr + "&", "").replace("attrs=" + attr, "");
+                navVo.setLink("http://search.mall.com/list.html" + (replace.isEmpty() ? "" : "?" + replace));
+                return navVo;
+            }).collect(Collectors.toList());
+            result.setNavs(navVos);
+        }
         return result;
     }
 }

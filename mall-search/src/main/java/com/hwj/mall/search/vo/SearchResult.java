@@ -42,6 +42,8 @@ public class SearchResult {
      */
     private List<CatalogVo> catalogs;
 
+    private List<Integer> pageNavs;
+
 
     //============================以上是返回给页面的所有信息==============================================
 
