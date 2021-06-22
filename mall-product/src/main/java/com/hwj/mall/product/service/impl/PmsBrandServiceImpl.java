@@ -3,6 +3,7 @@ package com.hwj.mall.product.service.impl;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -31,6 +32,14 @@ public class PmsBrandServiceImpl extends ServiceImpl<PmsBrandDao, PmsBrandEntity
                 pmsBrandEntityQueryWrapper
         );
         return new PageUtils(page);
+    }
+
+    @Override
+    public List<PmsBrandEntity> getbrandByIds(List<Long> brandIds) {
+        QueryWrapper<PmsBrandEntity> wrapper = new QueryWrapper<>();
+        wrapper.lambda().in(PmsBrandEntity::getBrandId, brandIds);
+        List<PmsBrandEntity> brandEntities = baseMapper.selectList(wrapper);
+        return brandEntities;
     }
 
 }

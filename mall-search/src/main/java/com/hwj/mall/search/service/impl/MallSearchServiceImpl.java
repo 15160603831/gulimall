@@ -9,6 +9,7 @@ import com.hwj.mall.search.constant.EsConstant;
 import com.hwj.mall.search.feign.ProductFeignService;
 import com.hwj.mall.search.service.MallSearchService;
 import com.hwj.mall.search.vo.AttrResponseVo;
+import com.hwj.mall.search.vo.BrandResponseVo;
 import com.hwj.mall.search.vo.SearchParamVO;
 import com.hwj.mall.search.vo.SearchResult;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NavigableMap;
 import java.util.stream.Collectors;
 
 /**
@@ -125,23 +127,6 @@ public class MallSearchServiceImpl implements MallSearchService {
             }
             boolQueryBuilder.filter(rangeQuery);
         }
-        //1.2、bool - filter 按照是指定属性进行查询
-//        List<String> attrs = param.getAttrs();
-//        BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
-//        if (param.getAttrs() != null && param.getAttrs().size() > 0) {
-//            for (String attr : attrs) {
-//                String[] s = attr.split("_");
-//                String attrId = s[0];
-//                String[] attrValue = s[1].split(":");
-//                queryBuilder.must(QueryBuilders.termQuery("attrs.attrId", attrId));
-//                queryBuilder.must(QueryBuilders.termsQuery("attrs.attrValue", attrValue));
-//            }
-//        }
-//        //每一个都需要生成 nested
-//        NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery("attrs", queryBuilder, ScoreMode.None);
-//        boolQueryBuilder.filter(nestedQuery);
-//        //所有条件都拿来封装
-//        builder.query(boolQueryBuilder);
 
         //1.2.5 attrs-nested
         //attrs=1_5寸:8寸&2_16G:8G
@@ -186,13 +171,13 @@ public class MallSearchServiceImpl implements MallSearchService {
         TermsAggregationBuilder brandAgg = AggregationBuilders.terms("brandAgg");
         brandAgg.field("brandId").size(50);
         //1.1 品牌聚合子聚合
-        brandAgg.subAggregation(AggregationBuilders.terms("brandNameAgg").field("brandName.keyword").size(1));
-        brandAgg.subAggregation(AggregationBuilders.terms("brandImgAgg").field("brandImg.keyword").size(1));
+        brandAgg.subAggregation(AggregationBuilders.terms("brandNameAgg").field("brandName").size(1));
+        brandAgg.subAggregation(AggregationBuilders.terms("brandImgAgg").field("brandImg").size(1));
         builder.aggregation(brandAgg);
 
         //1.2 catalogAgg聚合
         TermsAggregationBuilder catalogAgg = AggregationBuilders.terms("catalogAgg").field("catalogId").size(20);
-        catalogAgg.subAggregation(AggregationBuilders.terms("catalogNameAgg").field("catalogName.keyword").size(1));
+        catalogAgg.subAggregation(AggregationBuilders.terms("catalogNameAgg").field("catalogName").size(1));
         builder.aggregation(catalogAgg);
 
         //1.3 attrs聚合
@@ -200,8 +185,8 @@ public class MallSearchServiceImpl implements MallSearchService {
         //按照attrId聚合
         TermsAggregationBuilder attrIdAgg = AggregationBuilders.terms("attrIdAgg").field("attrs.attrId");
         //按照attrId聚合之后再按照attrName和attrValue聚合
-        TermsAggregationBuilder attrNameAgg = AggregationBuilders.terms("attrNameAgg").field("attrs.attrName.keyword");
-        TermsAggregationBuilder attrValueAgg = AggregationBuilders.terms("attrValueAgg").field("attrs.attrValue.keyword");
+        TermsAggregationBuilder attrNameAgg = AggregationBuilders.terms("attrNameAgg").field("attrs.attrName");
+        TermsAggregationBuilder attrValueAgg = AggregationBuilders.terms("attrValueAgg").field("attrs.attrValue");
         attrIdAgg.subAggregation(attrNameAgg);
         attrIdAgg.subAggregation(attrValueAgg);
 
@@ -334,15 +319,15 @@ public class MallSearchServiceImpl implements MallSearchService {
                     log.error("远程调用商品服务查询属性失败", e);
                 }
                 //6.3 设置面包屑跳转链接
-                String encode = null;
-                try {
-                    encode = URLEncoder.encode("attr", "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+//                String encode = null;
+//                try {
+//                    encode = URLEncoder.encode("attr", "UTF-8");
+//                    encode.replace("+", "%20");
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
                 String queryString = param.get_queryString();
-                String replace = queryString.replace("&attrs=" + encode, "")
-                        .replace("attrs=" + attr + "&", "").replace("attrs=" + attr, "");
+                String replace = queryString.replace("&attrs=" + attr, "").replace("attrs=" + attr + "&", "").replace("attrs=" + attr, "");
                 navVo.setLink("http://search.mall.com/list.html" + (replace.isEmpty() ? "" : "?" + replace));
                 return navVo;
             }).collect(Collectors.toList());

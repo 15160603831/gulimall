@@ -1,10 +1,12 @@
 package com.hwj.mall.product.app.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +35,7 @@ public class PmsBrandController {
      * 列表
      */
     @PostMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = pmsBrandService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -44,8 +46,8 @@ public class PmsBrandController {
      * 信息
      */
     @GetMapping("/info/{brandId}")
-    public R info(@PathVariable("brandId") Long brandId){
-		PmsBrandEntity pmsBrand = pmsBrandService.getById(brandId);
+    public R info(@PathVariable("brandId") Long brandId) {
+        PmsBrandEntity pmsBrand = pmsBrandService.getById(brandId);
 
         return R.ok().put("data", pmsBrand);
     }
@@ -54,8 +56,8 @@ public class PmsBrandController {
      * 保存
      */
     @PostMapping("/save")
-    public R save(@Valid @RequestBody PmsBrandEntity pmsBrand){
-		pmsBrandService.save(pmsBrand);
+    public R save(@Valid @RequestBody PmsBrandEntity pmsBrand) {
+        pmsBrandService.save(pmsBrand);
 
         return R.ok();
     }
@@ -64,8 +66,8 @@ public class PmsBrandController {
      * 修改
      */
     @PostMapping("/update")
-    public R update(@RequestBody PmsBrandEntity pmsBrand){
-		pmsBrandService.updateById(pmsBrand);
+    public R update(@RequestBody PmsBrandEntity pmsBrand) {
+        pmsBrandService.updateById(pmsBrand);
 
         return R.ok();
     }
@@ -74,10 +76,16 @@ public class PmsBrandController {
      * 删除
      */
     @PostMapping("/delete")
-    public R delete(@RequestBody Long[] brandIds){
-		pmsBrandService.removeByIds(Arrays.asList(brandIds));
+    public R delete(@RequestBody Long[] brandIds) {
+        pmsBrandService.removeByIds(Arrays.asList(brandIds));
 
         return R.ok();
+    }
+
+    @GetMapping("/infos")
+    public R infos(@RequestParam("brandIds") List<Long> brandIds) {
+        List<PmsBrandEntity> brandEntities = pmsBrandService.getbrandByIds(brandIds);
+        return R.ok().put("brand", brandEntities);
     }
 
 }
