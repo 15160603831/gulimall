@@ -1,23 +1,21 @@
 package com.hwj.mall.product.service.impl;
 
-import com.hwj.mall.product.entity.PmsSpuInfoDescEntity;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.Query;
-
 import com.hwj.mall.product.dao.PmsSkuInfoDao;
 import com.hwj.mall.product.entity.PmsSkuInfoEntity;
 import com.hwj.mall.product.service.PmsSkuInfoService;
+import com.hwj.mall.product.vo.SkuItemVo;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 @Transactional(rollbackFor = Exception.class)
 @Service("pmsSkuInfoService")
@@ -86,8 +84,20 @@ public class PmsSkuInfoServiceImpl extends ServiceImpl<PmsSkuInfoDao, PmsSkuInfo
      */
     @Override
     public List<PmsSkuInfoEntity> getSkuBySpuId(Long spuId) {
-        QueryWrapper wrapper=new QueryWrapper<PmsSkuInfoEntity>().eq("spu_id",spuId);
+        QueryWrapper wrapper = new QueryWrapper<PmsSkuInfoEntity>().eq("spu_id", spuId);
         List list = baseMapper.selectList(wrapper);
         return list;
+    }
+
+    /**
+     * 获取sku基本信息
+     *
+     * @param skuId sku
+     */
+    @Override
+    public SkuItemVo item(Long skuId) {
+
+
+        return null;
     }
 }
