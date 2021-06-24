@@ -3,7 +3,7 @@
 
 <mapper namespace="com.hwj.mall.product.dao.PmsAttrGroupDao">
 
-	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.hwj.mall.product.entity.PmsAttrGroupEntity" id="pmsAttrGroupMap">
         <result property="attrGroupId" column="attr_group_id"/>
         <result property="attrGroupName" column="attr_group_name"/>
@@ -13,6 +13,27 @@
         <result property="catelogId" column="catelog_id"/>
         <result property="deleteFlag" column="deleteFlag"/>
     </resultMap>
+    <resultMap id="spuItemAttrGroupVo" type="com.hwj.mall.product.vo.SpuItemAttrGroupVo">
+        <result property="attrGroupName" column="attr_group_name"/>
+        <collection property="attrs" ofType="com.hwj.mall.product.vo.SpuBaseAttrVo">
+            <result column="attr_name" property="attrName"/>
+            <result column="attr_value" property="attrValue"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAtrGroupWithAttrsBySpuId" resultType="com.hwj.mall.product.vo.SpuItemAttrGroupVo"
+            resultMap="spuItemAttrGroupVo">
+        select ag.attr_group_id,
+               ag.attr_group_name,
+               attr.attr_name,
+               pav.attr_value
+        from pms_attr_group ag
+                 left join pms_attr_attrgroup_relation aar on ag.attr_group_id = aar.attr_group_id
+                 left join pms_attr attr on aar.attr_id = attr.attr_id
+                 left join pms_product_attr_value pav on pav.attr_id = attr.attr_id
+        where ag.catelog_id = #{catalogId}
+          and pav.spu_id = #{spuId}
+    </select>
 
 
 </mapper>

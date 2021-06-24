@@ -16,7 +16,7 @@ public class ItemController {
     @GetMapping("/{skuId}.html")
     public String skuItem(@PathVariable("skuId") Long skuId) {
         SkuItemVo vo = skuInfoService.item(skuId);
-        System.out.println("准备查询：" + skuId + "详情");
+        System.out.printf("商品信息：", vo);
         return "item";
     }
 }

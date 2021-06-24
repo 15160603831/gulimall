@@ -2,10 +2,12 @@ package com.hwj.mall.product.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.hwj.mall.product.dao.PmsAttrGroupDao;
 import com.hwj.mall.product.entity.PmsBrandEntity;
 import com.hwj.mall.product.service.PmsBrandService;
 
 
+import com.hwj.mall.product.vo.SpuItemAttrGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +34,9 @@ public class PmsAttrAttrgroupRelationControllerTest {
 
     @Autowired
     RedissonClient redissonClient;
+
+    @Autowired
+    PmsAttrGroupDao pmsAttrGroupDao;
 
     @Test
     public void redisson() {
@@ -66,5 +71,12 @@ public class PmsAttrAttrgroupRelationControllerTest {
         });
     }
 
+
+    @Test
+    public void test(){
+        List<SpuItemAttrGroupVo> atrGroupWithAttrsBySpuId = pmsAttrGroupDao.getAtrGroupWithAttrsBySpuId(32L, 225L);
+        System.out.println(atrGroupWithAttrsBySpuId);
+    }
+//
 
 }

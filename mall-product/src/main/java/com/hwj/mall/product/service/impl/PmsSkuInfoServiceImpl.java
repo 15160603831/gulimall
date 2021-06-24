@@ -6,9 +6,18 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.Query;
 import com.hwj.mall.product.dao.PmsSkuInfoDao;
+import com.hwj.mall.product.entity.PmsSkuImagesEntity;
 import com.hwj.mall.product.entity.PmsSkuInfoEntity;
+import com.hwj.mall.product.entity.PmsSpuInfoDescEntity;
+import com.hwj.mall.product.service.PmsAttrGroupService;
+import com.hwj.mall.product.service.PmsSkuImagesService;
 import com.hwj.mall.product.service.PmsSkuInfoService;
+import com.hwj.mall.product.service.PmsSkuSaleAttrValueService;
+import com.hwj.mall.product.service.PmsSpuInfoDescService;
+import com.hwj.mall.product.vo.SkuItemSaleAttrVo;
 import com.hwj.mall.product.vo.SkuItemVo;
+import com.hwj.mall.product.vo.SpuItemAttrGroupVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -20,6 +29,16 @@ import java.util.Map;
 @Transactional(rollbackFor = Exception.class)
 @Service("pmsSkuInfoService")
 public class PmsSkuInfoServiceImpl extends ServiceImpl<PmsSkuInfoDao, PmsSkuInfoEntity> implements PmsSkuInfoService {
+
+
+    @Autowired
+    private PmsSkuImagesService skuImagesService;
+    @Autowired
+    private PmsSpuInfoDescService spuInfoDescService;
+    @Autowired
+    private PmsAttrGroupService attrGroupService;
+    @Autowired
+    private PmsSkuSaleAttrValueService skuSaleAttrValueService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -96,8 +115,29 @@ public class PmsSkuInfoServiceImpl extends ServiceImpl<PmsSkuInfoDao, PmsSkuInfo
      */
     @Override
     public SkuItemVo item(Long skuId) {
+        SkuItemVo vo = new SkuItemVo();
+        //info
+        PmsSkuInfoEntity info = getById(skuId);
+        vo.setSkuInfoEntity(info);
+        Long catalogId = info.getCatalogId();
+        Long spuId = info.getSpuId();
 
+        //image图片信息
+        List<PmsSkuImagesEntity> images = skuImagesService.getImagesBySkuId(skuId);
+        vo.setSkuImagesEntities(images);
+        //spu介绍
 
-        return null;
+        PmsSpuInfoDescEntity spuInfoDescEntity = spuInfoDescService.getById(spuId);
+        vo.setDesp(spuInfoDescEntity);
+
+        //规格参数
+        List<SpuItemAttrGroupVo> groupAttrs = attrGroupService.getAtrGroupWithAttrsBySpuId(spuId, catalogId);
+        vo.setGroupAttrs(groupAttrs);
+
+        //spu销售参数组合
+        List<SkuItemSaleAttrVo> saleAttrs = skuSaleAttrValueService.getSaleAttrBySpuId(spuId);
+        vo.setSaleAttrs(saleAttrs);
+
+        return vo;
     }
 }

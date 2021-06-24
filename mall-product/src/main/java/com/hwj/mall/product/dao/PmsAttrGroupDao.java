@@ -2,7 +2,10 @@ package com.hwj.mall.product.dao;
 
 import com.hwj.mall.product.entity.PmsAttrGroupEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hwj.mall.product.vo.SpuItemAttrGroupVo;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * 属性分组
@@ -13,5 +16,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface PmsAttrGroupDao extends BaseMapper<PmsAttrGroupEntity> {
-	
+
+    List<SpuItemAttrGroupVo> getAtrGroupWithAttrsBySpuId(Long spuId, Long catalogId);
 }
