@@ -13,13 +13,25 @@
         <result property="attrSort" column="attr_sort"/>
         <result property="deleteFlag" column="deleteFlag"/>
     </resultMap>
-    <select id="getSaleAttrBySpuId" resultType="com.hwj.mall.product.vo.SkuItemSaleAttrVo">
-        select ssav.attr_id attrId,ssav.attr_name attrName,group_concat(DISTINCT ssav.attr_value) attrValues
-        from pms_sku_info si
-                 left join pms_sku_sale_attr_value ssav on
-            ssav.sku_id = si.sku_id
-        where spu_id=30
-        group by ssav.attr_id,ssav.attr_name
+    <resultMap id="SkuItemSaleAttrVo" type="com.hwj.mall.product.vo.SkuItemSaleAttrVo">
+        <result column="attr_id" property="attrId"></result>
+        <result column="attr_name" property="attrName"></result>
+        <collection property="attrValues" ofType="com.hwj.mall.product.vo.AttrValueWithSkuIdVo">
+            <result column="attr_value" property="attrValue"></result>
+            <result column="sku_ids" property="skuIds"></result>
+        </collection>
+    </resultMap>
+    <select id="getSaleAttrBySpuId" resultMap="SkuItemSaleAttrVo">
+        SELECT ssav.attr_id                      attr_id,
+               ssav.attr_name                    attr_name,
+               ssav.attr_value                   attr_value,
+               GROUP_CONCAT(DISTINCT si.sku_id ) sku_ids
+        FROM pms_sku_info si
+                 LEFT JOIN pms_sku_sale_attr_value ssav ON ssav.sku_id = si.sku_id
+        WHERE spu_id = #{spuId}
+        GROUP BY ssav.attr_id,
+                 ssav.attr_name,
+                 ssav.attr_value
     </select>
 
 

@@ -4,6 +4,7 @@ import com.hwj.mall.product.entity.PmsSkuSaleAttrValueEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hwj.mall.product.vo.SkuItemSaleAttrVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,5 +24,5 @@ public interface PmsSkuSaleAttrValueDao extends BaseMapper<PmsSkuSaleAttrValueEn
      * @param spuId
      * @return
      */
-    List<SkuItemSaleAttrVo> getSaleAttrBySpuId(Long spuId);
+    List<SkuItemSaleAttrVo> getSaleAttrBySpuId(@Param("spuId") Long spuId);
 }

@@ -21,6 +21,8 @@ public class SkuItemVo {
     @ApiModelProperty("sku基本信息")
     private PmsSkuInfoEntity skuInfoEntity;
 
+    boolean hasStock = true;
+
     @ApiModelProperty("sku图片信息")
     private List<PmsSkuImagesEntity> skuImagesEntities;
 

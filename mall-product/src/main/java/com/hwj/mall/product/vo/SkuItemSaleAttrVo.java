@@ -7,7 +7,7 @@ import lombok.ToString;
 
 import java.util.List;
 
-
+@ToString
 @Data
 @ApiModel("spu销售属性信息")
 public class SkuItemSaleAttrVo {
@@ -19,7 +19,7 @@ public class SkuItemSaleAttrVo {
     private String attrName;
 
     @ApiModelProperty("分组id")
-    private String attrValues;
+    private List<AttrValueWithSkuIdVo> attrValues;
 
 
 }

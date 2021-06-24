@@ -40,7 +40,7 @@ public class PmsSkuSaleAttrValueServiceImpl extends ServiceImpl<PmsSkuSaleAttrVa
     @Override
     public List<SkuItemSaleAttrVo> getSaleAttrBySpuId(Long spuId) {
         PmsSkuSaleAttrValueDao dao = this.baseMapper;
-        List<SkuItemSaleAttrVo> saleAttrVos = dao.getSaleAttrBySpuId( spuId);
+        List<SkuItemSaleAttrVo> saleAttrVos = dao.getSaleAttrBySpuId(spuId);
         return saleAttrVos;
     }
 

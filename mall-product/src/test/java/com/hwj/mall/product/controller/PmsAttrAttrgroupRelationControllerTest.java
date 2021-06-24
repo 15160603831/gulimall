@@ -3,10 +3,12 @@ package com.hwj.mall.product.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hwj.mall.product.dao.PmsAttrGroupDao;
+import com.hwj.mall.product.dao.PmsSkuSaleAttrValueDao;
 import com.hwj.mall.product.entity.PmsBrandEntity;
 import com.hwj.mall.product.service.PmsBrandService;
 
 
+import com.hwj.mall.product.vo.SkuItemSaleAttrVo;
 import com.hwj.mall.product.vo.SpuItemAttrGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -37,6 +39,8 @@ public class PmsAttrAttrgroupRelationControllerTest {
 
     @Autowired
     PmsAttrGroupDao pmsAttrGroupDao;
+    @Autowired
+    PmsSkuSaleAttrValueDao skuSaleAttrValueDao;
 
     @Test
     public void redisson() {
@@ -73,9 +77,11 @@ public class PmsAttrAttrgroupRelationControllerTest {
 
 
     @Test
-    public void test(){
-        List<SpuItemAttrGroupVo> atrGroupWithAttrsBySpuId = pmsAttrGroupDao.getAtrGroupWithAttrsBySpuId(32L, 225L);
+    public void test() {
+        List<SpuItemAttrGroupVo> atrGroupWithAttrsBySpuId = pmsAttrGroupDao.getAtrGroupWithAttrsBySpuId(30L, 225L);
         System.out.println(atrGroupWithAttrsBySpuId);
+        List<SkuItemSaleAttrVo> saleAttrBySpuId = skuSaleAttrValueDao.getSaleAttrBySpuId(30L);
+        System.out.println(saleAttrBySpuId);
     }
 //
 

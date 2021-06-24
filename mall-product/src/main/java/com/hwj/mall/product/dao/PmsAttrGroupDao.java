@@ -4,12 +4,13 @@ import com.hwj.mall.product.entity.PmsAttrGroupEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hwj.mall.product.vo.SpuItemAttrGroupVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 /**
  * 属性分组
- * 
+ *
  * @author hwj
  * @email huangwenjun@mail.com
  * @date 2021-03-23 17:29:10
@@ -17,5 +18,5 @@ import java.util.List;
 @Mapper
 public interface PmsAttrGroupDao extends BaseMapper<PmsAttrGroupEntity> {
 
-    List<SpuItemAttrGroupVo> getAtrGroupWithAttrsBySpuId(Long spuId, Long catalogId);
+    List<SpuItemAttrGroupVo> getAtrGroupWithAttrsBySpuId(@Param("spuId") Long spuId, @Param("catalogId") Long catalogId);
 }
