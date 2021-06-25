@@ -611,9 +611,9 @@
                         <dl>
                             <dt>选择[[${attr.attrName}]]</dt>
                             <dd th:each="vals:${attr.attrValues}">
-                                <a class="sku_attr_value"
-                                   th:attr="skus=${vals.skuIds},class=${#lists.contains(#strings.listSplit(vals.skuIds,',')
-                                   ,item.skuInfoEntity.skuId.toString())?'sku_attr_value checked':'sku_attr_value'}">
+                                <a th:attr="skus=${vals.skuIds},class=${#lists.contains(#strings.listSplit(vals.skuIds,',')
+                                   ,item.skuInfoEntity.skuId.toString())?'sku_attr_value checked':'sku_attr_value'}"
+                                   ,skus="${vals.skuIds}">
                                     [[${vals.attrValue}]]
                                 </a>
                             </dd>
@@ -1239,16 +1239,33 @@
 <script src="/static/item/js/js.js" type="text/javascript" charset="utf-8"></script>
 <script>
     $(".sku_attr_value").click(function () {
-        //获取到当前的sku组合
-        //在获取另一个sku组合
-        //取出交集
-        //跳转页面
+        let skus = new Array();
+        let curr = $(this).attr("skus").split(",");
+
+        $(this).parent().parent().find(".sku_attr_value").removeClass("checked");
+        $(this).addClass("checked");
+        changeCheckedStyle();
+
+        $("a[class='sku_attr_value checked']").each(function () {
+            skus.push($(this).attr("skus").split(","));
+        });
+        let filterEle = skus[0];
+        for (let i = 1; i < skus.length; i++) {
+            filterEle = $(filterEle).filter(skus[i])[0];
+        }
+        location.href = "http://item.mall.com/" + filterEle + ".html";
+        return false;
     });
+
     $(function () {
+        changeCheckedStyle();
+    });
+
+    function changeCheckedStyle() {
         $(".sku_attr_value").parent().css({"border": "solid 1px #ccc"});
         $("a[class='sku_attr_value checked']").parent().css({"border": "solid 1px red"});
+    };
 
-    });
 </script>
 
 </html>

@@ -7,6 +7,7 @@ import com.hwj.mall.product.vo.SkuItemVo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * sku信息
@@ -36,6 +37,6 @@ public interface PmsSkuInfoService extends IService<PmsSkuInfoEntity> {
      *
      * @param skuId sku
      */
-    SkuItemVo item(Long skuId);
+    SkuItemVo item(Long skuId) throws ExecutionException, InterruptedException;
 }
 
