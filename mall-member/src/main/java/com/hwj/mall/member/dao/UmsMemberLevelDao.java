@@ -6,12 +6,18 @@ import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 会员等级
- * 
+ *
  * @author hwj
  * @email huangwenjun@mail.com
  * @date 2021-03-23 17:44:25
  */
 @Mapper
 public interface UmsMemberLevelDao extends BaseMapper<UmsMemberLevelEntity> {
-	
+
+    /**
+     * 查询默认等级
+     *
+     * @return
+     */
+    UmsMemberLevelEntity getDefaultLevel();
 }
