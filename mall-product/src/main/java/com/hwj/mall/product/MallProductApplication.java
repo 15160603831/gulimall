@@ -8,18 +8,20 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * 整合mybatis-plus
  * 1.导入依赖
  * 2.配置数据源
- *  1.数据库驱动
- *  2.
+ * 1.数据库驱动
+ * 2.
  */
-@MapperScan("com.hwj.mall.product.dao")
-@EnableDiscoveryClient
+@EnableRedisHttpSession //整合session
+@EnableDiscoveryClient  //nacos
 @SpringBootApplication
-@EnableScheduling
+@EnableScheduling        //开启定时任务
+@MapperScan("com.hwj.mall.product.dao")
 @EnableFeignClients(basePackages = "com.hwj.mall.product.feign")
 public class MallProductApplication {
 

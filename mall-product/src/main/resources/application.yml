@@ -26,6 +26,9 @@ spring:
     host: 47.107.108.206
     port: 6379
 
+  session:
+    store-type: redis
+
 
 
 ##mybatis-plus相关配置

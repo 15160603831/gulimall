@@ -1,14 +1,15 @@
-package com.hwj.mall.auth.vo;
+package com.hwj.common.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author hwj
  */
 @Data
-public class MemberEntity {
+public class MemberEntity implements Serializable {
     /**
      * id
      */

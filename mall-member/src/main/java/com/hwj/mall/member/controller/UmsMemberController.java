@@ -133,6 +133,4 @@ public class UmsMemberController {
             return R.error(BizCodeEnum.USER_LOGIN_ERROR_EXCEPTION.getCode(), BizCodeEnum.USER_LOGIN_ERROR_EXCEPTION.getMsg());
         }
     }
-
-
 }

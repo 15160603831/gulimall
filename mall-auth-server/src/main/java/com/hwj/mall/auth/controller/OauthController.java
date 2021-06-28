@@ -5,7 +5,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.hwj.common.constant.AuthConstant;
 import com.hwj.common.utils.R;
 import com.hwj.mall.auth.feign.MemberFeignService;
-import com.hwj.mall.auth.vo.MemberEntity;
+import com.hwj.common.vo.MemberEntity;
 import com.hwj.mall.auth.vo.SocialUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;

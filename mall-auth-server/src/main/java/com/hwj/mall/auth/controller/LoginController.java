@@ -1,11 +1,13 @@
 package com.hwj.mall.auth.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.hwj.common.constant.AuthConstant;
 import com.hwj.common.exception.BizCodeEnum;
 import com.hwj.common.utils.R;
 import com.hwj.mall.auth.feign.MemberFeignService;
 import com.hwj.mall.auth.feign.ThirdPartyFeignService;
+import com.hwj.common.vo.MemberEntity;
 import com.hwj.mall.auth.vo.UserLoginVo;
 import com.hwj.mall.auth.vo.UserRegisterVo;
 import io.swagger.annotations.ApiOperation;
@@ -13,20 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.jws.WebParam;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -113,9 +111,15 @@ public class LoginController {
 
     @PostMapping("/login")
     @ApiOperation("登入")
-    public String login(UserLoginVo vo, RedirectAttributes attributes) {
+    public String login(UserLoginVo vo, RedirectAttributes attributes, HttpSession session) {
         R login = memberFeignService.login(vo);
         if (login.getCode() == 0) {
+            String jsonString = JSON.toJSONString(login.get("memberEntity"));
+            System.out.println("----------------" + jsonString);
+            MemberEntity memberResponseVo = JSON.parseObject(jsonString, new TypeReference<MemberEntity>() {
+            });
+            System.out.println("----------------"+memberResponseVo);
+            session.setAttribute(AuthConstant.LOGIN_USER, memberResponseVo);
             return "redirect:http://mall.com";
         } else {
             String msg = (String) login.get("msg");

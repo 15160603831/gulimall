@@ -8,6 +8,11 @@ spring:
   thymeleaf:
     cache: false
 
+  session:
+    store-type: redis
+    timeout: 30m
+
+
 #配置端口号
 server:
   port: 20000
