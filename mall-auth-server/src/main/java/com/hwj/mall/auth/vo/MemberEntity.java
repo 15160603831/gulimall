@@ -1,31 +1,17 @@
-package com.hwj.mall.member.entity;
-
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-
-import java.io.Serializable;
-import java.util.Date;
+package com.hwj.mall.auth.vo;
 
 import lombok.Data;
-import lombok.experimental.Accessors;
+
+import java.util.Date;
 
 /**
- * 会员
- *
  * @author hwj
- * @email huangwenjun@mail.com
- * @date 2021-03-23 17:44:26
  */
 @Data
-@TableName("ums_member")
-@Accessors(chain = true)
-public class UmsMemberEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class MemberEntity {
     /**
      * id
      */
-    @TableId
     private Long id;
     /**
      * 会员等级id

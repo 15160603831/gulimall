@@ -9,6 +9,9 @@ import com.hwj.mall.member.exception.UserExistException;
 import com.hwj.mall.member.feign.MallCouponFeignServer;
 import com.hwj.mall.member.service.UmsMemberService;
 import com.hwj.mall.member.vo.MemberRegisterVo;
+import com.hwj.mall.member.vo.MemberLoginVo;
+import com.hwj.mall.member.vo.SocialUser;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -106,6 +109,29 @@ public class UmsMemberController {
             return R.error(BizCodeEnum.USER_NAME_EXIST_EXCEPTION.getCode(), BizCodeEnum.USER_NAME_EXIST_EXCEPTION.getMsg());
         }
         return R.ok();
+    }
+
+
+    @ApiOperation("账号密码登入")
+    @PostMapping("/login")
+    public R login(@RequestBody MemberLoginVo vo) {
+        UmsMemberEntity entity = umsMemberService.login(vo);
+        if (entity != null) {
+            return R.ok().put("memberEntity", entity);
+        } else {
+            return R.error(BizCodeEnum.USER_LOGIN_ERROR_EXCEPTION.getCode(), BizCodeEnum.USER_LOGIN_ERROR_EXCEPTION.getMsg());
+        }
+    }
+
+    @ApiOperation("微博登入")
+    @PostMapping("/oauth2/login")
+    public R login(@RequestBody SocialUser socialUser) {
+        UmsMemberEntity entity = umsMemberService.authLogin(socialUser);
+        if (entity != null) {
+            return R.ok().put("memberEntity",entity);
+        } else {
+            return R.error(BizCodeEnum.USER_LOGIN_ERROR_EXCEPTION.getCode(), BizCodeEnum.USER_LOGIN_ERROR_EXCEPTION.getMsg());
+        }
     }
 
 

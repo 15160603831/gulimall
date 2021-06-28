@@ -6,6 +6,7 @@ import com.hwj.common.exception.BizCodeEnum;
 import com.hwj.common.utils.R;
 import com.hwj.mall.auth.feign.MemberFeignService;
 import com.hwj.mall.auth.feign.ThirdPartyFeignService;
+import com.hwj.mall.auth.vo.UserLoginVo;
 import com.hwj.mall.auth.vo.UserRegisterVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,12 +64,13 @@ public class LoginController {
         String code = (int) ((Math.random() * 9 + 1) * 100000) + "";
         //缓存验证码，防止同一个phone再次发送验证码
         redisTemplate.opsForValue().set(AuthConstant.SMS_CODE + phone, code + "_" + System.currentTimeMillis(), codeTime, TimeUnit.MINUTES);
-        thirdPartyFeignService.sendSms(phone, code);
+//        thirdPartyFeignService.sendSms(phone, code);
         return R.ok();
     }
 
 
     @PostMapping("/register")
+    @ApiOperation("注册")
     public String register(@Valid UserRegisterVo vo, BindingResult result, RedirectAttributes attributes) {
         Map<String, String> errors = new HashMap<>();
         if (result.hasErrors()) {
@@ -89,7 +91,7 @@ public class LoginController {
                     R r = memberFeignService.register(vo);
                     if (r.getCode() == 0) {
                         //调用成功，重定向登录页
-                        return "redirect:/login.html";
+                        return "redirect:http://auth.mall.com/login.html";
                     } else {
                         //调用失败，返回注册页并显示错误信息
                         String msg = (String) r.get("msg");
@@ -107,5 +109,23 @@ public class LoginController {
         }
         return "redirect:http://auth.mall.com/register.html";
     }
+
+
+    @PostMapping("/login")
+    @ApiOperation("登入")
+    public String login(UserLoginVo vo, RedirectAttributes attributes) {
+        R login = memberFeignService.login(vo);
+        if (login.getCode() == 0) {
+            return "redirect:http://mall.com";
+        } else {
+            String msg = (String) login.get("msg");
+            Map<String, String> errors = new HashMap<>();
+            errors.put("msg", msg);
+            attributes.addFlashAttribute("errors", errors);
+            return "redirect:http://auth.mall.com/login.html";
+        }
+    }
+
+
 }
 

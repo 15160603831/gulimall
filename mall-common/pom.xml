@@ -44,7 +44,7 @@
     <description>每一个微服务公共的依赖，bean，工具类</description>
 
     <dependencies>
-<!--        mybatis-->
+        <!--        mybatis-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
@@ -89,14 +89,14 @@
             <version>2.6</version>
         </dependency>
 
-<!--        导入mysql驱动-->
+        <!--        导入mysql驱动-->
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.17</version>
         </dependency>
-<!--        servlet-->
+        <!--        servlet-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -140,12 +140,12 @@
             <artifactId>swagger-models</artifactId>
             <version>${swagger.model.version}</version>
         </dependency>
-<!--        nacos注册服务-发现-->
+        <!--        nacos注册服务-发现-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
-<!--        alibaba配置中心进行配置管理-->
+        <!--        alibaba配置中心进行配置管理-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
@@ -173,6 +173,30 @@
             <version>${commons.lang.version}</version>
         </dependency>
 
+        <!--HttpUtil所需依赖-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.2.1</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>commons-lang</groupId>-->
+<!--            <artifactId>commons-lang</artifactId>-->
+<!--            <version>${commons.lang.version}</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>9.3.7.v20160115</version>
+        </dependency>
+
+
+
     </dependencies>
 
     <dependencyManagement>
@@ -193,7 +217,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 
 
 </project>

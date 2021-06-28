@@ -5,7 +5,9 @@ import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.member.entity.UmsMemberEntity;
 import com.hwj.mall.member.exception.PhoneNumExistException;
 import com.hwj.mall.member.exception.UserExistException;
+import com.hwj.mall.member.vo.MemberLoginVo;
 import com.hwj.mall.member.vo.MemberRegisterVo;
+import com.hwj.mall.member.vo.SocialUser;
 
 import java.util.Map;
 
@@ -44,5 +46,20 @@ public interface UmsMemberService extends IService<UmsMemberEntity> {
     void checkUserName(String userName) throws UserExistException;
 
 
+    /**
+     * 登入
+     *
+     * @param vo
+     * @return
+     */
+    UmsMemberEntity login(MemberLoginVo vo);
+
+    /**
+     * 微博登入
+     *
+     * @param socialUser
+     * @return
+     */
+    UmsMemberEntity authLogin(SocialUser socialUser);
 }
 
