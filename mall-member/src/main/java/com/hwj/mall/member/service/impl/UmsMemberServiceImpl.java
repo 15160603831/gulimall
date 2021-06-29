@@ -66,6 +66,7 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberDao, UmsMemberEnt
         //手机号、用户名
         entity.setMobile(vo.getPhone());
         entity.setUsername(vo.getUserName());
+        entity.setNickname(vo.getUserName());
 
         //密码加密
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

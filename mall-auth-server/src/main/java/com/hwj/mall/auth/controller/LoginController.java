@@ -115,10 +115,8 @@ public class LoginController {
         R login = memberFeignService.login(vo);
         if (login.getCode() == 0) {
             String jsonString = JSON.toJSONString(login.get("memberEntity"));
-            System.out.println("----------------" + jsonString);
             MemberEntity memberResponseVo = JSON.parseObject(jsonString, new TypeReference<MemberEntity>() {
             });
-            System.out.println("----------------"+memberResponseVo);
             session.setAttribute(AuthConstant.LOGIN_USER, memberResponseVo);
             return "redirect:http://mall.com";
         } else {
@@ -130,6 +128,17 @@ public class LoginController {
         }
     }
 
+    @GetMapping("/login.html")
+    @ApiOperation("登入")
+    public String loginPage(HttpSession session) {
+
+        Object attribute = session.getAttribute(AuthConstant.LOGIN_USER);
+        if (attribute == null) {
+            return "login";
+        } else {
+            return "redirect:http://auth.mall.com";
+        }
+    }
 
 }
 

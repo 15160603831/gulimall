@@ -3,12 +3,15 @@ spring:
     name: mall-search
 
   profiles:
-    active: nacos
+    active: nacos,redis
 
   thymeleaf:
     cache: false
-#    suffix: .html
-#    prefix: classpath:/templates/
+  #    suffix: .html
+  #    prefix: classpath:/templates/
+
+  session:
+    store-type: redis
 
 #配置端口号
 server:
