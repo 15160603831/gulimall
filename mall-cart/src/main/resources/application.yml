@@ -8,3 +8,11 @@ spring:
     active: nacos,redis
   session:
     store-type: redis
+
+
+# 自定义线程池参数
+mall:
+  thread:
+    corePoolSize: 10
+    maxPoolSize: 20
+    keepAliveTime: 300

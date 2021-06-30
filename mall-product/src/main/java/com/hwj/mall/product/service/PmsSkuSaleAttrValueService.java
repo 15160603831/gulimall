@@ -20,5 +20,13 @@ public interface PmsSkuSaleAttrValueService extends IService<PmsSkuSaleAttrValue
     PageUtils queryPage(Map<String, Object> params);
 
     List<SkuItemSaleAttrVo> getSaleAttrBySpuId(Long spuId);
+
+    /**
+     * 获取sku的销售属性
+     *
+     * @param skuId
+     * @return
+     */
+    List<String> getSkuSaleAttrValue(Long skuId);
 }
 
