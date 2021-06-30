@@ -1,6 +1,7 @@
 package com.hwj.mall.product.service.impl;
 
 import com.hwj.mall.product.vo.AttrGroupRelationVo;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
