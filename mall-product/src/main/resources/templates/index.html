@@ -114,7 +114,6 @@
         <div class="header_form">
             <input id="searchText" type="text" placeholder=""/>
             <span style="background: url('/static/index/img/img_12.png') 0 -1px;"></span>
-            <!--<button><i class="glyphicon"></i></button>-->
             <a href="javascript:search();"><img src="/static/index/img/img_09.png" /></a>
         </div>
         <div class="header_ico">
@@ -202,7 +201,7 @@
             <div class="header_main_left">
                 <ul>
                     <li th:each="category:${categorys}">
-                        <a href="/static/#" class="header_main_left_a" th:attr="ctg-data=${category.catId}"><b
+                        <a href="#" class="header_main_left_a " th:attr="ctg-data=${category.catId}"><b
                                 th:text="${category.name}"></b></a>
                     </li>
                 </ul>

@@ -10,7 +10,7 @@ spring:
 
   session:
     store-type: redis
-    timeout: 30m
+    timeout: 100m
 
 
 #配置端口号
