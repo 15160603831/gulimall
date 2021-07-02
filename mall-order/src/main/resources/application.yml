@@ -6,11 +6,13 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver  #数据库链接驱动
 
   application:
-      name: mall-order
+    name: mall-order
   profiles:
-    active: nacos,rabbit
+    active: nacos,rabbit,redis
   thymeleaf:
     cache: false
+  session:
+    store-type: redis
 
 
 ##mybatis-plus相关配置
@@ -25,3 +27,9 @@ mybatis-plus:
 #配置端口号
 server:
   port: 9000
+
+mall:
+  thread:
+    core-pook-size: 20
+    max-pool-size: 200
+    keep-alive-time: 10
