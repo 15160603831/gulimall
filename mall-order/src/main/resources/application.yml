@@ -8,7 +8,7 @@ spring:
   application:
       name: mall-order
   profiles:
-    active: nacos
+    active: nacos,rabbit
 
 
 ##mybatis-plus相关配置
