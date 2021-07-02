@@ -35,6 +35,11 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
         <!--        高级消息队列 rabbitMq-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

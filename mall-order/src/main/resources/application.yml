@@ -9,6 +9,8 @@ spring:
       name: mall-order
   profiles:
     active: nacos,rabbit
+  thymeleaf:
+    cache: false
 
 
 ##mybatis-plus相关配置
