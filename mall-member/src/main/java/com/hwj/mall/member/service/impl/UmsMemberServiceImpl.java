@@ -20,10 +20,7 @@ import com.hwj.mall.member.vo.MemberLoginVo;
 import com.hwj.mall.member.vo.MemberRegisterVo;
 import com.hwj.mall.member.vo.SocialUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -145,12 +142,13 @@ public class UmsMemberServiceImpl extends ServiceImpl<UmsMemberDao, UmsMemberEnt
         } else {
             //没有查到用户进行注册
             HttpHeaders headers = new HttpHeaders();
-            headers.set("access_token", socialUser.getAccess_token());
-            headers.set("uid", socialUser.getUid());
+            headers.setContentType(MediaType.APPLICATION_JSON);
+//            headers.set("access_token", socialUser.getAccess_token());
+//            headers.set("uid", socialUser.getUid());
             HttpEntity<String> request = new HttpEntity<>(null, headers);
-            String url = "https://api.weibo.com/2/users/show.json";
+            String url = "https://api.weibo.com/2/users/show.json?access_token="+socialUser.getAccess_token()+"&uid="+socialUser.getUid();
 
-            ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+            ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
             //获取社交用户账号信息 查询成功
             if (exchange.getStatusCodeValue() == 200) {
                 String json = null;
