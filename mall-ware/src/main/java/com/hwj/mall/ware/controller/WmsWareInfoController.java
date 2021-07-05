@@ -1,21 +1,18 @@
 package com.hwj.mall.ware.controller;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
 
+import com.hwj.mall.ware.vo.FareVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.hwj.mall.ware.entity.WmsWareInfoEntity;
 import com.hwj.mall.ware.service.WmsWareInfoService;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.R;
-
 
 
 /**
@@ -35,7 +32,7 @@ public class WmsWareInfoController {
      * 列表
      */
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = wmsWareInfoService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -46,8 +43,8 @@ public class WmsWareInfoController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
-		WmsWareInfoEntity wmsWareInfo = wmsWareInfoService.getById(id);
+    public R info(@PathVariable("id") Long id) {
+        WmsWareInfoEntity wmsWareInfo = wmsWareInfoService.getById(id);
 
         return R.ok().put("wmsWareInfo", wmsWareInfo);
     }
@@ -56,8 +53,8 @@ public class WmsWareInfoController {
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody WmsWareInfoEntity wmsWareInfo){
-		wmsWareInfoService.save(wmsWareInfo);
+    public R save(@RequestBody WmsWareInfoEntity wmsWareInfo) {
+        wmsWareInfoService.save(wmsWareInfo);
 
         return R.ok();
     }
@@ -66,8 +63,8 @@ public class WmsWareInfoController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody WmsWareInfoEntity wmsWareInfo){
-		wmsWareInfoService.updateById(wmsWareInfo);
+    public R update(@RequestBody WmsWareInfoEntity wmsWareInfo) {
+        wmsWareInfoService.updateById(wmsWareInfo);
 
         return R.ok();
     }
@@ -76,10 +73,20 @@ public class WmsWareInfoController {
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
-		wmsWareInfoService.removeByIds(Arrays.asList(ids));
+    public R delete(@RequestBody Long[] ids) {
+        wmsWareInfoService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
+    }
+
+    /**
+     * 删除
+     */
+    @GetMapping("/fare/{id}")
+    public R getFare(@PathVariable("id") Long id) {
+
+        FareVo fare = wmsWareInfoService.getFare(id);
+        return R.ok().put("fare", fare);
     }
 
 }

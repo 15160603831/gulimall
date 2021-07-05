@@ -4,6 +4,10 @@ spring:
     username: root  #用户名
     password: 123456  #密码
     driver-class-name: com.mysql.cj.jdbc.Driver  #数据库链接驱动
+    hikari:
+      # 配置一个连接在池中最大生存的时间，单位是毫秒
+      max-lifetime: 900000
+
 
   application:
     name: mall-ware
