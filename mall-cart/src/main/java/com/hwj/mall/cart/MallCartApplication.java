@@ -13,7 +13,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  * @author hwj
  */
 @EnableRedisHttpSession
-@EnableFeignClients
+@EnableFeignClients("com.hwj.mall.cart.feign")
 @EnableDiscoveryClient
 @EnableScheduling        //开启定时任务
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)

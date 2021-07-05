@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.member.entity.UmsMemberReceiveAddressEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,6 +16,9 @@ import java.util.Map;
  */
 public interface UmsMemberReceiveAddressService extends IService<UmsMemberReceiveAddressEntity> {
 
+
     PageUtils queryPage(Map<String, Object> params);
+
+    List<UmsMemberReceiveAddressEntity> getAddress(Long memberId);
 }
 

@@ -1,10 +1,14 @@
 package com.hwj.mall.member.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +19,6 @@ import com.hwj.mall.member.entity.UmsMemberReceiveAddressEntity;
 import com.hwj.mall.member.service.UmsMemberReceiveAddressService;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.R;
-
 
 
 /**
@@ -35,7 +38,7 @@ public class UmsMemberReceiveAddressController {
      * 列表
      */
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = umsMemberReceiveAddressService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -46,8 +49,8 @@ public class UmsMemberReceiveAddressController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
-		UmsMemberReceiveAddressEntity umsMemberReceiveAddress = umsMemberReceiveAddressService.getById(id);
+    public R info(@PathVariable("id") Long id) {
+        UmsMemberReceiveAddressEntity umsMemberReceiveAddress = umsMemberReceiveAddressService.getById(id);
 
         return R.ok().put("umsMemberReceiveAddress", umsMemberReceiveAddress);
     }
@@ -56,8 +59,8 @@ public class UmsMemberReceiveAddressController {
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody UmsMemberReceiveAddressEntity umsMemberReceiveAddress){
-		umsMemberReceiveAddressService.save(umsMemberReceiveAddress);
+    public R save(@RequestBody UmsMemberReceiveAddressEntity umsMemberReceiveAddress) {
+        umsMemberReceiveAddressService.save(umsMemberReceiveAddress);
 
         return R.ok();
     }
@@ -66,8 +69,8 @@ public class UmsMemberReceiveAddressController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody UmsMemberReceiveAddressEntity umsMemberReceiveAddress){
-		umsMemberReceiveAddressService.updateById(umsMemberReceiveAddress);
+    public R update(@RequestBody UmsMemberReceiveAddressEntity umsMemberReceiveAddress) {
+        umsMemberReceiveAddressService.updateById(umsMemberReceiveAddress);
 
         return R.ok();
     }
@@ -76,10 +79,19 @@ public class UmsMemberReceiveAddressController {
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
-		umsMemberReceiveAddressService.removeByIds(Arrays.asList(ids));
+    public R delete(@RequestBody Long[] ids) {
+        umsMemberReceiveAddressService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }
+
+    @ApiOperation("获取会员收货地址")
+    @GetMapping("/{memberId}/address")
+    public List<UmsMemberReceiveAddressEntity> getAddress(@PathVariable("memberId") Long memberId) {
+        List<UmsMemberReceiveAddressEntity> getAddress = umsMemberReceiveAddressService.getAddress(memberId);
+        return getAddress;
+    }
+
+    ;
 
 }

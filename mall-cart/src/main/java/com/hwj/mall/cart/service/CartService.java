@@ -3,6 +3,7 @@ package com.hwj.mall.cart.service;
 import com.hwj.mall.cart.vo.CartItemVO;
 import com.hwj.mall.cart.vo.CartVO;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -45,4 +46,11 @@ public interface CartService {
     void countItm(Long skuId, Integer num);
 
     void deleteItem(Long skuId);
+
+    /**
+     * 获取前选中的购物项
+     *
+     * @return
+     */
+    List<CartItemVO> getUserCartItem();
 }

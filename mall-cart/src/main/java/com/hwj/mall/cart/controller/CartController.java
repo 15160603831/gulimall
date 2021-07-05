@@ -10,8 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
@@ -64,15 +66,23 @@ public class CartController {
 
     @GetMapping("/countItem")
     @ApiOperation("改变数量")
-    public String countItem(@RequestParam("skuId") Long skuId,@RequestParam("num")Integer num){
-        cartService.countItm(skuId,num);
+    public String countItem(@RequestParam("skuId") Long skuId, @RequestParam("num") Integer num) {
+        cartService.countItm(skuId, num);
         return "redirect:http://cart.mall.com/cart.html";
     }
 
     @GetMapping("/deleteItem")
     @ApiOperation("删除购物项")
-    public String deleteItem(@RequestParam("skuId") Long skuId){
+    public String deleteItem(@RequestParam("skuId") Long skuId) {
         cartService.deleteItem(skuId);
         return "redirect:http://cart.mall.com/cart.html";
+    }
+
+    @ApiOperation("获取用户选中购物项")
+    @GetMapping("/currentUserCartItem")
+    @ResponseBody
+    public List<CartItemVO> currentUserCartItem() {
+        List<CartItemVO> userCartItem = cartService.getUserCartItem();
+        return userCartItem;
     }
 }
