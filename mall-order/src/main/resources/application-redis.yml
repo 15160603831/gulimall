@@ -2,3 +2,8 @@ spring:
   redis:
     port: 6379
     host: 47.107.108.206
+
+  cache:
+    timeout:
+      # 分钟
+      order-token: 30

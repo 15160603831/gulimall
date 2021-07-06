@@ -31,6 +31,8 @@ public class OrderConfirmVo {
     private Integer integration;
 
     @ApiModelProperty("订单防重令牌")
+    @Getter
+    @Setter
     private String orderToken;
 
     @ApiModelProperty("货状态")

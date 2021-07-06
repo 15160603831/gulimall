@@ -6,6 +6,7 @@ import java.util.Map;
 
 
 import com.hwj.mall.ware.vo.FareVo;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,11 +81,11 @@ public class WmsWareInfoController {
     }
 
     /**
-     * 删除
+     * 计算运费
      */
     @GetMapping("/fare/{id}")
+    @ApiModelProperty("计算运费")
     public R getFare(@PathVariable("id") Long id) {
-
         FareVo fare = wmsWareInfoService.getFare(id);
         return R.ok().put("fare", fare);
     }

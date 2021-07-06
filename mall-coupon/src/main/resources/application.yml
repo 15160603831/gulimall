@@ -23,4 +23,9 @@ mybatis-plus:
 server:
   port: 7000
 
+#防止调用feign接口超时
+ribbon:
+  ReadTimeout: 120000
+  ConnectTimeout: 300000
+
 

@@ -5,4 +5,5 @@ spring:
 
   cache:
     timeout:
+      # 分钟
       code-time: 600

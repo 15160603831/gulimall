@@ -300,5 +300,19 @@ public class PmsSpuInfoServiceImpl extends ServiceImpl<PmsSpuInfoDao, PmsSpuInfo
 
     }
 
+    /**
+     * 根据skuId查询
+     *
+     * @param skuId
+     * @return
+     */
+    @Override
+    public PmsSpuInfoEntity getSpuInfoBySKuId(Long skuId) {
+        PmsSkuInfoEntity byId = pmsSkuInfoService.getById(skuId);
+        Long spuId = byId.getSpuId();
+        PmsSpuInfoEntity spuInfoEntity = baseMapper.selectById(spuId);
+        return spuInfoEntity;
+    }
+
 
 }

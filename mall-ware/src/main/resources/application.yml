@@ -18,6 +18,11 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
 
+#防止调用feign接口超时
+ribbon:
+  ReadTimeout: 120000
+  ConnectTimeout: 300000
+
 
 ##mybatis-plus相关配置
 mybatis-plus:

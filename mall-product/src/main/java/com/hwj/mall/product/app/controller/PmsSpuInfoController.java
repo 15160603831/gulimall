@@ -7,6 +7,7 @@ import java.util.Map;
 import com.hwj.mall.product.vo.SpuSaveVO;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -94,6 +95,13 @@ public class PmsSpuInfoController {
 
         pmsSpuInfoService.up(spuId);
         return R.ok();
+    }
+
+    @GetMapping("/skuId/{skuId}")
+    @ApiOperation("根据skuId查询spu")
+    public R getSpuInfoBySkuId(@PathVariable("skuId") Long skuId) {
+        PmsSpuInfoEntity spuInfoEntity = pmsSpuInfoService.getSpuInfoBySKuId(skuId);
+        return R.ok().put("spuInfoEntity", spuInfoEntity);
     }
 
 }
