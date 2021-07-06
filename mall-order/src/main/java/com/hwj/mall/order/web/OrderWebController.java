@@ -1,6 +1,6 @@
 package com.hwj.mall.order.web;
 
-import com.hwj.mall.order.service.OmsOrderService;
+import com.hwj.mall.order.service.OrderService;
 import com.hwj.mall.order.vo.OrderConfirmVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 public class OrderWebController {
 
     @Autowired
-    private OmsOrderService orderService;
+    private OrderService orderService;
 
 
     @ApiOperation("订单确认页")

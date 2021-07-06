@@ -1,7 +1,7 @@
 package com.hwj.mall.order;
 
 
-import com.hwj.mall.order.entity.OmsOrderReturnReasonEntity;
+import com.hwj.mall.order.entity.OrderReturnReasonEntity;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -77,7 +77,7 @@ public class MallOrderApplicationTests {
     //***************************************************************收发消息
     @Test
     public void sendMessage() {
-        OmsOrderReturnReasonEntity reasonEntity = new OmsOrderReturnReasonEntity();
+        OrderReturnReasonEntity reasonEntity = new OrderReturnReasonEntity();
         reasonEntity.setId(1L);
         reasonEntity.setName("打来及ad");
         reasonEntity.setStatus(2);
@@ -90,7 +90,7 @@ public class MallOrderApplicationTests {
 
     @Test
     public void Message() {
-        OmsOrderReturnReasonEntity reasonEntity = new OmsOrderReturnReasonEntity();
+        OrderReturnReasonEntity reasonEntity = new OrderReturnReasonEntity();
         reasonEntity.setId(1L);
         reasonEntity.setName("打来及ad");
         reasonEntity.setStatus(2);
