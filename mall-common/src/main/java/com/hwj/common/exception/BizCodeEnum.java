@@ -25,7 +25,9 @@ public enum BizCodeEnum {
     PRODUCT_UP_EXCEPTION(11003, "商品上架异常"),
     USER_NAME_EXIST_EXCEPTION(150001, "用户名存在"),
     USER_PHONE_EXIST_EXCEPTION(150002, "手机号码存在"),
-    USER_LOGIN_ERROR_EXCEPTION(150003, "账号密码错误");
+    USER_LOGIN_ERROR_EXCEPTION(150003, "账号密码错误"),
+
+    NO_STOCK_EXCEPTION(21000,"商品库存不足");
 
 
     private int code;

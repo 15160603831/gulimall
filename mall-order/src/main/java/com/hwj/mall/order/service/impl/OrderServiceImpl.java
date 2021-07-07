@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hwj.common.exception.NoStockException;
 import com.hwj.common.to.SkuHasStockVO;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.Query;
@@ -21,6 +22,7 @@ import com.hwj.mall.order.feign.MemberFeignService;
 import com.hwj.mall.order.feign.ProductFeginService;
 import com.hwj.mall.order.feign.WmsFeignService;
 import com.hwj.mall.order.interceptor.LoginUserInterceptor;
+import com.hwj.mall.order.service.OrderItemService;
 import com.hwj.mall.order.service.OrderService;
 import com.hwj.mall.order.to.OrderCreateTo;
 import com.hwj.mall.order.to.SpuInfoTo;
@@ -30,11 +32,13 @@ import com.hwj.mall.order.vo.OrderConfirmVo;
 import com.hwj.mall.order.vo.OrderItemVo;
 import com.hwj.mall.order.vo.OrderSubmitVo;
 import com.hwj.mall.order.vo.SubmitOrderResponseVo;
+import com.hwj.mall.order.vo.WareSkuLockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -66,14 +70,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private StringRedisTemplate redisTemplate;
     @Autowired
     private ProductFeginService productFeginService;
-
     @Autowired
-    private OrderDao orderDao;
-    @Autowired
-    private OrderItemDao orderItemDao;
-
-
-    private ThreadLocal<OrderSubmitVo> orderSubmitVoThreadLocal = new ThreadLocal<>();
+    private OrderItemService orderItemService;
 
 
     //订单令牌过期时间
@@ -143,18 +141,20 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      * @param vo
      * @return
      */
+    @Transactional
     @Override
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) {
         //拦截器获取缓存中的用户信息
         MemberEntity memberEntity = LoginUserInterceptor.loginUser.get();
         SubmitOrderResponseVo responseVo = new SubmitOrderResponseVo();
+        responseVo.setCode(0);
         //1、验证令牌是否合法
         //验证和删除令牌要保证原子性 使用脚本
         String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
         Long execute = redisTemplate.execute(
                 new DefaultRedisScript<>(script, Long.class), Arrays.asList(OrderConstant.USER_ORDER_TOKEN +
                         memberEntity.getId()), vo.getOrderToken());
-
+        //验证令牌合法性
         if (execute == 0L) {
             //失败
             responseVo.setCode(1);
@@ -162,20 +162,42 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         } else {
             //2、创建订单
             OrderCreateTo order = this.createOrder(vo, memberEntity.getId());
-
             //验价
             BigDecimal payAmount = order.getOrder().getPayAmount();
             BigDecimal payPrice = vo.getPayPrice();
-            if (Math.acos(payAmount.subtract(payPrice).doubleValue()) < 0.01) {
-                //保存订单
+            if (Math.abs(payAmount.subtract(payPrice).doubleValue()) < 0.01) {
+                //3、保存订单
                 this.saveOrder(order);
+                //4.锁库存
+                WareSkuLockVo lockVo = new WareSkuLockVo();
+                //锁库存数据
+                List<OrderItemVo> collect = order.getOrderItems().stream().map(item -> {
+                    OrderItemVo itemVo = new OrderItemVo();
+                    itemVo.setSkuId(item.getSkuId());
+                    itemVo.setCount(item.getSkuQuantity());
+                    itemVo.setTitle(item.getSpuName());
+                    return itemVo;
+                }).collect(Collectors.toList());
+                lockVo.setOrderSn(order.getOrder().getOrderSn());
+                lockVo.setLocks(collect);
+                //锁库存
+                R r = wmsFeignService.orderLockStock(lockVo);
+                if (r.getCode() == 0) {
+                    //成功
+                    responseVo.setOrderEntity(order.getOrder());
+                    int i = 10 / 0;
+                    return responseVo;
+                } else {
+                    //5.1 锁定库存失败
+                    String msg = (String) r.get("msg");
+                    throw new NoStockException(msg);
+                }
             } else {
                 //失败
                 responseVo.setCode(2);
                 return responseVo;
             }
         }
-        return null;
     }
 
     /**
@@ -186,8 +208,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private void saveOrder(OrderCreateTo order) {
         OrderEntity orderEntity = order.getOrder();
         orderEntity.setModifyTime(new Date());
-        orderDao.insert(orderEntity);
+        this.save(orderEntity);
 
+        //保存数据项
+        List<OrderItemEntity> orderItems = order.getOrderItems();
+        orderItemService.saveBatch(orderItems);
     }
 
     /**
@@ -204,7 +229,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         List<OrderItemEntity> orderItemEntities = this.buildOrderItems(entity.getOrderSn());
         //2.3、验价
         this.computePrice(entity, orderItemEntities);
-
+        createTo.setOrder(entity);
+        createTo.setOrderItems(orderItemEntities);
         return createTo;
     }
 

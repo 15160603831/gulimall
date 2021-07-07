@@ -2,6 +2,7 @@ package com.hwj.mall.order.feign;
 
 import com.hwj.common.to.SkuHasStockVO;
 import com.hwj.common.utils.R;
+import com.hwj.mall.order.vo.WareSkuLockVo;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -23,6 +24,10 @@ public interface WmsFeignService {
     List<SkuHasStockVO> getSkuHasStock(@RequestBody List<Long> skuIdList);
 
     @GetMapping("/ware/wareinfo/fare/{id}")
-    @ApiModelProperty("计算运费")
+    @ApiOperation("计算运费")
     R getFare(@PathVariable("id") Long id);
+
+    @PostMapping("/ware/waresku/order-lock-stock")
+    @ApiOperation("订单锁库存")
+    R orderLockStock(@RequestBody WareSkuLockVo vo);
 }

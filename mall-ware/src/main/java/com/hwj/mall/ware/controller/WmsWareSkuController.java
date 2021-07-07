@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 
+import com.hwj.common.exception.BizCodeEnum;
+import com.hwj.common.exception.NoStockException;
+import com.hwj.mall.ware.vo.LockStockResult;
 import com.hwj.mall.ware.vo.SkuHasStockVO;
+import com.hwj.mall.ware.vo.WareSkuLockVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -94,4 +98,22 @@ public class WmsWareSkuController {
         List<SkuHasStockVO> vos = wmsWareSkuService.getSkuHasStock(skuIdList);
         return vos;
     }
+
+    /**
+     * 锁库存
+     *
+     * @param vo
+     * @return
+     */
+    @PostMapping("order-lock-stock")
+    @ApiOperation("订单锁库存")
+    public R orderLockStock(@RequestBody WareSkuLockVo vo) {
+        try {
+            Boolean stockResults = wmsWareSkuService.orderLockStock(vo);
+            return R.ok();
+        } catch (NoStockException e) {
+            return R.error(BizCodeEnum.NO_STOCK_EXCEPTION.getCode(), BizCodeEnum.NO_STOCK_EXCEPTION.getMsg());
+        }
+    }
+
 }

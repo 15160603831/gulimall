@@ -1,5 +1,6 @@
 package com.hwj.mall.order.web;
 
+import com.hwj.common.exception.NoStockException;
 import com.hwj.mall.order.service.OrderService;
 import com.hwj.mall.order.vo.OrderConfirmVo;
 import com.hwj.mall.order.vo.OrderSubmitVo;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.concurrent.ExecutionException;
 
@@ -33,16 +35,37 @@ public class OrderWebController {
 
     @PostMapping("/submitOrder")
     @ApiOperation("提交订单")
-    public String submitOrder(@RequestBody OrderSubmitVo orderSubmitVo) {
-        //创建订单
-        SubmitOrderResponseVo submitOrderResponseVo = orderService.submitOrder(orderSubmitVo);
-        System.out.println(orderSubmitVo.toString());
-        if (submitOrderResponseVo.getCode() == 0) {
-            //下单成功支付选择页
-
-            return "pay";
-        } else {
-            //下单失败回确认订单页
+    public String submitOrder(OrderSubmitVo orderSubmitVo, Model model, RedirectAttributes attributes) {
+        try {
+            //创建订单
+            SubmitOrderResponseVo submitOrderResponseVo = orderService.submitOrder(orderSubmitVo);
+            System.out.println(orderSubmitVo.toString());
+            if (submitOrderResponseVo.getCode() == 0) {
+                //下单成功支付选择页
+                model.addAttribute("submitOrderResponseVo", submitOrderResponseVo);
+                return "pay";
+            } else {
+                String msg = "下单失败;";
+                switch (submitOrderResponseVo.getCode()) {
+                    case 1:
+                        msg += "防重令牌校验失败";
+                        break;
+                    case 2:
+                        msg += "商品价格发生变化";
+                        break;
+                    case 3:
+                        msg += "商品库存不足";
+                        break;
+                }
+                attributes.addFlashAttribute("msg", msg);
+                //下单失败回确认订单页
+                return "redirect:http://order.mall.com/toTrade";
+            }
+        } catch (Exception e) {
+            if (e instanceof NoStockException) {
+                String msg = "下单失败，商品无库存";
+                attributes.addFlashAttribute("msg", msg);
+            }
             return "redirect:http://order.mall.com/toTrade";
         }
 

@@ -1,16 +1,16 @@
-spring:
-  cloud:
-    alicloud:
-     access-key: LTAI5tDpf86mqFmF8UGK3p6L
-     secret-key: iFj7EATpgLBledYFlPWmO1JppJ3PT0
-
-     oss:
-       endpoint: oss-cn-hongkong.aliyuncs.com
-       bucket: hwj-mall
-
-     sms:
-       sms-access-key: LTAI5tFpJ6YS7nJVNT8KNf5S
-       sms-secret-key: 27CpgA6ZkTXwgHM2kZCMNXLtXd77yi
-       endpoint: dysmsapi.aliyuncs.com
-       sign-name: 传一家政服务
-       template-code: SMS_192985049
+#spring:
+#  cloud:
+#    alicloud:
+#     access-key: LTAI5tDpf86mqFmF8UGK3p6L
+#     secret-key: iFj7EATpgLBledYFlPWmO1JppJ3PT0
+#
+#     oss:
+#       endpoint: oss-cn-hongkong.aliyuncs.com
+#       bucket: hwj-mall
+#
+#     sms:
+#       sms-access-key: LTAI5tFpJ6YS7nJVNT8KNf5S
+#       sms-secret-key: 27CpgA6ZkTXwgHM2kZCMNXLtXd77yi
+#       endpoint: dysmsapi.aliyuncs.com
+#       sign-name: 传一家政服务
+#       template-code: SMS_192985049

@@ -7,11 +7,13 @@ import com.aliyun.teaopenapi.models.Config;
 import com.hwj.common.utils.R;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/sms")
+@RefreshScope
 public class SmsController {
 
     @Value("${spring.cloud.alicloud.sms.sms-access-key}")
@@ -39,7 +41,7 @@ public class SmsController {
                 .setTemplateParam("{\"code\":" + code + "}");
         // 复制代码运行请自行打印 API 的返回值
         SendSmsResponse sendSmsResponse = client.sendSms(sendSmsRequest);
-        return R.ok().put("code",sendSmsResponse.getBody().code);
+        return R.ok().put("code",templateCode);
     }
 
 
