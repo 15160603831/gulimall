@@ -17,6 +17,10 @@ spring:
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: mall-ware-fescar-service-group
 
 #防止调用feign接口超时
 ribbon:

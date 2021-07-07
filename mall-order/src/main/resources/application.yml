@@ -13,6 +13,10 @@ spring:
     cache: false
   session:
     store-type: redis
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: mall-order-service-seata-service-group
 
 #防止调用feign接口超时
 ribbon:
@@ -38,3 +42,4 @@ mall:
     core-pook-size: 20
     max-pool-size: 200
     keep-alive-time: 10
+

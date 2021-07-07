@@ -33,6 +33,7 @@ import com.hwj.mall.order.vo.OrderItemVo;
 import com.hwj.mall.order.vo.OrderSubmitVo;
 import com.hwj.mall.order.vo.SubmitOrderResponseVo;
 import com.hwj.mall.order.vo.WareSkuLockVo;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -141,6 +142,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      * @param vo
      * @return
      */
+    @GlobalTransactional
     @Transactional
     @Override
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) {
@@ -185,7 +187,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 if (r.getCode() == 0) {
                     //成功
                     responseVo.setOrderEntity(order.getOrder());
-                    int i = 10 / 0;
+//                    int i = 10 / 0;
                     return responseVo;
                 } else {
                     //5.1 锁定库存失败
@@ -212,6 +214,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         //保存数据项
         List<OrderItemEntity> orderItems = order.getOrderItems();
+        //todo s使用seata循环插入会失败
         orderItemService.saveBatch(orderItems);
     }
 
