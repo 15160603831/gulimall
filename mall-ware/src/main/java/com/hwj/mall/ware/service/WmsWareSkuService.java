@@ -1,12 +1,18 @@
 package com.hwj.mall.ware.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hwj.common.to.mq.OrderTo;
+import com.hwj.common.to.mq.StockLockedTo;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.ware.entity.WmsWareSkuEntity;
 import com.hwj.mall.ware.vo.LockStockResult;
 import com.hwj.mall.ware.vo.SkuHasStockVO;
 import com.hwj.mall.ware.vo.WareSkuLockVo;
+import com.rabbitmq.client.Channel;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -35,5 +41,7 @@ public interface WmsWareSkuService extends IService<WmsWareSkuEntity> {
      * @return
      */
     Boolean orderLockStock(WareSkuLockVo vo);
+
+    void unlock(StockLockedTo stockLockedTo);
 }
 

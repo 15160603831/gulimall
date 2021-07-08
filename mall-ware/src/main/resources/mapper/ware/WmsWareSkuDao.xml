@@ -40,5 +40,11 @@
           AND ware_id = #{wareId}
           AND stock - stock_locked >= #{num}
     </update>
+    <update id="unlockStock">
+        update wms_ware_sku
+        set stock_locked=stock_locked - #{skuNum}
+        WHERE sku_id = #{skuId}
+          AND ware_id = #{wareId}
+    </update>
 
 </mapper>

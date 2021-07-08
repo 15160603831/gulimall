@@ -38,4 +38,6 @@ public interface WmsWareSkuDao extends BaseMapper<WmsWareSkuEntity> {
      * @return
      */
     Long lockWareSku(@Param("skuId") Long skuId, @Param("num") Integer num, @Param("wareId") Long wareId);
+
+    void unlockStock(@Param("skuId") Long skuId, @Param("skuNum") Integer skuNum, @Param("wareId") Long wareId);
 }

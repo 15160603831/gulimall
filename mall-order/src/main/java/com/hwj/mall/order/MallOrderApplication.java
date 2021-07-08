@@ -1,5 +1,6 @@
 package com.hwj.mall.order;
 
+import com.alibaba.cloud.seata.GlobalTransactionAutoConfiguration;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,7 +11,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @EnableRedisHttpSession //整合session
 @EnableRabbit   //rabbit消息队列
 @EnableDiscoveryClient
-@SpringBootApplication
+@SpringBootApplication(exclude = {GlobalTransactionAutoConfiguration.class})
 @EnableFeignClients("com.hwj.mall.order.feign")
 public class MallOrderApplication {
 

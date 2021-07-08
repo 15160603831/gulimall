@@ -3,6 +3,8 @@ package com.hwj.mall.order.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,6 +19,7 @@ import com.hwj.mall.order.dao.OrderDao;
 import com.hwj.mall.order.dao.OrderItemDao;
 import com.hwj.mall.order.entity.OrderEntity;
 import com.hwj.mall.order.entity.OrderItemEntity;
+import com.hwj.mall.order.enume.OrderStatusEnum;
 import com.hwj.mall.order.feign.CartFeignService;
 import com.hwj.mall.order.feign.MemberFeignService;
 import com.hwj.mall.order.feign.ProductFeginService;
@@ -34,6 +37,7 @@ import com.hwj.mall.order.vo.OrderSubmitVo;
 import com.hwj.mall.order.vo.SubmitOrderResponseVo;
 import com.hwj.mall.order.vo.WareSkuLockVo;
 import io.seata.spring.annotation.GlobalTransactional;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -73,6 +77,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private ProductFeginService productFeginService;
     @Autowired
     private OrderItemService orderItemService;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
 
     //订单令牌过期时间
@@ -141,8 +147,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      *
      * @param vo
      * @return
+     * @GlobalTransactional 不适合高并发场景
      */
-    @GlobalTransactional
     @Transactional
     @Override
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) {
@@ -188,6 +194,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     //成功
                     responseVo.setOrderEntity(order.getOrder());
 //                    int i = 10 / 0;
+                    //订单创建成功后，将订单放入
+                    rabbitTemplate.convertAndSend("order-event-exchange", "order.create.order", order.getOrder());
+
                     return responseVo;
                 } else {
                     //5.1 锁定库存失败
@@ -199,6 +208,36 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 responseVo.setCode(2);
                 return responseVo;
             }
+        }
+    }
+
+    /**
+     * 查询订单状态
+     *
+     * @param orderSn
+     * @return
+     */
+    @Override
+    public OrderEntity getOrderByOrderSn(String orderSn) {
+        OrderEntity orderEntity = baseMapper.selectOne(new QueryWrapper<OrderEntity>().lambda().eq(OrderEntity::getOrderSn, orderSn));
+        return orderEntity;
+    }
+
+    /**
+     * 未付款取消订单
+     *
+     * @param order
+     */
+    @Override
+    public void closeOrder(OrderEntity order) {
+
+        //查询当前最新状态
+        OrderEntity orderEntity = baseMapper.selectById(order.getId());
+        if (orderEntity.getStatus().equals(OrderStatusEnum.CREATE_NEW.getCode())) {
+            LambdaUpdateWrapper<OrderEntity> wrapper = new UpdateWrapper<OrderEntity>().lambda()
+                    .eq(OrderEntity::getOrderSn, orderEntity.getOrderSn())
+                    .set(OrderEntity::getStatus, OrderStatusEnum.CANCLED.getCode());
+            baseMapper.update(orderEntity, wrapper);
         }
     }
 
@@ -286,6 +325,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      */
     private OrderEntity buildOrder(OrderSubmitVo vo) {
         OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setStatus(OrderStatusEnum.CREATE_NEW.getCode());
         //2.1、订单号
         String orderSn = IdWorker.getTimeId();
         orderEntity.setOrderSn(orderSn);

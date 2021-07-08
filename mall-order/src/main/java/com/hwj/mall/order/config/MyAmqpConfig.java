@@ -18,7 +18,7 @@ import javax.annotation.PostConstruct;
  * @author hwj
  */
 @Configuration
-public class RabbitConfig {
+public class MyAmqpConfig {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -38,23 +38,23 @@ public class RabbitConfig {
     /**
      * 定制rabbitTemplate
      */
-    @PostConstruct
-    public void initRabbitTemplate(){
-        //确认回调
-        rabbitTemplate.setConfirmCallback(new RabbitTemplate.ConfirmCallback() {
-            @Override
-            public void confirm(CorrelationData correlationData, boolean ack, String cause) {
-                System.out.println("confirm:::");
-            }
-        });
-        
-        rabbitTemplate.setReturnCallback(new RabbitTemplate.ReturnCallback() {
-            @Override
-            public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
-
-            }
-        });
-    }
+//    @PostConstruct
+//    public void initRabbitTemplate(){
+//        //确认回调
+//        rabbitTemplate.setConfirmCallback(new RabbitTemplate.ConfirmCallback() {
+//            @Override
+//            public void confirm(CorrelationData correlationData, boolean ack, String cause) {
+//                System.out.println("confirm:::");
+//            }
+//        });
+//
+//        rabbitTemplate.setReturnCallback(new RabbitTemplate.ReturnCallback() {
+//            @Override
+//            public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
+//
+//            }
+//        });
+//    }
 
 
 }
