@@ -5,6 +5,7 @@ import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.order.entity.OrderEntity;
 import com.hwj.mall.order.vo.OrderConfirmVo;
 import com.hwj.mall.order.vo.OrderSubmitVo;
+import com.hwj.mall.order.vo.PayVo;
 import com.hwj.mall.order.vo.SubmitOrderResponseVo;
 
 import java.util.Map;
@@ -51,5 +52,13 @@ public interface OrderService extends IService<OrderEntity> {
      * @param orderEntity
      */
     void closeOrder(OrderEntity orderEntity);
+
+    /**
+     * 根据订单号查订单信息
+     *
+     * @param orderSn
+     * @return
+     */
+    PayVo getOrderPay(String orderSn);
 }
 

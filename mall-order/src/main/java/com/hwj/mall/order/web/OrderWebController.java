@@ -1,5 +1,6 @@
 package com.hwj.mall.order.web;
 
+import com.alibaba.fastjson.JSON;
 import com.hwj.common.exception.NoStockException;
 import com.hwj.mall.order.service.OrderService;
 import com.hwj.mall.order.vo.OrderConfirmVo;
@@ -11,9 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.concurrent.ExecutionException;
@@ -29,6 +27,7 @@ public class OrderWebController {
     @GetMapping("/toTrade")
     public String toTrade(Model model) throws ExecutionException, InterruptedException {
         OrderConfirmVo orderConfirmVo = orderService.confirmVo();
+        System.out.println(JSON.toJSONString(orderConfirmVo));
         model.addAttribute("orderConfirmData", orderConfirmVo);
         return "confirm";
     }

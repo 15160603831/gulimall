@@ -43,5 +43,12 @@ public interface WmsWareSkuService extends IService<WmsWareSkuEntity> {
     Boolean orderLockStock(WareSkuLockVo vo);
 
     void unlock(StockLockedTo stockLockedTo);
+
+    /**
+     * 订单关闭释放库存
+     *
+     * @param orderTo
+     */
+    void unlock(OrderTo orderTo);
 }
 

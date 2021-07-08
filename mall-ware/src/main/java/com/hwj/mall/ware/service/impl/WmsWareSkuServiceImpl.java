@@ -239,6 +239,29 @@ public class WmsWareSkuServiceImpl extends ServiceImpl<WmsWareSkuDao, WmsWareSku
         }
     }
 
+    /**
+     * 订单关闭释放库存
+     *
+     * @param orderTo
+     */
+    @Override
+    public void unlock(OrderTo orderTo) {
+        //为防止重复解锁，需要重新查询工作单
+        String orderSn = orderTo.getOrderSn();
+        WmsWareOrderTaskEntity selectOne = wmsWareOrderTaskService.getBaseMapper().selectOne(
+                new QueryWrapper<WmsWareOrderTaskEntity>().lambda()
+                        .eq(WmsWareOrderTaskEntity::getOrderSn, orderSn));
+        //查询出当前订单相关的且处于锁定状态的工作单详情
+        Long id = selectOne.getId();
+        List<WmsWareOrderTaskDetailEntity> list = wmsWareOrderTaskDetailService.list(
+                new QueryWrapper<WmsWareOrderTaskDetailEntity>().lambda()
+                        .eq(WmsWareOrderTaskDetailEntity::getTaskId, id)
+                        .eq(WmsWareOrderTaskDetailEntity::getLockStatus, WareTaskStatusEnum.Locked.getCode()));
+        for (WmsWareOrderTaskDetailEntity taskDetailEntity : list) {
+            unLockStock(taskDetailEntity.getSkuId(), taskDetailEntity.getSkuNum(), taskDetailEntity.getWareId(), taskDetailEntity.getId());
+        }
+    }
+
 
     /**
      * 解锁库存

@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hwj.common.exception.NoStockException;
 import com.hwj.common.to.SkuHasStockVO;
+import com.hwj.common.to.mq.OrderTo;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.Query;
 import com.hwj.common.utils.R;
@@ -29,15 +30,10 @@ import com.hwj.mall.order.service.OrderItemService;
 import com.hwj.mall.order.service.OrderService;
 import com.hwj.mall.order.to.OrderCreateTo;
 import com.hwj.mall.order.to.SpuInfoTo;
-import com.hwj.mall.order.vo.FareVo;
-import com.hwj.mall.order.vo.MemberAddressVo;
-import com.hwj.mall.order.vo.OrderConfirmVo;
-import com.hwj.mall.order.vo.OrderItemVo;
-import com.hwj.mall.order.vo.OrderSubmitVo;
-import com.hwj.mall.order.vo.SubmitOrderResponseVo;
-import com.hwj.mall.order.vo.WareSkuLockVo;
+import com.hwj.mall.order.vo.*;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -194,9 +190,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     //成功
                     responseVo.setOrderEntity(order.getOrder());
 //                    int i = 10 / 0;
-                    //订单创建成功后，将订单放入
+                    //发送消息到订单延迟队列，判断过期订单
                     rabbitTemplate.convertAndSend("order-event-exchange", "order.create.order", order.getOrder());
-
                     return responseVo;
                 } else {
                     //5.1 锁定库存失败
@@ -238,7 +233,34 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     .eq(OrderEntity::getOrderSn, orderEntity.getOrderSn())
                     .set(OrderEntity::getStatus, OrderStatusEnum.CANCLED.getCode());
             baseMapper.update(orderEntity, wrapper);
+            //todo 关单后发送消息通知其他服务进行关单相关的操作，如解锁库存
+            OrderTo orderTo = new OrderTo();
+            BeanUtils.copyProperties(orderEntity, orderTo);
+            rabbitTemplate.convertAndSend("order-event-exchange", "order.release.other", orderTo);
         }
+    }
+
+    /**
+     * 根据订单号查订单信息
+     *
+     * @param orderSn
+     * @return
+     */
+    @Override
+    public PayVo getOrderPay(String orderSn) {
+
+        OrderEntity orderEntity =
+                baseMapper.selectOne(new QueryWrapper<OrderEntity>().lambda().eq(OrderEntity::getOrderSn, orderSn));
+
+        List<OrderItemEntity> list = orderItemService.list(new QueryWrapper<OrderItemEntity>().lambda().eq(OrderItemEntity::getOrderSn, orderSn));
+        OrderItemEntity orderItemEntity = list.get(0);
+        PayVo payVo = new PayVo();
+        payVo.setBody(orderItemEntity.getSkuAttrsVals());
+        payVo.setSubject(orderItemEntity.getSkuName());
+        payVo.setOut_trade_no(orderEntity.getOrderSn());
+        BigDecimal bigDecimal = orderEntity.getPayAmount().setScale(2, BigDecimal.ROUND_UP);
+        payVo.setTotal_amount(bigDecimal.toString());
+        return payVo;
     }
 
     /**
