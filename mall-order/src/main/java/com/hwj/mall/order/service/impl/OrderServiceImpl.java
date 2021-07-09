@@ -264,6 +264,33 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     }
 
     /**
+     * 用户订单列表
+     *
+     * @param params
+     * @return
+     */
+    @Override
+    public PageUtils queryPageWithItem(Map<String, Object> params) {
+        //拦截器获取缓存中的用户信息
+        MemberEntity memberEntity = LoginUserInterceptor.loginUser.get();
+        IPage<OrderEntity> page = this.page(
+                new Query<OrderEntity>().getPage(params),
+                new QueryWrapper<OrderEntity>().lambda()
+                        .eq(OrderEntity::getMemberId, memberEntity.getId())
+                        .orderByDesc(OrderEntity::getId)
+        );
+        List<OrderEntity> order_sn = page.getRecords().stream().map(order -> {
+            List<OrderItemEntity> list = orderItemService.list(
+                    new QueryWrapper<OrderItemEntity>().lambda().eq(OrderItemEntity::getOrderSn, order.getOrderSn()));
+            order.setItemEntityList(list);
+            return order;
+        }).collect(Collectors.toList());
+        page.setRecords(order_sn);
+
+        return new PageUtils(page);
+    }
+
+    /**
      * 构建数据项成功，保存订单到数据库
      *
      * @param order

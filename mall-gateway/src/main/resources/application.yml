@@ -71,6 +71,11 @@ spring:
             - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment}
 
 
+        - id: mall_member_route
+          uri: lb://mall-member
+          predicates:
+            - Host=member.mall.com
+
         - id: mall_order_route
           uri: lb://mall-order
           predicates:
@@ -91,10 +96,11 @@ spring:
           predicates:
             - Host=auth.mall.com
 
-        - id: mall_host_route
+        - id: mall_product_route
           uri: lb://mall-product
           predicates:
             - Host=**.mall.com
+
 
   profiles:
     active: nacos

@@ -24,7 +24,6 @@ public class PayWebController {
     public String payOrder(@RequestParam("orderSn") String orderSn) throws AlipayApiException {
         PayVo payVo = orderService.getOrderPay(orderSn);
         String pay = alipayTemplate.pay(payVo);
-        System.out.println(pay);
         return pay;
     }
 }
