@@ -4,6 +4,7 @@ import com.alipay.api.AlipayApiException;
 import com.hwj.mall.order.config.AlipayTemplate;
 import com.hwj.mall.order.service.OrderService;
 import com.hwj.mall.order.vo.PayVo;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ public class PayWebController {
     private OrderService orderService;
 
 
+    @ApiOperation("根据订单号查订单信息")
     @ResponseBody
     @GetMapping(value = "/payOrder", produces = "text/html")
     public String payOrder(@RequestParam("orderSn") String orderSn) throws AlipayApiException {

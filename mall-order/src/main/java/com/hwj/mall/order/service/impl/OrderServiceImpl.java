@@ -20,6 +20,7 @@ import com.hwj.mall.order.dao.OrderDao;
 import com.hwj.mall.order.dao.OrderItemDao;
 import com.hwj.mall.order.entity.OrderEntity;
 import com.hwj.mall.order.entity.OrderItemEntity;
+import com.hwj.mall.order.entity.PaymentInfoEntity;
 import com.hwj.mall.order.enume.OrderStatusEnum;
 import com.hwj.mall.order.feign.CartFeignService;
 import com.hwj.mall.order.feign.MemberFeignService;
@@ -28,6 +29,7 @@ import com.hwj.mall.order.feign.WmsFeignService;
 import com.hwj.mall.order.interceptor.LoginUserInterceptor;
 import com.hwj.mall.order.service.OrderItemService;
 import com.hwj.mall.order.service.OrderService;
+import com.hwj.mall.order.service.PaymentInfoService;
 import com.hwj.mall.order.to.OrderCreateTo;
 import com.hwj.mall.order.to.SpuInfoTo;
 import com.hwj.mall.order.vo.*;
@@ -75,6 +77,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     private OrderItemService orderItemService;
     @Autowired
     private RabbitTemplate rabbitTemplate;
+    @Autowired
+    private PaymentInfoService paymentInfoService;
 
 
     //订单令牌过期时间
@@ -288,6 +292,31 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         page.setRecords(order_sn);
 
         return new PageUtils(page);
+    }
+
+    /**
+     * 支付成功保存支付流水，修改订单状态 0-》1
+     *
+     * @param payAsyncVo
+     */
+    @Override
+    public void handlerPayResult(PayAsyncVo payAsyncVo) {
+        //保存交易流水
+        PaymentInfoEntity infoEntity = new PaymentInfoEntity();
+        String orderSn = payAsyncVo.getOut_trade_no();
+        infoEntity.setOrderSn(orderSn);
+        infoEntity.setAlipayTradeNo(payAsyncVo.getTrade_no());
+        infoEntity.setSubject(payAsyncVo.getSubject());
+        String trade_status = payAsyncVo.getTrade_status();
+        infoEntity.setPaymentStatus(trade_status);
+        infoEntity.setCreateTime(new Date());
+        infoEntity.setCallbackTime(payAsyncVo.getNotify_time());
+        paymentInfoService.save(infoEntity);
+
+        //判断交易状态是否成功
+        if (trade_status.equals("TRADE_SUCCESS") || trade_status.equals("TRADE_FINISHED")) {
+            baseMapper.updateOrderStatus(orderSn,OrderStatusEnum.PAYED.getCode());
+        }
     }
 
     /**

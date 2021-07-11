@@ -26,7 +26,7 @@ import com.hwj.common.utils.R;
  * @date 2021-03-23 17:34:46
  */
 @RestController
-@RequestMapping("coupon/smscouponhistory")
+@RequestMapping("coupon/couponhistory")
 public class SmsCouponHistoryController {
     @Autowired
     private SmsCouponHistoryService smsCouponHistoryService;

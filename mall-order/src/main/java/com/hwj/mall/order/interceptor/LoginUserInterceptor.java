@@ -23,8 +23,10 @@ public class LoginUserInterceptor implements HandlerInterceptor {
 
 
         String uri = request.getRequestURI();
-        boolean match = new AntPathMatcher().match("/order/order/infoByOrderSn/**", uri);
-        if (match) {
+        AntPathMatcher matcher = new AntPathMatcher();
+        boolean match2 = matcher.match("/payed/notify", uri);
+        boolean match = matcher.match("/order/order/infoByOrderSn/**", uri);
+        if (match || match2) {
             return true;
         }
         MemberEntity attribute = (MemberEntity) request.getSession().getAttribute(AuthConstant.LOGIN_USER);

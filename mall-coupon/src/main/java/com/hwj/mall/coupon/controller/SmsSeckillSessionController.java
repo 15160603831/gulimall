@@ -26,7 +26,7 @@ import com.hwj.common.utils.R;
  * @date 2021-03-23 17:34:43
  */
 @RestController
-@RequestMapping("coupon/smsseckillsession")
+@RequestMapping("coupon/seckillsession")
 public class SmsSeckillSessionController {
     @Autowired
     private SmsSeckillSessionService smsSeckillSessionService;

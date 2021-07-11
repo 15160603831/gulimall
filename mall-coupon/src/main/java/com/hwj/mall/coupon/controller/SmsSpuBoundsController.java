@@ -27,7 +27,7 @@ import com.hwj.common.utils.R;
  * @date 2021-03-23 17:34:44
  */
 @RestController
-@RequestMapping("coupon/smsspubounds")
+@RequestMapping("coupon/spubounds")
 public class SmsSpuBoundsController {
     @Autowired
     private SmsSpuBoundsService smsSpuBoundsService;

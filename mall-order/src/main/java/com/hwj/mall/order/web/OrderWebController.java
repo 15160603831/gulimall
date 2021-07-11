@@ -79,7 +79,7 @@ public class OrderWebController {
         Map<String, Object> params = new HashMap<>();
         params.put("page", pageNum.toString());
         PageUtils page = orderService.queryPageWithItem(params);
-        System.out.println(JSON.toJSONString(page));
+//        System.out.println(JSON.toJSONString(page));
         model.addAttribute("pageUtil", page);
         return "list";
     }

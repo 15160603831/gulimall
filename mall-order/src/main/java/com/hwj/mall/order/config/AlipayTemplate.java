@@ -24,7 +24,7 @@ public class AlipayTemplate {
     private String alipay_public_key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiojpehzKRiXWqSI//le3NEgs/ZmVHpfNoQBzW2EUgT8MaqQhQOp7Va6QEQb7Zx9T2bglXy3vIRmlcFvDP09nSjAVi8JJjT9dj6iwV9UMGUHp5hSuBFOwtirT/anTRugiv6/aE6CtVm6pYf79ZoS5GbYRoVJPlBO4MIqgvSzYGHU5eSutOhkhEVpPQ9j7a6iUqk/8/pTwAEvM0JXIhkUXLBshEqnk7OUna+ZJI4du2Gn/i+TYd+6xutrZyWR3VeT1DoaM/ibhxedChrX2Pbpxs2qgbJThOg/WydRDzJW7drKC0GF843yVDULoV93EgfmWsMflVzfb++1FmBmrBexDSwIDAQAB";
     // 服务器[异步通知]页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
     // 支付宝会悄悄的给我们发送一个请求，告诉我们支付成功的信息
-    private String notify_url = "http://nxz9r8.natappfree.cc/payed/notify";
+    private String notify_url = "http://huangwenjun.xyz/payed/notify";
 
     // 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
     //同步通知，支付成功，一般跳转到成功页
@@ -65,6 +65,7 @@ public class AlipayTemplate {
                 + "\"total_amount\":\"" + total_amount + "\","
                 + "\"subject\":\"" + subject + "\","
                 + "\"body\":\"" + body + "\","
+                +"\"timeout_express\":\"1m\","
                 + "\"product_code\":\"FAST_INSTANT_TRADE_PAY\"}");
 
         String result = alipayClient.pageExecute(alipayRequest).getBody();

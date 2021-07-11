@@ -27,7 +27,7 @@ import com.hwj.common.utils.R;
  * @date 2021-03-23 17:34:44
  */
 @RestController
-@RequestMapping("coupon/smsskufullreduction")
+@RequestMapping("coupon/skufullreduction")
 public class SmsSkuFullReductionController {
     @Autowired
     private SmsSkuFullReductionService smsSkuFullReductionService;

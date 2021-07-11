@@ -26,7 +26,7 @@ import com.hwj.common.utils.R;
  * @date 2021-03-23 17:34:45
  */
 @RestController
-@RequestMapping("coupon/smshomesubjectspu")
+@RequestMapping("coupon/homesubjectspu")
 public class SmsHomeSubjectSpuController {
     @Autowired
     private SmsHomeSubjectSpuService smsHomeSubjectSpuService;

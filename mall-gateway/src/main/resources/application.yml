@@ -52,6 +52,14 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>/?.*), /$\{segment}
 
+        #将路径为path=/api/**转发至 mall-coupon
+        - id: coupon_route
+          uri: lb://mall-coupon
+          predicates:
+            - Path=/api/coupon/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*), /$\{segment}
+
         #将路径为path=/api/**转发至 第三方服务
         - id: thirdParty
           uri: lb://mall-third-party

@@ -24,7 +24,7 @@ import com.hwj.common.utils.R;
  */
 @RefreshScope
 @RestController
-@RequestMapping("coupon/smscoupon")
+@RequestMapping("coupon/coupon")
 public class SmsCouponController {
     @Autowired
     private SmsCouponService smsCouponService;
