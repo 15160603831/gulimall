@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.coupon.entity.SmsSeckillSessionEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +17,12 @@ import java.util.Map;
 public interface SmsSeckillSessionService extends IService<SmsSeckillSessionEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * 查最近三天的活动
+     *
+     * @return
+     */
+    List<SmsSeckillSessionEntity> getLates3DaysSession();
 }
 

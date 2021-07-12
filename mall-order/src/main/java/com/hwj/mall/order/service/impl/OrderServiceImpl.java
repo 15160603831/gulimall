@@ -34,6 +34,7 @@ import com.hwj.mall.order.to.OrderCreateTo;
 import com.hwj.mall.order.to.SpuInfoTo;
 import com.hwj.mall.order.vo.*;
 import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,7 @@ import java.util.stream.Collectors;
 
 
 @Service("orderService")
+@Slf4j
 public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> implements OrderService {
     @Autowired
     private MemberFeignService memberFeignService;
@@ -229,7 +231,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      */
     @Override
     public void closeOrder(OrderEntity order) {
-
         //查询当前最新状态
         OrderEntity orderEntity = baseMapper.selectById(order.getId());
         if (orderEntity.getStatus().equals(OrderStatusEnum.CREATE_NEW.getCode())) {
@@ -237,6 +238,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     .eq(OrderEntity::getOrderSn, orderEntity.getOrderSn())
                     .set(OrderEntity::getStatus, OrderStatusEnum.CANCLED.getCode());
             baseMapper.update(orderEntity, wrapper);
+            log.info("订单：{}状态更改为已取消", orderEntity.getOrderSn());
             //todo 关单后发送消息通知其他服务进行关单相关的操作，如解锁库存
             OrderTo orderTo = new OrderTo();
             BeanUtils.copyProperties(orderEntity, orderTo);
@@ -315,7 +317,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         //判断交易状态是否成功
         if (trade_status.equals("TRADE_SUCCESS") || trade_status.equals("TRADE_FINISHED")) {
-            baseMapper.updateOrderStatus(orderSn,OrderStatusEnum.PAYED.getCode());
+            baseMapper.updateOrderStatus(orderSn, OrderStatusEnum.PAYED.getCode());
         }
     }
 

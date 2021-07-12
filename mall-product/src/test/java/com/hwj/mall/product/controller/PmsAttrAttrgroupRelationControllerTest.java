@@ -1,31 +1,30 @@
 package com.hwj.mall.product.controller;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hwj.mall.product.dao.PmsAttrGroupDao;
 import com.hwj.mall.product.dao.PmsSkuSaleAttrValueDao;
+import com.hwj.mall.product.entity.PmsAttrAttrgroupRelationEntity;
 import com.hwj.mall.product.entity.PmsBrandEntity;
 import com.hwj.mall.product.service.PmsBrandService;
-
-
-import com.hwj.mall.product.vo.SkuItemSaleAttrVo;
-import com.hwj.mall.product.vo.SpuItemAttrGroupVo;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
 
-@Slf4j
-@SpringBootTest
-@RunWith(SpringRunner.class)
+//@Slf4j
+//@SpringBootTest
+//@RunWith(SpringRunner.class)
 public class PmsAttrAttrgroupRelationControllerTest {
 
     @Autowired
@@ -78,11 +77,24 @@ public class PmsAttrAttrgroupRelationControllerTest {
 
     @Test
     public void test() {
-        List<SpuItemAttrGroupVo> atrGroupWithAttrsBySpuId = pmsAttrGroupDao.getAtrGroupWithAttrsBySpuId(30L, 225L);
-        System.out.println(atrGroupWithAttrsBySpuId);
-        List<SkuItemSaleAttrVo> saleAttrBySpuId = skuSaleAttrValueDao.getSaleAttrBySpuId(30L);
-        System.out.println(saleAttrBySpuId);
+
     }
-//
+
+    //当前天数的 00:00:00
+    private String getStartTime() {
+        LocalDate now = LocalDate.now();
+        LocalDateTime time = now.atTime(LocalTime.MIN);
+        String format = time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return format;
+    }
+
+    //当前天数+2 23:59:59..
+    private String getEndTime() {
+        LocalDate now = LocalDate.now();
+        LocalDateTime time = now.plusDays(1).atTime(LocalTime.MIN);
+        String format = time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return format;
+    }
+
 
 }

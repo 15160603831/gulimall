@@ -8,6 +8,8 @@ import com.hwj.mall.order.vo.OrderConfirmVo;
 import com.hwj.mall.order.vo.OrderSubmitVo;
 import com.hwj.mall.order.vo.SubmitOrderResponseVo;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Scope;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Controller
+@Slf4j
 public class OrderWebController {
 
     @Autowired
@@ -79,7 +82,6 @@ public class OrderWebController {
         Map<String, Object> params = new HashMap<>();
         params.put("page", pageNum.toString());
         PageUtils page = orderService.queryPageWithItem(params);
-//        System.out.println(JSON.toJSONString(page));
         model.addAttribute("pageUtil", page);
         return "list";
     }

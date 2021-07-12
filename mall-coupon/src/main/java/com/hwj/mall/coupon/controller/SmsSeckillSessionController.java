@@ -1,10 +1,12 @@
 package com.hwj.mall.coupon.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +17,6 @@ import com.hwj.mall.coupon.entity.SmsSeckillSessionEntity;
 import com.hwj.mall.coupon.service.SmsSeckillSessionService;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.R;
-
 
 
 /**
@@ -35,7 +36,7 @@ public class SmsSeckillSessionController {
      * 列表
      */
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = smsSeckillSessionService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -46,8 +47,8 @@ public class SmsSeckillSessionController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
-		SmsSeckillSessionEntity smsSeckillSession = smsSeckillSessionService.getById(id);
+    public R info(@PathVariable("id") Long id) {
+        SmsSeckillSessionEntity smsSeckillSession = smsSeckillSessionService.getById(id);
 
         return R.ok().put("smsSeckillSession", smsSeckillSession);
     }
@@ -56,8 +57,8 @@ public class SmsSeckillSessionController {
      * 保存
      */
     @RequestMapping("/save")
-    public R save(@RequestBody SmsSeckillSessionEntity smsSeckillSession){
-		smsSeckillSessionService.save(smsSeckillSession);
+    public R save(@RequestBody SmsSeckillSessionEntity smsSeckillSession) {
+        smsSeckillSessionService.save(smsSeckillSession);
 
         return R.ok();
     }
@@ -66,8 +67,8 @@ public class SmsSeckillSessionController {
      * 修改
      */
     @RequestMapping("/update")
-    public R update(@RequestBody SmsSeckillSessionEntity smsSeckillSession){
-		smsSeckillSessionService.updateById(smsSeckillSession);
+    public R update(@RequestBody SmsSeckillSessionEntity smsSeckillSession) {
+        smsSeckillSessionService.updateById(smsSeckillSession);
 
         return R.ok();
     }
@@ -76,10 +77,22 @@ public class SmsSeckillSessionController {
      * 删除
      */
     @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
-		smsSeckillSessionService.removeByIds(Arrays.asList(ids));
+    public R delete(@RequestBody Long[] ids) {
+        smsSeckillSessionService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
+    }
+
+
+    /**
+     * 获取最近三天的活动
+     *
+     * @return
+     */
+    @GetMapping("/getLates3DaysSession")
+    public R getLates3DaysSession() {
+        List<SmsSeckillSessionEntity> sessionEntities = smsSeckillSessionService.getLates3DaysSession();
+        return R.ok().put("sessionEntities", sessionEntities);
     }
 
 }
