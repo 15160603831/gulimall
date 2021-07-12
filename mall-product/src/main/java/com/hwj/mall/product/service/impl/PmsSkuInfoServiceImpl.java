@@ -1,19 +1,24 @@
 package com.hwj.mall.product.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.common.utils.Query;
+import com.hwj.common.utils.R;
 import com.hwj.mall.product.dao.PmsSkuInfoDao;
 import com.hwj.mall.product.entity.PmsSkuImagesEntity;
 import com.hwj.mall.product.entity.PmsSkuInfoEntity;
 import com.hwj.mall.product.entity.PmsSpuInfoDescEntity;
+import com.hwj.mall.product.feign.SeckilFeignService;
 import com.hwj.mall.product.service.PmsAttrGroupService;
 import com.hwj.mall.product.service.PmsSkuImagesService;
 import com.hwj.mall.product.service.PmsSkuInfoService;
 import com.hwj.mall.product.service.PmsSkuSaleAttrValueService;
 import com.hwj.mall.product.service.PmsSpuInfoDescService;
+import com.hwj.mall.product.vo.SeckillSkuVo;
 import com.hwj.mall.product.vo.SkuItemSaleAttrVo;
 import com.hwj.mall.product.vo.SkuItemVo;
 import com.hwj.mall.product.vo.SpuItemAttrGroupVo;
@@ -44,6 +49,8 @@ public class PmsSkuInfoServiceImpl extends ServiceImpl<PmsSkuInfoDao, PmsSkuInfo
     private PmsSkuSaleAttrValueService skuSaleAttrValueService;
     @Autowired
     private ThreadPoolExecutor executor;
+    @Autowired
+    private SeckilFeignService seckilFeignService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -151,9 +158,19 @@ public class PmsSkuInfoServiceImpl extends ServiceImpl<PmsSkuInfoDao, PmsSkuInfo
             vo.setSkuImagesEntities(images);
         }, executor);
 
-        //等待所有任务都完成
+        CompletableFuture<Void> seckillSkuRedisTo = CompletableFuture.runAsync(() -> {
+            //查询商品是否参加秒杀优惠
+            R r = seckilFeignService.getSeckillSkuInfo(skuId);
+            if (r.getCode() == 0) {
+                SeckillSkuVo seckillSkuVo = JSON.parseObject(JSON.toJSONString(r.get("SeckillSkuRedisTo")), new TypeReference<SeckillSkuVo>() {
+                });
+                vo.setSeckillSkuVo(seckillSkuVo);
+            }
+        }, executor);
 
-            CompletableFuture.allOf(saleAttrFuture,descFuture,baseAttrFuture,imageFuture).get();
+
+        //等待所有任务都完成
+        CompletableFuture.allOf(saleAttrFuture, descFuture, baseAttrFuture, imageFuture, seckillSkuRedisTo).get();
 
 
         return vo;

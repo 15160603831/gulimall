@@ -35,4 +35,7 @@ public class SkuItemVo {
     @ApiModelProperty(value = "spu规格参数信息")
     private List<SpuItemAttrGroupVo> groupAttrs;
 
+    @ApiModelProperty("商品秒杀优惠信息")
+    private SeckillSkuVo seckillSkuVo;
+
 }

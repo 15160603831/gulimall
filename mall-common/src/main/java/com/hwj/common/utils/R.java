@@ -8,6 +8,8 @@
 
 package com.hwj.common.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import io.swagger.models.auth.In;
 import org.apache.http.HttpStatus;
 
@@ -29,13 +31,12 @@ public class R<T> extends HashMap<String, Object> {
 
     private T data;
 
-    public T getData() {
-        return data;
+
+    public R setData(Object data) {
+        put("data", data);
+        return this;
     }
 
-    public void setData(T data) {
-        this.data = data;
-    }
 
     public static R error() {
         return error(HttpStatus.SC_INTERNAL_SERVER_ERROR, "未知异常，请联系管理员");
@@ -75,5 +76,17 @@ public class R<T> extends HashMap<String, Object> {
 
     public Integer getCode() {
         return (Integer) this.get("code");
+    }
+
+
+    public <T> T getData(TypeReference<T> tTypeReference) {
+        return this.getData("data", tTypeReference);
+    }
+
+    public <T> T getData(String key, TypeReference<T> tTypeReference) {
+        Object data = this.get(key);
+        String toJSONString = JSON.toJSONString(data);
+        T t = JSON.parseObject(toJSONString, tTypeReference);
+        return t;
     }
 }

@@ -16,7 +16,7 @@ public class MyRedissonConfig {
     public RedissonClient redissonClient() {
         Config config = new Config();
         //使用redis://来启用ssl连接
-        config.useSingleServer().setAddress("redis://47.107.108.206:6379");
+        config.useSingleServer().setAddress("redis://47.107.108.206:6379").setPingConnectionInterval(1000);
         RedissonClient redisson = Redisson.create(config);
         return redisson;
     }

@@ -79,6 +79,12 @@ spring:
             - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment}
 
 
+        - id: mall_seckill_route
+          uri: lb://mall-seckill
+          predicates:
+            - Host=seckill.mall.com
+
+
         - id: mall_member_route
           uri: lb://mall-member
           predicates:
@@ -103,6 +109,7 @@ spring:
           uri: lb://mall-auth-server
           predicates:
             - Host=auth.mall.com
+
 
         - id: mall_product_route
           uri: lb://mall-product
