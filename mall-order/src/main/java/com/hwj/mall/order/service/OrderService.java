@@ -1,6 +1,7 @@
 package com.hwj.mall.order.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hwj.common.to.mq.SeckillOrderTo;
 import com.hwj.common.utils.PageUtils;
 import com.hwj.mall.order.entity.OrderEntity;
 import com.hwj.mall.order.vo.*;
@@ -68,8 +69,16 @@ public interface OrderService extends IService<OrderEntity> {
 
     /**
      * 支付成功修改订单状态 0-》1
+     *
      * @param vo
      */
     void handlerPayResult(PayAsyncVo vo);
+
+    /**
+     * 保存秒杀订单
+     *
+     * @param orderTo
+     */
+    void createSeckillOrder(SeckillOrderTo orderTo);
 }
 

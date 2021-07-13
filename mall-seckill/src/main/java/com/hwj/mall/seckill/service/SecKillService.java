@@ -22,6 +22,16 @@ public interface SecKillService {
      */
     SeckillSkuRedisTo getSeckillSkuInfo(Long skuId);
 
+    /**
+     * 立即购买
+     *
+     * @param killId
+     * @param key
+     * @param num
+     * @return
+     */
+    String kill(String killId, String key, Integer num);
+
 
 //
 //    SeckillSkuRedisTo getSeckillSkuInfo(Long skuId);
