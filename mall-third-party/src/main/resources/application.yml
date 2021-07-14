@@ -14,3 +14,9 @@ spring:
        endpoint: dysmsapi.aliyuncs.com
        sign-name: 传一家政服务
        template-code: SMS_192985049
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
