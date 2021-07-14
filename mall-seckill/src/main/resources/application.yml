@@ -12,7 +12,7 @@ spring:
     name: mall-seckill
 
   profiles:
-    active: nacos,redis
+    active: nacos,redis,sentinel
 
   thymeleaf:
     cache: false

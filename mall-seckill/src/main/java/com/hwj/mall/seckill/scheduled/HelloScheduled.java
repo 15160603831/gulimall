@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class HelloScheduled {
 
-    @Scheduled(cron = "0 0 3 * * ?")
-    @Async
-    public void hello() {
-        log.info("hello");
-    }
+//    @Scheduled(cron = "0 0 3 * * ?")
+//    @Async
+//    public void hello() {
+//        log.info("hello");
+//    }
 
 }

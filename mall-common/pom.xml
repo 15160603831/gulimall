@@ -184,17 +184,26 @@
             <artifactId>httpcore</artifactId>
             <version>4.2.1</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>commons-lang</groupId>-->
-<!--            <artifactId>commons-lang</artifactId>-->
-<!--            <version>${commons.lang.version}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>commons-lang</groupId>-->
+        <!--            <artifactId>commons-lang</artifactId>-->
+        <!--            <version>${commons.lang.version}</version>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
             <version>9.3.7.v20160115</version>
         </dependency>
 
+        <!--        分布式服务架构的流量控制组件-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
 
 
     </dependencies>

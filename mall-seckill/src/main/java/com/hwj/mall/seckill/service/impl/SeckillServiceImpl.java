@@ -224,59 +224,62 @@ public class SeckillServiceImpl implements SecKillService {
      * @param sessionEntities
      */
     private void saveSessionInfos(List<SeckillSessionWithSkusVo> sessionEntities) {
-        sessionEntities.stream().forEach(session -> {
-            long startTime = session.getStartTime().getTime();
-            long endTime = session.getEndTime().getTime();
-            String key = SESSION_CACHE_PREFIX + startTime + "_" + endTime;
-            if (!redisTemplate.hasKey(key)) {
-                List<String> collect = session.getRelationSkus().stream().map(sku -> sku.getPromotionSessionId().toString() + "_" + sku.getSkuId().toString()).collect(Collectors.toList());
-                redisTemplate.opsForList().leftPushAll(key, collect);
-            }
-        });
-
+        if (!CollectionUtils.isEmpty(sessionEntities)) {
+            sessionEntities.stream().forEach(session -> {
+                long startTime = session.getStartTime().getTime();
+                long endTime = session.getEndTime().getTime();
+                String key = SESSION_CACHE_PREFIX + startTime + "_" + endTime;
+                if (!redisTemplate.hasKey(key)) {
+                    List<String> collect = session.getRelationSkus().stream().map(sku -> sku.getPromotionSessionId().toString() + "_" + sku.getSkuId().toString()).collect(Collectors.toList());
+                    redisTemplate.opsForList().leftPushAll(key, collect);
+                }
+            });
+        }
     }
 
     /**
      * @param sessionEntities
      */
     private void saveSessionSkuInfos(List<SeckillSessionWithSkusVo> sessionEntities) {
-        sessionEntities.stream().forEach(session -> {
-            //绑定hash操作
-            BoundHashOperations<String, Object, Object> hashOps = redisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
-            session.getRelationSkus().stream().forEach(skuItem -> {
-                String token = UUID.randomUUID().toString().replace("-", "");
+        if (!CollectionUtils.isEmpty(sessionEntities)) {
+            sessionEntities.stream().forEach(session -> {
+                //绑定hash操作
+                BoundHashOperations<String, Object, Object> hashOps = redisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
+                session.getRelationSkus().stream().forEach(skuItem -> {
+                    String token = UUID.randomUUID().toString().replace("-", "");
 
-                if (!hashOps.hasKey(skuItem.getPromotionSessionId().toString() + "_" + skuItem.getSkuId().toString())) {
+                    if (!hashOps.hasKey(skuItem.getPromotionSessionId().toString() + "_" + skuItem.getSkuId().toString())) {
 
-                    //缓存商品
-                    SeckillSkuRedisTo redisTo = new SeckillSkuRedisTo();
+                        //缓存商品
+                        SeckillSkuRedisTo redisTo = new SeckillSkuRedisTo();
 
-                    //1.sku的基本信息
-                    R r = productFeignService.info(skuItem.getSkuId());
-                    if (r.getCode() == 0) {
-                        SkuInfoVo pmsSkuInfo = JSON.parseObject(JSON.toJSONString(r.get("pmsSkuInfo")),
-                                new TypeReference<SkuInfoVo>() {
-                                });
-                        redisTo.setSkuInfoVo(pmsSkuInfo);
+                        //1.sku的基本信息
+                        R r = productFeignService.info(skuItem.getSkuId());
+                        if (r.getCode() == 0) {
+                            SkuInfoVo pmsSkuInfo = JSON.parseObject(JSON.toJSONString(r.get("pmsSkuInfo")),
+                                    new TypeReference<SkuInfoVo>() {
+                                    });
+                            redisTo.setSkuInfoVo(pmsSkuInfo);
+                        }
+                        //2.sku的秒杀信息
+                        BeanUtils.copyProperties(skuItem, redisTo);
+                        //3、当前商品的秒杀信息
+                        redisTo.setStartTime(session.getStartTime().getTime());
+                        redisTo.setEndTime(session.getEndTime().getTime());
+
+                        //秒杀商品随机码
+                        redisTo.setRandomCode(token);
+
+                        String s = JSON.toJSONString(redisTo);
+                        hashOps.put(skuItem.getPromotionSessionId().toString() + "_" + skuItem.getSkuId().toString(), s);
+                        //5.使用库存作为分布式信号量  限流
+                        RSemaphore semaphore = redissonClient.getSemaphore(SKU_STOCK_SEMAPHORE + token);
+                        semaphore.trySetPermits(skuItem.getSeckillCount());
+
                     }
-                    //2.sku的秒杀信息
-                    BeanUtils.copyProperties(skuItem, redisTo);
-                    //3、当前商品的秒杀信息
-                    redisTo.setStartTime(session.getStartTime().getTime());
-                    redisTo.setEndTime(session.getEndTime().getTime());
 
-                    //秒杀商品随机码
-                    redisTo.setRandomCode(token);
-
-                    String s = JSON.toJSONString(redisTo);
-                    hashOps.put(skuItem.getPromotionSessionId().toString() + "_" + skuItem.getSkuId().toString(), s);
-                    //5.使用库存作为分布式信号量  限流
-                    RSemaphore semaphore = redissonClient.getSemaphore(SKU_STOCK_SEMAPHORE + token);
-                    semaphore.trySetPermits(skuItem.getSeckillCount());
-
-                }
-
+                });
             });
-        });
+        }
     }
 }
