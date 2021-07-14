@@ -13,7 +13,7 @@ spring:
     name: mall-ware
 
   profiles:
-    active: nacos,rabbit
+    active: nacos,rabbit,sentinel
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss

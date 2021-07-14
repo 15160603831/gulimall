@@ -10,7 +10,7 @@ spring:
   application:
     name: mall-coupon
   profiles:
-    active: nacos
+    active: nacos,sentinel
 
 
 ##mybatis-plus相关配置
