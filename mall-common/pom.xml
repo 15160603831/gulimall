@@ -205,6 +205,16 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
             <version>2.1.8.RELEASE</version>
         </dependency>
+        <!--链路追踪  zipkin可视化观察-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-starter-sleuth</artifactId>-->
+<!--        </dependency>-->
+
 
 
     </dependencies>

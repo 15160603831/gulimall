@@ -5,7 +5,7 @@ spring:
   application:
     name: mall-cart
   profiles:
-    active: nacos,redis,sentinel
+    active: nacos,redis,sentinel,zipkin
   session:
     store-type: redis
 

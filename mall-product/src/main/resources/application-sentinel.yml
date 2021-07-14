@@ -10,5 +10,7 @@ management:
     web:
       exposure:
         include: '*'
-
-
+# 开启熔断
+feign:
+  sentinel:
+    enabled: true

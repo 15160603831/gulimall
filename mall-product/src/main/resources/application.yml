@@ -15,7 +15,7 @@ spring:
     name: mall-product
 
   profiles:
-    active: nacos,sentinel
+    active: nacos,sentinel,zipkin
 
   thymeleaf:
     cache: false

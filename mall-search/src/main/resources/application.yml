@@ -3,7 +3,7 @@ spring:
     name: mall-search
 
   profiles:
-    active: nacos,redis,sentinel
+    active: nacos,redis,sentinel,zipkin
 
   thymeleaf:
     cache: false

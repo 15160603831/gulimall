@@ -20,9 +20,6 @@ import javax.annotation.PostConstruct;
 @Configuration
 public class MyAmqpConfig {
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-
     /**
      * 使用json序列化机制，进行消息转换
      *

@@ -8,7 +8,7 @@ spring:
   application:
     name: mall-order
   profiles:
-    active: nacos,rabbit,redis,sentinel
+    active: nacos,rabbit,redis,sentinel,zipkin
   thymeleaf:
     cache: false
   session:

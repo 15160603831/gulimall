@@ -23,12 +23,13 @@ public enum BizCodeEnum {
     VAILD_EXCEPTION(10002, "参数格式校验失败"),
     SMS_CODE_EXCEPTION(10003, "短信验证码频率太高,稍后再试"),
     PRODUCT_UP_EXCEPTION(11003, "商品上架异常"),
-    SECKILL_EXCEPTION(10005,"秒杀请求过多，请重新再试"),
+    SECKILL_EXCEPTION(10005, "秒杀请求过多，请重新再试"),
+    READ_TIME_OUT_EXCEPTION(10004, "远程调用服务超时，请重新再试"),
     USER_NAME_EXIST_EXCEPTION(150001, "用户名存在"),
     USER_PHONE_EXIST_EXCEPTION(150002, "手机号码存在"),
     USER_LOGIN_ERROR_EXCEPTION(150003, "账号密码错误"),
 
-    NO_STOCK_EXCEPTION(21000,"商品库存不足");
+    NO_STOCK_EXCEPTION(21000, "商品库存不足");
 
 
     private int code;

@@ -17,7 +17,7 @@ spring:
     cache: false
 
   profiles:
-    active: nacos,redis,sentinel
+    active: nacos,redis,sentinel,zipkin
 
 
 ##mybatis-plus相关配置
